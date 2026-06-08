@@ -1,0 +1,1783 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =============================================
+   THUNDER — ALL 8 WEIGHTS
+   ============================================= */
+@font-face {
+  font-family: 'Thunder';
+  src: url('/fonts/Thunder-ThinLC.ttf') format('truetype');
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Thunder';
+  src: url('/fonts/Thunder-ExtraLightLC.ttf') format('truetype');
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Thunder';
+  src: url('/fonts/Thunder-LightLC.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Thunder';
+  src: url('/fonts/Thunder-LC.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Thunder';
+  src: url('/fonts/Thunder-MediumLC.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Thunder';
+  src: url('/fonts/Thunder-SemiBoldLC.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Thunder';
+  src: url('/fonts/Thunder-BoldLC.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Thunder';
+  src: url('/fonts/Thunder-ExtraBoldLC.ttf') format('truetype');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* =============================================
+   INK DESIGN SYSTEM — CSS VARIABLES
+   ============================================= */
+:root {
+  /* Backgrounds */
+  --ink-void:         #080808;
+  --ink-dark:         #111111;
+  --ink-surface:      #1c1c1c;
+  --ink-mist:         rgba(242, 234, 216, 0.08);
+
+  /* Foregrounds */
+  --ink-paper:        #f2ead8;
+  --ink-white:        #ffffff;
+  --ink-ash:          #3a3a3a;
+
+  /* Accents */
+  --ink-crimson:      #8b0000;
+  --ink-ember:        #c0392b;
+  --ink-gold:         #c9a84c;
+  --ink-green:        #99ca45;
+  --ink-green-glow:   rgba(153, 202, 69, 0.2);
+  --ink-indigo:       #1a0050;
+  --ink-violet:       #6c00b3;
+}
+
+/* =============================================
+   BASE RESET
+   ============================================= */
+*, *::before, *::after {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html {
+  /* Lenis controls smooth scroll — disable native smooth */
+  scroll-behavior: auto;
+  -webkit-text-size-adjust: 100%;
+  color-scheme: dark;
+}
+
+html, body {
+  min-height: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+  background-color: var(--ink-void);
+  color: var(--ink-paper);
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "kern" 1, "liga" 1;
+}
+
+a { color: inherit; text-decoration: none; }
+img, video { display: block; max-width: 100%; }
+
+/* =============================================
+   KEYFRAMES
+   ============================================= */
+@keyframes ink-drip-fall {
+  0%   { height: 0;    opacity: 0;   transform: translateX(-50%) scaleY(0); }
+  15%  { height: 4px;  opacity: 1;   transform: translateX(-50%) scaleY(1); }
+  55%  { height: 28px; opacity: 1;   transform: translateX(-50%) scaleY(1) translateY(0); }
+  78%  { height: 28px; opacity: 1;   transform: translateX(-50%) scaleY(1) translateY(8px); }
+  92%  { height: 2px;  opacity: 0.2; transform: translateX(-50%) scaleY(0.3) translateY(24px); }
+  100% { height: 0;    opacity: 0;   transform: translateX(-50%) scaleY(0); }
+}
+
+@keyframes ink-reveal-expand {
+  from { clip-path: inset(0 50% 0 50%); opacity: 0; }
+  to   { clip-path: inset(0 0%  0 0%);  opacity: 1; }
+}
+
+@keyframes ink-glitch-shift {
+  0%, 100% { text-shadow: -2px 0 var(--ink-green), 2px 0 #00c4cc; }
+  25%       { text-shadow:  2px 0 var(--ink-green), -2px 0 #00c4cc; clip-path: inset(20% 0 60% 0); }
+  50%       { text-shadow: -1px 2px var(--ink-ember),  1px -2px #00c4cc; clip-path: inset(55% 0 10% 0); }
+  75%       { text-shadow:  2px 0 var(--ink-green), -2px 0 #00c4cc; clip-path: inset(0); }
+}
+
+/* =============================================
+   INK ANIMATION UTILITY CLASSES
+   ============================================= */
+
+/* .ink-drip — slow ink drop from element's bottom edge */
+.ink-drip {
+  position: relative;
+}
+.ink-drip::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  width: 5px;
+  height: 0;
+  background: var(--ink-green);
+  border-radius: 0 0 50% 50%;
+  transform: translateX(-50%) scaleY(0);
+  transform-origin: top center;
+  animation: ink-drip-fall 4s ease-in-out infinite;
+  animation-delay: 1.5s;
+}
+
+/* .ink-flood-up — brand-green ink floods element from bottom on hover */
+.ink-flood-up {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+.ink-flood-up::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--ink-green);
+  clip-path: inset(100% 0 0 0);
+  transition: clip-path 0.4s cubic-bezier(0.76, 0, 0.24, 1);
+  z-index: 0;
+}
+.ink-flood-up:hover::before,
+.ink-flood-up:focus-within::before {
+  clip-path: inset(0 0 0 0);
+}
+.ink-flood-up > * {
+  position: relative;
+  z-index: 1;
+  transition: color 0.4s cubic-bezier(0.76, 0, 0.24, 1);
+}
+.ink-flood-up:hover > *,
+.ink-flood-up:focus-within > * {
+  color: var(--ink-void);
+}
+
+/* .ink-flood-green — same flood mechanic but fills with brand green */
+.ink-flood-green {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+.ink-flood-green::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--ink-green);
+  clip-path: inset(100% 0 0 0);
+  transition: clip-path 0.4s cubic-bezier(0.76, 0, 0.24, 1);
+  z-index: 0;
+}
+.ink-flood-green:hover::before,
+.ink-flood-green:focus-within::before {
+  clip-path: inset(0 0 0 0);
+}
+.ink-flood-green > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* .ink-reveal-text — text bleeds outward from center, apply .is-revealed to trigger */
+.ink-reveal-text {
+  clip-path: inset(0 50% 0 50%);
+  opacity: 0;
+}
+.ink-reveal-text.is-revealed {
+  animation: ink-reveal-expand 0.9s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+}
+
+/* .ink-glitch — duplicate color-channel shift on hover */
+.ink-glitch {
+  display: inline-block;
+}
+.ink-glitch:hover {
+  animation: ink-glitch-shift 0.35s steps(4) infinite;
+}
+
+/* .ink-grain — organic noise texture overlay via SVG filter */
+.ink-grain {
+  position: relative;
+}
+.ink-grain::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0.3;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  background-size: 300px 300px;
+}
+
+/* .thunder-outline — ghost outline text (Thunder, transparent fill) */
+.thunder-outline {
+  font-family: 'Thunder', sans-serif;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--ink-paper);
+  text-stroke: 1px var(--ink-paper);
+}
+
+/* ─── StickyNarrative section ────────────────────────────────────
+   --panel-accent is set per-panel as an inline CSS variable.
+   All children consume it via var(--panel-accent).           */
+
+/* Vertical "INK" ghost text */
+.narrative-ink-text {
+  writing-mode: vertical-rl;
+  font-size:    clamp(7rem, 18vw, 20rem);
+  line-height:  0.9;
+  font-weight:  400;
+  color:        rgba(153, 202, 69, 0.35);
+}
+
+/* Panel slot: subtle gradient tint from accent colour */
+.narrative-panel {
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--panel-accent, #99ca45) 5%, transparent) 0%,
+    transparent 60%
+  );
+}
+
+/* Vertical accent bar on each panel */
+.narrative-accent-bar {
+  background: var(--panel-accent, #99ca45);
+}
+
+/* Panel label — uses accent colour */
+.narrative-panel-label {
+  color: var(--panel-accent, #99ca45);
+}
+
+/* Panel counter (top-right) */
+.narrative-panel-counter {
+  color: var(--panel-accent, #99ca45);
+}
+
+/* Per-panel accent tokens — one class per slug, no inline style needed */
+.narrative-panel-books       { --panel-accent: #8b0000; }
+.narrative-panel-audio       { --panel-accent: #c9a84c; }
+.narrative-panel-animations  { --panel-accent: #99ca45; }
+
+/* Mobile: narrative section stacks panels vertically */
+@media (max-width: 767px) {
+  .narrative-inner {
+    height:         auto !important;
+    overflow:       visible !important;
+    flex-direction: column !important;
+  }
+  .narrative-right {
+    height:   auto !important;
+    overflow: visible !important;
+  }
+  .narrative-panel {
+    height:     auto !important;
+    min-height: 60vh;
+    padding:    3rem 1.5rem 3.5rem !important;
+  }
+  .narrative-panels-wrap {
+    transform: none !important;
+  }
+}
+
+/* ─── Books library page ──────────────────────────────────────────
+   Dynamic accent colour is set as --accent CSS variable on the
+   card container. All children consume it via var(--accent).   */
+
+/* Hero ghost background text */
+.hero-ghost-title {
+  font-size:   clamp(12rem, 38vw, 58rem);
+  font-weight: 400;
+}
+
+/* Book cover portrait frame */
+.book-cover {
+  aspect-ratio: 2 / 3;
+  min-height:   360px;
+}
+
+/* Accent colour burst from the top of each cover */
+.book-cover-glow {
+  background: radial-gradient(
+    ellipse at 50% 0%,
+    color-mix(in srgb, var(--accent, #99ca45) 25%, transparent) 0%,
+    transparent 70%
+  );
+}
+
+/* Ghost title watermark inside the cover */
+.book-watermark-text {
+  font-size:   clamp(2.5rem, 7vw, 6rem);
+  font-weight: 400;
+  opacity:     0.07;
+  word-break:  break-word;
+  color:       var(--accent, #99ca45);
+}
+
+/* Horizontal rule grid texture on cover */
+.book-rule-grid {
+  opacity:          0.12;
+  background-image: repeating-linear-gradient(
+    0deg,
+    var(--accent, #99ca45) 0px,
+    transparent 1px,
+    transparent 56px
+  );
+}
+
+/* Status badge pill — filled with accent colour */
+.book-badge-accent {
+  background-color: var(--accent, #99ca45);
+  color:            var(--ink-paper, #f2ead8);
+}
+
+/* Preserve 3-D context for tilt effect */
+.book-card-3d {
+  transform-style: preserve-3d;
+}
+
+/* ── Drop cap — first letter of each chapter opening paragraph ── */
+.drop-cap::first-letter {
+  font-family: 'Thunder', sans-serif;
+  font-size: 4.2em;
+  float: left;
+  line-height: 0.78;
+  padding-right: 10px;
+  margin-top: 6px;
+  color: var(--ink-green);
+  font-weight: 400;
+}
+
+/* ── Reader chapter title reveal ── */
+.chapter-title-enter {
+  animation: ink-reveal-expand 0.85s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+}
+
+/* ── Sidebar transition ── */
+.reader-sidebar {
+  transition: transform 0.35s cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+/* ── YouTube video background — covers section like object-fit: cover */
+.yt-bg-frame {
+  position:  absolute;
+  top:       50%;
+  left:      50%;
+  transform: translate(-50%, -50%);
+  width:     max(100%, 177.78vh);
+  height:    max(100%, 56.25vw);
+  border:    none;
+}
+
+/* Crimson vignette used in ManifestoSection */
+.manifesto-vignette {
+  background: radial-gradient(ellipse at 50% 60%, rgba(153, 202, 69,0.12) 0%, transparent 70%);
+}
+
+/* ─── Audio Player ───────────────────────────────────────────────────────── */
+
+/* Glassy dark bar */
+.audio-player {
+  background: rgba(8, 8, 8, 0.92);
+  -webkit-backdrop-filter: blur(20px) saturate(1.2);
+  backdrop-filter: blur(20px) saturate(1.2);
+}
+
+/* Ink-bleed progress fill — clipped from the right, revealing left-to-right */
+.audio-fill {
+  position: absolute;
+  inset: 0;
+  background: var(--ink-green);
+  clip-path: inset(0 100% 0 0); /* fully hidden by default */
+  border-radius: inherit;
+}
+
+/* Buffered audio preview — slightly lighter */
+.audio-fill-buffered {
+  position: absolute;
+  inset: 0;
+  background: rgba(153, 202, 69,0.25);
+  clip-path: inset(0 100% 0 0);
+  border-radius: inherit;
+}
+
+/* Range input reset — invisible but receives pointer events */
+.audio-range {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+  height: 16px;
+}
+.audio-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--ink-paper);
+  cursor: pointer;
+  margin-top: -5px;
+}
+.audio-range::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--ink-paper);
+  cursor: pointer;
+  border: none;
+}
+.audio-range::-webkit-slider-runnable-track {
+  height: 4px;
+  background: rgba(242, 234, 216, 0.15);
+  border-radius: 2px;
+}
+.audio-range::-moz-range-track {
+  height: 4px;
+  background: rgba(242, 234, 216, 0.15);
+  border-radius: 2px;
+}
+/* Volume slider thumb — smaller */
+.audio-range.w-16::-webkit-slider-thumb {
+  width: 10px;
+  height: 10px;
+}
+
+/* Transport button */
+.audio-ctrl-btn {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  color: rgba(242, 234, 216, 0.55);
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+.audio-ctrl-btn:hover {
+  color: var(--ink-paper);
+}
+
+/* Play/pause button */
+.audio-play-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(242, 234, 216, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink-paper);
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+.audio-play-btn:hover {
+  border-color: var(--ink-green);
+}
+
+/* ─── Soundwave animation ─────────────────────────────────────────────────── */
+
+@keyframes soundwave {
+  0%, 100% { transform: scaleY(0.25); }
+  50%       { transform: scaleY(1);   }
+}
+
+.soundwave-bar {
+  transform-origin: bottom center;
+  height:          var(--bar-h, 50%);
+  animation:       soundwave 1.1s ease-in-out infinite;
+  animation-delay: var(--bar-delay, 0s);
+}
+
+/* ─── Audio Series shelf ──────────────────────────────────────────────────── */
+
+/* Horizontal scroll shelf — no native scrollbar, CSS scroll-snap */
+.audio-shelf {
+  display: flex;
+  gap: 1.25rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 1rem;
+  scrollbar-width: none;
+}
+.audio-shelf::-webkit-scrollbar { display: none; }
+
+/* Each series tile snaps to the left */
+.audio-shelf-tile {
+  scroll-snap-align: start;
+  flex-shrink: 0;
+}
+
+/* Series cover gradient — base layer */
+.series-cover {
+  background: linear-gradient(170deg, var(--series-accent-bg, #1a0000) 0%, #080808 100%);
+}
+
+/* Per-series accent tokens — rgba variants avoid color-mix() for wider compat */
+.series-gwava               { --series-accent-bg: #2a0000; --series-accent: #8b0000; --series-accent-dim: rgba(139,0,0,0.25);   --series-accent-border: rgba(139,0,0,0.40); }
+.series-ese                 { --series-accent-bg: #1a0030; --series-accent: #6c00b3; --series-accent-dim: rgba(108,0,179,0.25); --series-accent-border: rgba(108,0,179,0.40); }
+.series-haunted-heart       { --series-accent-bg: #111520; --series-accent: #c9a84c; --series-accent-dim: rgba(201,168,76,0.25); --series-accent-border: rgba(201,168,76,0.40); }
+.series-legend-of-leviticus { --series-accent-bg: #1a1200; --series-accent: #c9a84c; --series-accent-dim: rgba(201,168,76,0.25); --series-accent-border: rgba(201,168,76,0.40); }
+.series-bds                 { --series-accent-bg: #0a1500; --series-accent: #99ca45; --series-accent-dim: rgba(153,202,69,0.25);  --series-accent-border: rgba(153,202,69,0.40); }
+
+/* ─── Audio page — hero ghost title ──────────────────────────────────────── */
+.audio-hero-ghost { font-size: clamp(8rem, 30vw, 26rem); font-weight: 400; }
+
+/* Soundwave bar inside series tile — height/delay injected via CSS vars */
+.tile-soundwave-bar {
+  height:          var(--bar-h, 50%);
+  animation-delay: var(--bar-delay, 0s);
+}
+
+/* Tile title */
+.tile-title-size { font-size: clamp(1.1rem, 3vw, 1.5rem); font-weight: 400; }
+
+/* Genre badge — uses parent's --series-accent-dim / --series-accent-border */
+.series-genre-badge {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.5rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding: 0.15rem 0.5rem;
+  border-radius: 2px;
+  background: var(--series-accent-dim, rgba(153,202,69,0.25));
+  color:      var(--series-accent, #99ca45);
+  border:     1px solid var(--series-accent-border, rgba(153,202,69,0.40));
+}
+
+/* Gradient overlay inside tile cover — uses parent's --series-accent-dim */
+.tile-cover-gradient {
+  background: linear-gradient(to top, var(--series-accent-dim, rgba(153,202,69,0.25)) 0%, transparent 100%);
+}
+
+/* Watermark text inside tile cover */
+.tile-watermark {
+  color: var(--series-accent, #99ca45);
+  font-size: clamp(2rem, 6vw, 4rem);
+  font-weight: 400;
+  opacity: 0.06;
+  word-break: break-word;
+}
+
+/* Hover reveal border on tile — uses parent's --series-accent */
+.tile-hover-border {
+  border: 1px solid transparent;
+  transition: border-color 0.3s ease;
+}
+.group:hover .tile-hover-border {
+  border-color: var(--series-accent, #99ca45);
+}
+
+/* ─── Series page — parallax banner accent border ─────────────────────────── */
+.series-banner-gradient {
+  background: linear-gradient(
+    to top,
+    var(--ink-void, #080808) 0%,
+    rgba(8, 8, 8, 0.7) 40%,
+    transparent 100%
+  );
+}
+
+/* ─── Series detail page (SeriesClient) ─────────────────────────────────── */
+
+/* Accent colour label in series hero */
+.series-accent-label { color: var(--series-accent, #99ca45); }
+
+/* Thin accent bar next to "EPISODES" heading */
+.series-detail-bar { background: var(--series-accent, #99ca45); }
+
+/* Play/pause button circle on episode row */
+.episode-play-btn {
+  width:  2rem;
+  height: 2rem;
+  border-radius: 50%;
+  border: 1px solid rgba(58, 58, 58, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink-ash, #3a3a3a);
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+.episode-play-btn:hover {
+  border-color: var(--series-accent, #99ca45);
+  color: var(--ink-paper, #f2ead8);
+}
+.episode-item.is-active .episode-play-btn {
+  border-color: var(--series-accent, #99ca45);
+  color: var(--series-accent, #99ca45);
+}
+
+/* Soundwave bars inside active episode row */
+.episode-active-wave {
+  background: var(--series-accent, #99ca45);
+}
+
+/* Episode list item — hover line */
+.episode-item {
+  border-left: 2px solid transparent;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+.episode-item:hover {
+  border-left-color: var(--series-accent, #99ca45);
+  background-color:  var(--series-accent-dim, rgba(153, 202, 69, 0.08));
+}
+.episode-item.is-active {
+  border-left-color: var(--series-accent, #99ca45);
+  background-color:  var(--series-accent-dim, rgba(153, 202, 69, 0.12));
+}
+
+/* ─── Marketplace — additional helpers ───────────────────────────────────── */
+
+/* Price display size in card */
+.market-price-text { font-size: 1.4rem; font-weight: 400; }
+
+/* Ghost watermark in marketplace hero */
+.market-hero-ghost { font-size: clamp(8rem, 28vw, 24rem); font-weight: 400; }
+
+/* Marketplace header brand name */
+.market-brand-text { font-size: 1.4rem; font-weight: 400; }
+
+/* Checkout pay button text */
+.checkout-pay-text { font-size: 1.15rem; font-weight: 400; }
+
+/* Checkout cart item title */
+.checkout-item-title { font-weight: 400; }
+
+/* Checkout form section card */
+.checkout-section {
+  background:   rgba(17, 17, 17, 0.6);
+  border:       1px solid rgba(58, 58, 58, 0.2);
+  border-radius: 4px;
+  padding:      1.5rem;
+}
+
+/* Form label */
+.checkout-label {
+  display:       block;
+  font-family:   'Space Mono', monospace;
+  font-size:     0.55rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color:         rgba(58, 58, 58, 0.9);
+  color:         rgba(242, 234, 216, 0.45);
+  margin-bottom: 0.5rem;
+}
+
+/* Form input */
+.checkout-input {
+  width:         100%;
+  background:    rgba(8, 8, 8, 0.7);
+  border:        1px solid rgba(58, 58, 58, 0.4);
+  border-radius: 2px;
+  padding:       0.65rem 0.85rem;
+  font-family:   'Space Mono', monospace;
+  font-size:     0.75rem;
+  color:         var(--ink-paper);
+  outline:       none;
+  transition:    border-color 0.2s ease;
+}
+.checkout-input::placeholder { color: rgba(58, 58, 58, 0.6); }
+.checkout-input:focus        { border-color: rgba(153, 202, 69,0.5); }
+
+/* Checkout pay button */
+.checkout-pay-btn {
+  width:         100%;
+  border:        1px solid rgba(153, 202, 69,0.5);
+  border-radius: 3px;
+  color:         var(--ink-paper);
+  cursor:        pointer;
+  transition:    border-color 0.2s ease, opacity 0.2s ease;
+}
+.checkout-pay-btn:not(:disabled):hover { border-color: var(--ink-green); }
+
+/* Checkout preview price */
+.checkout-total-size { font-size: 1.6rem; font-weight: 400; }
+
+/* ─── Animations page — static helper classes ───────────────────────────────
+   Keeps dynamic radial glow, ghost text, and iframe border out of JSX style=  */
+
+/* Hero background — dark-to-void gradient */
+.anim-hero-bg {
+  background: linear-gradient(to bottom, #000d00, var(--ink-void) 60%);
+}
+
+/* Hero green radial glow — subtle, centred */
+.anim-hero-glow {
+  background: radial-gradient(ellipse 80% 55% at 50% 40%, rgba(153, 202, 69, 0.08) 0%, transparent 70%);
+}
+
+/* Hero ghost watermark text */
+.anim-hero-ghost { font-size: clamp(10rem, 35vw, 30rem); font-weight: 400; }
+
+/* Player iframe — no border */
+.anim-player-iframe { border: none; }
+
+/* ─── Animations page ────────────────────────────────────────────────────────
+
+   Film grain: SVG feTurbulence noise at 0.04 opacity — barely perceptible,
+   adds cinematic texture without competing with content.             */
+
+.film-grain::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 10;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Cfilter id='grain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.88' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23grain)'/%3E%3C/svg%3E");
+  background-size: 250px 250px;
+}
+
+/* Featured player — three shadow layers + subtle green ring */
+.anim-player {
+  border-radius: 4px;
+  box-shadow:
+    0 0 0 1px rgba(153, 202, 69,0.18),
+    0 8px 32px rgba(0, 0, 0, 0.88),
+    0 28px 80px rgba(0, 0, 0, 0.65);
+}
+
+/* Dark vignette on player edges — inset shadow creates screen-edge depth */
+.anim-player-vignette::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 4px;
+  pointer-events: none;
+  z-index: 5;
+  box-shadow:
+    inset 0 0 28px rgba(0, 0, 0, 0.65),
+    inset 0 0 80px rgba(0, 0, 0, 0.30);
+}
+
+/* Ink-drip play button — circle with animated drip */
+.anim-play-btn {
+  width:   72px;
+  height:  72px;
+  border-radius: 50%;
+  background: rgba(153, 202, 69,0.15);
+  border:  1px solid rgba(153, 202, 69,0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+.anim-play-btn::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  width: 4px;
+  height: 0;
+  background: var(--ink-green);
+  border-radius: 0 0 50% 50%;
+  transform: translateX(-50%) scaleY(0);
+  transform-origin: top center;
+  animation: ink-drip-fall 3.5s ease-in-out infinite;
+  animation-delay: 0.8s;
+}
+.anim-play-btn:hover {
+  background: rgba(153, 202, 69,0.32);
+  transform: scale(1.08);
+}
+
+/* ── Category filter tabs ── */
+.anim-filter-tabs {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  gap: 0;
+  border-bottom: 1px solid rgba(58, 58, 58, 0.35);
+  padding-bottom: 0;
+}
+
+/* Each tab — Thunder style, faded when inactive */
+.anim-filter-tab {
+  font-family: 'Thunder', sans-serif;
+  font-weight: 400;
+  font-size: clamp(1rem, 2vw, 1.7rem);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: rgba(242, 234, 216, 0.30);
+  cursor: pointer;
+  padding: 0.4rem 1.25rem 0.65rem;
+  line-height: 1;
+  transition: color 0.2s ease;
+  background: transparent;
+  border: none;
+}
+.anim-filter-tab:hover  { color: rgba(242, 234, 216, 0.65); }
+.anim-filter-tab.is-active { color: var(--ink-paper); }
+
+/* Sliding green line — GSAP drives x + width */
+.anim-filter-underline {
+  position: absolute;
+  bottom:  0;
+  left:    0;
+  height:  2px;
+  width:   0;                    /* GSAP sets initial width on mount */
+  background: var(--ink-green);
+  transform-origin: left center;
+  pointer-events: none;
+}
+
+/* ── Video card ── */
+.anim-card {
+  cursor: pointer;
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--ink-dark);
+  transition:
+    transform  0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.35s ease;
+}
+.anim-card:hover {
+  transform: translateY(-8px);
+  box-shadow:
+    0 0 0 1px rgba(153, 202, 69,0.55),
+    0 8px 28px rgba(153, 202, 69,0.18),
+    0 18px 52px rgba(0, 0, 0, 0.55);
+}
+
+/* Thumbnail area */
+.anim-card-thumb {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: #111;
+}
+.anim-card-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.55s ease;
+}
+.anim-card:hover .anim-card-thumb img {
+  transform: scale(1.05);
+}
+
+/* Play icon overlay — fades in on card hover */
+.anim-card-play {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.42);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.anim-card:hover .anim-card-play { opacity: 1; }
+
+/* Runtime pill */
+.anim-runtime-pill {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.72);
+  border: 1px solid rgba(242, 234, 216, 0.1);
+  border-radius: 2px;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.52rem;
+  letter-spacing: 0.08em;
+  padding: 0.18rem 0.45rem;
+  color: rgba(242, 234, 216, 0.65);
+}
+
+/* Category tags — three variants */
+.anim-cat-tag {
+  display: inline-flex;
+  align-items: center;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.48rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding: 0.15rem 0.5rem;
+  border-radius: 2px;
+  border: 1px solid rgba(153, 202, 69, 0.35);
+  color:      var(--ink-green);
+  background: rgba(153, 202, 69, 0.08);
+}
+.anim-cat-tag-shorts  { color: var(--ink-gold);  border-color: rgba(201, 168, 76, 0.35);  background: rgba(201, 168, 76, 0.08);  }
+.anim-cat-tag-trailer { color: var(--ink-green); border-color: rgba(153, 202, 69, 0.35);  background: rgba(153, 202, 69, 0.08); }
+
+/* ─── Marketplace ────────────────────────────────────────────────────────────
+
+   Category pill accent tokens — one per category, no inline style needed.
+   Consumed by .market-cat-pill children via var(--cat-color).            */
+
+.market-cat-art    { --cat-color: #c9a84c; --cat-bg: rgba(201,168,76,0.12); --cat-border: rgba(201,168,76,0.35); }
+.market-cat-books  { --cat-color: #8b0000; --cat-bg: rgba(139,0,0,0.12);    --cat-border: rgba(139,0,0,0.35);    }
+.market-cat-beats  { --cat-color: #6c00b3; --cat-bg: rgba(108,0,179,0.12);  --cat-border: rgba(108,0,179,0.35);  }
+.market-cat-assets { --cat-color: #1a0050; --cat-bg: rgba(56,16,130,0.18);  --cat-border: rgba(80,40,180,0.40);  }
+
+/* Category pill — inherits from parent token class */
+.market-cat-pill {
+  display: inline-flex;
+  align-items: center;
+  font-family: 'Space Mono', monospace;
+  font-size:   0.5rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding: 0.18rem 0.55rem;
+  border-radius: 2px;
+  color:        var(--cat-color, #c9a84c);
+  background:   var(--cat-bg,    rgba(201,168,76,0.12));
+  border:       1px solid var(--cat-border, rgba(201,168,76,0.35));
+}
+
+/* Hero stagger pill — larger, used in hero section */
+.market-hero-pill {
+  font-family: 'Thunder', sans-serif;
+  font-weight: 400;
+  font-size:   clamp(0.9rem, 2vw, 1.3rem);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding:     0.4rem 1rem;
+  border-radius: 3px;
+  border:      1px solid var(--cat-color, #c9a84c);
+  color:       var(--cat-color, #c9a84c);
+  background:  var(--cat-bg, rgba(201,168,76,0.08));
+  cursor:      default;
+}
+
+/* ── Product card ── */
+.market-card-wrap {
+  perspective: 900px;
+}
+.market-card {
+  position:        relative;
+  border-radius:   4px;
+  overflow:        hidden;
+  background:      var(--ink-dark);
+  transform-style: preserve-3d;
+  cursor:          pointer;
+  will-change:     transform;
+  transition:      box-shadow 0.35s ease;
+}
+.market-card:hover {
+  box-shadow:
+    0 0 0 1px rgba(153, 202, 69,0.4),
+    0 8px 32px rgba(0, 0, 0, 0.7),
+    0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+/* Ink-grain texture overlay — fades in on hover */
+.market-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 20;
+  opacity: 0;
+  border-radius: inherit;
+  transition: opacity 0.35s ease;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  background-size: 250px 250px;
+}
+.market-card:hover::after { opacity: 0.10; }
+
+/* Product image */
+.market-card-img {
+  aspect-ratio: 4 / 3;
+  overflow:     hidden;
+  position:     relative;
+  background:   #111;
+}
+.market-card-img img {
+  width:      100%;
+  height:     100%;
+  object-fit: cover;
+  display:    block;
+  transition: transform 0.5s ease;
+}
+.market-card:hover .market-card-img img { transform: scale(1.04); }
+
+/* Preview eye — fades in on card hover */
+.market-card-preview {
+  position:   absolute;
+  inset:      0;
+  display:    flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.45);
+  opacity:    0;
+  transition: opacity 0.25s ease;
+  z-index:    2;
+}
+.market-card:hover .market-card-preview { opacity: 1; }
+
+/* "NEW" badge */
+.market-badge-new {
+  background: var(--ink-green);
+  color:      var(--ink-paper);
+  font-family: 'Space Mono', monospace;
+  font-size:  0.45rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding:    0.15rem 0.45rem;
+  border-radius: 2px;
+}
+
+/* Add to cart button */
+.market-add-btn {
+  flex: 1;
+  padding:     0.55rem 0;
+  font-family: 'Thunder', sans-serif;
+  font-weight: 400;
+  font-size:   clamp(0.75rem, 1.5vw, 0.95rem);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color:       var(--ink-paper);
+  border:      1px solid rgba(153, 202, 69,0.4);
+  border-radius: 2px;
+  cursor:      pointer;
+  transition:  border-color 0.2s ease;
+}
+.market-add-btn:hover { border-color: var(--ink-green); }
+
+/* Preview button */
+.market-preview-btn {
+  width:       40px;
+  height:      36px;
+  display:     flex;
+  align-items: center;
+  justify-content: center;
+  border:      1px solid rgba(242, 234, 216, 0.12);
+  border-radius: 2px;
+  color:       rgba(242, 234, 216, 0.45);
+  cursor:      pointer;
+  transition:  color 0.2s ease, border-color 0.2s ease;
+  shrink:      0;
+}
+.market-preview-btn:hover { color: var(--ink-paper); border-color: rgba(242, 234, 216, 0.35); }
+
+/* ── Marketplace nav / header ── */
+.market-header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 56px;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  padding: 0 1.5rem;
+  background:   rgba(8, 8, 8, 0.92);
+  -webkit-backdrop-filter: blur(16px) saturate(1.2);
+  backdrop-filter:         blur(16px) saturate(1.2);
+  border-bottom: 1px solid rgba(58, 58, 58, 0.2);
+}
+
+/* Cart icon button in the header */
+.market-cart-btn {
+  position: relative;
+  width:    40px;
+  height:   40px;
+  display:  flex;
+  align-items: center;
+  justify-content: center;
+  color:    var(--ink-ash);
+  transition: color 0.2s ease;
+  cursor:   pointer;
+}
+.market-cart-btn:hover { color: var(--ink-paper); }
+
+/* Cart badge */
+.cart-count-badge {
+  position:   absolute;
+  top:        -4px;
+  right:      -4px;
+  min-width:  18px;
+  height:     18px;
+  padding:    0 4px;
+  border-radius: 9px;
+  background: var(--ink-green);
+  color:      var(--ink-paper);
+  font-family: 'Space Mono', monospace;
+  font-size:  0.5rem;
+  display:    flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  pointer-events: none;
+}
+
+/* ── Sticky filter bar ── */
+.market-filter-bar {
+  position: sticky;
+  top:      56px;           /* below the 56px fixed header */
+  z-index:  30;
+  background:   rgba(8, 8, 8, 0.88);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter:         blur(12px);
+  border-bottom: 1px solid rgba(58, 58, 58, 0.2);
+}
+
+/* Filter tab — Thunder style */
+.market-filter-tab {
+  font-family: 'Thunder', sans-serif;
+  font-weight: 400;
+  font-size:   clamp(0.85rem, 1.8vw, 1.5rem);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color:    rgba(242, 234, 216, 0.3);
+  padding:  0.45rem 1rem 0.6rem;
+  cursor:   pointer;
+  transition: color 0.2s ease;
+  line-height: 1;
+  background: transparent;
+  border:   none;
+}
+.market-filter-tab:hover    { color: rgba(242, 234, 216, 0.65); }
+.market-filter-tab.is-active { color: var(--ink-paper); }
+
+/* Sliding underline — GSAP moves x + width */
+.market-filter-underline {
+  position:   absolute;
+  bottom:     0;
+  left:       0;
+  height:     2px;
+  width:      0;
+  background: var(--ink-green);
+  pointer-events: none;
+  transform-origin: left center;
+}
+
+/* Sort select */
+.market-sort-select {
+  font-family:  'Space Mono', monospace;
+  font-size:    0.58rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background:   rgba(28, 28, 28, 0.8);
+  border:       1px solid rgba(58, 58, 58, 0.5);
+  border-radius: 2px;
+  color:        var(--ink-ash);
+  padding:      0.4rem 0.75rem;
+  cursor:       pointer;
+  -webkit-appearance: none;
+  appearance:   none;
+  outline:      none;
+  transition:   border-color 0.2s ease, color 0.2s ease;
+}
+.market-sort-select:hover,
+.market-sort-select:focus { border-color: rgba(153, 202, 69,0.5); color: var(--ink-paper); }
+
+/* ── Cart drawer ── */
+.cart-drawer {
+  background: rgba(12, 12, 12, 0.97);
+  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter:         blur(24px);
+  border-left: 1px solid rgba(58, 58, 58, 0.2);
+  transform: translateX(100%);   /* GSAP overrides this */
+}
+.cart-drawer-header { background: rgba(8, 8, 8, 0.6); }
+.cart-drawer-footer { background: rgba(8, 8, 8, 0.5); }
+
+/* Cart item row */
+.cart-item {
+  padding:       0.75rem 0;
+  border-bottom: 1px solid rgba(58, 58, 58, 0.15);
+}
+.cart-item:last-child { border-bottom: none; }
+
+/* Qty +/- buttons */
+.cart-qty-btn {
+  width:  22px;
+  height: 22px;
+  border: 1px solid rgba(58, 58, 58, 0.5);
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color:   var(--ink-ash);
+  cursor:  pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+.cart-qty-btn:hover { border-color: var(--ink-green); color: var(--ink-paper); }
+
+/* Checkout CTA in cart footer */
+.cart-checkout-btn {
+  display:       block;
+  width:         100%;
+  padding:       0.75rem 1rem;
+  text-align:    center;
+  border:        1px solid rgba(153, 202, 69,0.5);
+  border-radius: 2px;
+  color:         var(--ink-paper);
+  transition:    border-color 0.2s ease;
+}
+.cart-checkout-btn:hover { border-color: var(--ink-green); }
+
+/* ─── Navbar ─────────────────────────────────────────────────────────────── */
+
+.navbar {
+  position:     fixed;
+  top:          0;
+  left:         0;
+  right:        0;
+  z-index:      100;
+  height:       80px;
+  display:      flex;
+  align-items:  center;
+  padding:      0 clamp(1.5rem, 5vw, 4rem);
+  background:   transparent;
+  transition:   background 0.35s ease, border-color 0.35s ease;
+  border-bottom: 1px solid transparent;
+}
+.navbar.nav-scrolled {
+  background:             rgba(8, 8, 8, 0.78);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  backdrop-filter:        blur(20px) saturate(1.4);
+  border-bottom-color:    rgba(58, 58, 58, 0.12);
+}
+
+/* Logo */
+.navbar-logo {
+  display:         flex;
+  align-items:     center;
+  text-decoration: none;
+  margin-right:    auto;
+}
+.navbar-logo-dyff {
+  font-family:     'Thunder', sans-serif;
+  font-size:       clamp(1.9rem, 3vw, 2.5rem);
+  font-weight:     400;
+  color:           var(--ink-paper);
+  letter-spacing:  0.02em;
+  text-transform:  uppercase;
+  line-height:     1;
+}
+.navbar-logo-sub {
+  font-family:     'Space Mono', monospace;
+  font-size:       0.46rem;
+  font-weight:     400;
+  color:           var(--ink-gold);
+  letter-spacing:  0.38em;
+  text-transform:  uppercase;
+  line-height:     1;
+}
+
+/* Desktop link list */
+.navbar-links {
+  display:     flex;
+  align-items: center;
+  list-style:  none;
+  margin:      0;
+  padding:     0;
+}
+@media (max-width: 767px) {
+  .navbar-links { display: none; }
+}
+
+/* Individual nav link — uses existing .ink-flood-up for hover flood */
+.nav-link {
+  padding:         0.45rem 0.75rem;
+  text-decoration: none;
+  display:         block;
+}
+.nav-link-text {
+  font-family:     'Thunder', sans-serif;
+  font-size:       0.72rem;
+  font-weight:     400;
+  letter-spacing:  0.14em;
+  text-transform:  uppercase;
+  color:           rgba(242, 234, 216, 0.58);
+  transition:      color 0.25s ease, letter-spacing 0.25s ease;
+  display:         block;
+}
+.nav-link:hover .nav-link-text {
+  color:           var(--ink-paper);
+  letter-spacing:  0.2em;
+}
+.nav-link-active .nav-link-text {
+  color:           var(--ink-paper);
+}
+
+/* Active underline — ink-reveal from center */
+.nav-link-active::after {
+  content:    '';
+  position:   absolute;
+  bottom:     1px;
+  left:       0.75rem;
+  right:      0.75rem;
+  height:     1px;
+  background: rgba(242, 234, 216, 0.6);
+  animation:  ink-reveal-expand 0.9s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+}
+
+/* Hamburger button */
+.navbar-hamburger {
+  display:    none;
+  background: none;
+  border:     none;
+  color:      var(--ink-paper);
+  cursor:     pointer;
+  padding:    0.5rem;
+  z-index:    101;
+}
+@media (max-width: 767px) {
+  .navbar-hamburger { display: block; }
+}
+
+/* Fullscreen mobile overlay */
+.nav-overlay {
+  position:        fixed;
+  inset:           0;
+  z-index:         100;
+  background:      var(--ink-void);
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  overflow:        hidden;
+}
+.nav-overlay-list {
+  list-style:      none;
+  margin:          0;
+  padding:         0;
+  display:         flex;
+  flex-direction:  column;
+  align-items:     center;
+  gap:             0.25rem;
+}
+.nav-overlay-link {
+  font-family:     'Thunder', sans-serif;
+  font-size:       clamp(3rem, 12vw, 5.5rem);
+  font-weight:     400;
+  letter-spacing:  0.04em;
+  text-transform:  uppercase;
+  color:           rgba(242, 234, 216, 0.45);
+  text-decoration: none;
+  line-height:     1.1;
+  cursor:          pointer;
+  transition:      color 0.2s ease;
+  padding:         0.1em 0.3em;
+}
+.nav-overlay-link:hover,
+.nav-overlay-active {
+  color: var(--ink-paper);
+}
+
+/* ─── Footer ─────────────────────────────────────────────────────────────── */
+
+.footer {
+  position:   relative;
+  background: var(--ink-void);
+  padding-top: 65px;
+  overflow:   hidden;
+}
+
+.footer-drips {
+  position: absolute;
+  top:      0;
+  left:     0;
+  right:    0;
+  width:    100%;
+  height:   65px;
+}
+
+.footer-grid {
+  display:               grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap:                   3rem;
+  padding:               2rem clamp(1.5rem, 5vw, 4rem) 3.5rem;
+  max-width:             1400px;
+  margin:                0 auto;
+}
+@media (max-width: 767px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap:     2rem;
+    padding: 2rem 1.5rem 3rem;
+  }
+}
+
+.footer-brand {
+  display:         flex;
+  flex-direction:  column;
+  gap:             3px;
+  text-decoration: none;
+  margin-bottom:   0.75rem;
+}
+.footer-brand-dyff {
+  font-family:    'Thunder', sans-serif;
+  font-size:      clamp(2rem, 4vw, 2.6rem);
+  font-weight:    400;
+  color:          var(--ink-paper);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  line-height:    1;
+}
+.footer-brand-sub {
+  font-family:    'Space Mono', monospace;
+  font-size:      0.44rem;
+  font-weight:    400;
+  color:          var(--ink-gold);
+  letter-spacing: 0.38em;
+  text-transform: uppercase;
+}
+.footer-tagline {
+  font-family:  'Libre Baskerville', Georgia, serif;
+  font-size:    0.8rem;
+  font-style:   italic;
+  color:        rgba(242, 234, 216, 0.35);
+  line-height:  1.65;
+  max-width:    26ch;
+  margin-top:   0.5rem;
+}
+
+.footer-heading {
+  font-family:    'Space Mono', monospace;
+  font-size:      0.5rem;
+  font-weight:    400;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color:          rgba(242, 234, 216, 0.3);
+  margin-bottom:  1.2rem;
+}
+.footer-link {
+  display:         block;
+  font-family:     'Thunder', sans-serif;
+  font-size:       1.05rem;
+  font-weight:     400;
+  text-transform:  uppercase;
+  letter-spacing:  0.06em;
+  color:           rgba(242, 234, 216, 0.48);
+  text-decoration: none;
+  line-height:     1;
+  margin-bottom:   0.7rem;
+  cursor:          pointer;
+  transition:      color 0.2s ease;
+}
+.footer-link:hover { color: var(--ink-paper); }
+
+.footer-socials {
+  display:    flex;
+  flex-wrap:  wrap;
+  gap:        0.75rem;
+  margin-top: 0.25rem;
+}
+.footer-social-icon {
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  width:           40px;
+  height:          40px;
+  border:          1px solid rgba(58, 58, 58, 0.38);
+  border-radius:   3px;
+  color:           rgba(242, 234, 216, 0.4);
+  text-decoration: none;
+  cursor:          pointer;
+  transition:      border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+}
+.footer-social-icon:hover {
+  border-color: var(--ink-green);
+  color:        var(--ink-paper);
+  background:   rgba(153, 202, 69,0.14);
+}
+
+.footer-bottom-wrap {
+  border-top:  1px solid rgba(58, 58, 58, 0.12);
+  padding:     1.2rem clamp(1.5rem, 5vw, 4rem);
+  max-width:   1400px;
+  margin:      0 auto;
+  text-align:  center;
+}
+.footer-copyright {
+  font-family:    'Space Mono', monospace;
+  font-size:      0.5rem;
+  letter-spacing: 0.14em;
+  color:          rgba(58, 58, 58, 0.65);
+  text-transform: uppercase;
+}
+
+/* ─── Custom Cursor ──────────────────────────────────────────────────────── */
+
+/* Hidden on touch / pointer-coarse devices */
+@media (pointer: coarse) {
+  .cursor-dot,
+  .cursor-trail,
+  .cursor-splatter { display: none !important; }
+}
+
+.cursor-dot {
+  position:       fixed;
+  width:          12px;
+  height:         12px;
+  border-radius:  50%;
+  background:     var(--ink-green);
+  opacity:        0.8;
+  pointer-events: none;
+  z-index:        9999;
+  will-change:    transform;
+}
+.cursor-dot.cursor-hovered {
+  mix-blend-mode: difference;
+}
+
+/* Trail dots — decreasing size */
+.cursor-trail {
+  position:       fixed;
+  border-radius:  50%;
+  background:     var(--ink-green);
+  pointer-events: none;
+  z-index:        9998;
+  will-change:    transform;
+  opacity:        0;
+}
+.cursor-trail-0 { width: 10px; height: 10px; }
+.cursor-trail-1 { width:  8px; height:  8px; }
+.cursor-trail-2 { width:  7px; height:  7px; }
+.cursor-trail-3 { width:  6px; height:  6px; }
+.cursor-trail-4 { width:  5px; height:  5px; }
+
+/* Ink splatter burst on click */
+.cursor-splatter {
+  position:       fixed;
+  pointer-events: none;
+  z-index:        9999;
+  opacity:        0;
+  will-change:    transform;
+}
+
+/* ─── InkUniverse canvas wrapper ────────────────────────────────────────── */
+
+.ink-universe-wrap {
+  position:       fixed;
+  inset:          0;
+  z-index:        0;
+  pointer-events: none;
+}
+
+/* Static gradient shown on very low-end devices instead of Three.js canvas */
+.ink-universe-lowend {
+  position:   fixed;
+  inset:      0;
+  z-index:    0;
+  background: radial-gradient(ellipse 120% 80% at 50% 30%, #1a0050 0%, #080808 70%);
+}
+
+/* ─── Page Transition Panel ─────────────────────────────────────────────── */
+
+.page-transition-panel {
+  position:       fixed;
+  inset:          0;
+  z-index:        500;
+  background:     var(--ink-void);
+  visibility:     hidden;
+  pointer-events: none;
+}
+
+/* ─── Loading Screen ─────────────────────────────────────────────────────── */
+
+.loading-screen {
+  position:        fixed;
+  inset:           0;
+  z-index:         600;
+  background:      var(--ink-void);
+  display:         flex;
+  flex-direction:  column;
+  align-items:     center;
+  justify-content: center;
+  overflow:        hidden;
+}
+
+.loading-blob {
+  position:       absolute;
+  inset:          0;
+  width:          100%;
+  height:         100%;
+  pointer-events: none;
+}
+
+.loading-dyff {
+  font-family:    'Thunder', sans-serif;
+  font-size:      clamp(12rem, 22vw, 26rem);
+  font-weight:    400;
+  letter-spacing: 0.02em;
+  color:          var(--ink-paper);
+  line-height:    1;
+  position:       relative;
+  z-index:        1;
+}
+
+/* ─── 404 Not Found ──────────────────────────────────────────────────────── */
+
+.not-found-root {
+  min-height:      100vh;
+  background:      var(--ink-void);
+  display:         flex;
+  flex-direction:  column;
+  align-items:     center;
+  justify-content: center;
+  padding:         clamp(2rem, 8vw, 6rem) 1.5rem;
+  text-align:      center;
+  position:        relative;
+  overflow:        hidden;
+}
+
+.not-found-number {
+  font-family:    'Thunder', sans-serif;
+  font-size:      clamp(12rem, 30vw, 30rem);
+  font-weight:    400;
+  color:          var(--ink-green);
+  line-height:    0.9;
+  letter-spacing: -0.02em;
+  animation:      ink-glitch-shift 0.4s steps(4) infinite;
+  margin-bottom:  0;
+}
+
+.not-found-puddle-wrap {
+  margin-top:    -1rem;
+  margin-bottom: 2rem;
+  opacity:       0.9;
+}
+
+.not-found-tagline {
+  font-family:   'Libre Baskerville', Georgia, serif;
+  font-size:     clamp(0.95rem, 2.5vw, 1.2rem);
+  font-style:    italic;
+  color:         rgba(242, 234, 216, 0.55);
+  letter-spacing: 0.02em;
+  margin-bottom: 2.5rem;
+  max-width:     36ch;
+  line-height:   1.65;
+}
+
+.not-found-btn {
+  display:        inline-flex;
+  align-items:    center;
+  gap:            0.5rem;
+  padding:        0.8rem 2rem;
+  border:         1px solid rgba(153, 202, 69,0.5);
+  border-radius:  3px;
+  font-family:    'Thunder', sans-serif;
+  font-size:      1.1rem;
+  font-weight:    400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color:          var(--ink-paper);
+  text-decoration: none;
+  cursor:         pointer;
+  transition:     border-color 0.2s ease;
+}
+.not-found-btn:hover { border-color: var(--ink-green); }
+
+/* Layout helper */
+.content-layer {
+  position:  relative;
+  z-index:   1;
+  min-height: 100vh;
+  display:   flex;
+  flex-direction: column;
+}
+.content-layer > main,
+.content-layer > div:not(.navbar) {
+  flex: 1;
+}
+
+/* ─── HorizontalScroll ───────────────────────────────────────────────────── */
+
+/* Desktop: GSAP pin + x-tween drives this */
+.horiz-scroll-root {
+  position: relative;
+  width:    100%;
+  overflow: hidden;
+}
+
+/* The sliding track — width determined by content */
+.horiz-scroll-track {
+  display:    flex;
+  flex-wrap:  nowrap;
+  width:      max-content;
+  /* padding & gap injected by the component as inline styles */
+}
+
+/* Mobile / tablet: pure CSS scroll snap */
+@media (max-width: 767px) {
+  .horiz-scroll-root {
+    overflow-x:  auto;
+    overflow-y:  hidden;
+    scroll-snap-type: x mandatory;
+  }
+  .horiz-scroll-root::-webkit-scrollbar { display: none; }   /* Chrome, Safari */
+  .horiz-scroll-root { scrollbar-width: none; }              /* Firefox 64+ */
+
+  .horiz-scroll-track {
+    width: auto;   /* let flex items set the width naturally */
+  }
+
+  /* Mark each direct child as a snap target */
+  .horiz-scroll-track > * {
+    scroll-snap-align: start;
+    flex-shrink:       0;
+  }
+}
+
+/* ─── ParallaxLayer overflow helpers ────────────────────────────────────── */
+.parallax-hidden  { overflow: hidden;  }
+.parallax-visible { overflow: visible; }
+.parallax-clip    { overflow: clip;    }
+
+/* ─── Split Text helpers ─────────────────────────────────────────────────── */
+
+/* inline-block is required for GSAP y / rotateX to work on spans */
+.split-char,
+.split-word { display: inline-block; }
+.split-line  { display: block; }
+
+/* Space spans between chars — keeps them layout-visible but not animated */
+.split-space { display: inline; }
+
+/* =============================================
+   ACCESSIBILITY
+   ============================================= */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
