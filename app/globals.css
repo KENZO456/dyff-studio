@@ -215,6 +215,14 @@ img, video { display: block; max-width: 100%; }
 .ink-flood-green:focus-within::before {
   clip-path: inset(0 0 0 0);
 }
+.ink-flood-green:hover,
+.ink-flood-green:focus-within {
+  color: #000000;
+}
+.ink-flood-green:hover > *,
+.ink-flood-green:focus-within > * {
+  color: #000000 !important;
+}
 .ink-flood-green > * {
   position: relative;
   z-index: 1;
@@ -560,6 +568,16 @@ img, video { display: block; max-width: 100%; }
 .series-legend-of-leviticus { --series-accent-bg: #1a1200; --series-accent: #c9a84c; --series-accent-dim: rgba(201,168,76,0.25); --series-accent-border: rgba(201,168,76,0.40); }
 .series-bds                 { --series-accent-bg: #0a1500; --series-accent: #99ca45; --series-accent-dim: rgba(153,202,69,0.25);  --series-accent-border: rgba(153,202,69,0.40); }
 
+/* Accent bar on shelf cards — inherits --series-accent from parent series-* class */
+.audio-shelf-accent-bar { background-color: var(--series-accent, #99ca45); }
+
+/* Audio shelf track — hidden scrollbar */
+.audio-shelf-track { scrollbar-width: none; }
+.audio-shelf-track::-webkit-scrollbar { display: none; }
+
+/* Audio shelf card — fixed min-height */
+.audio-shelf-card { min-height: 460px; }
+
 /* ─── Audio page — hero ghost title ──────────────────────────────────────── */
 .audio-hero-ghost { font-size: clamp(8rem, 30vw, 26rem); font-weight: 400; }
 
@@ -735,6 +753,40 @@ img, video { display: block; max-width: 100%; }
 
 /* ─── Animations page — static helper classes ───────────────────────────────
    Keeps dynamic radial glow, ghost text, and iframe border out of JSX style=  */
+
+/* Production stacked cards */
+.production-stack-card {
+  background-color: #0c0c0c;
+}
+
+/* Homepage hero headline — one line on desktop */
+.hero-headline {
+  font-size:   clamp(1.2rem, 3.5vw, 4.5rem);
+  line-height: 1;
+}
+@media (min-width: 768px) {
+  .hero-headline { white-space: nowrap; }
+}
+
+/* TextGlitch component */
+.text-glitch-heading {
+  background-image:        linear-gradient(to right, #f2ead8, #ffffff);
+  background-size:         0% 100%;
+  background-repeat:       no-repeat;
+  -webkit-background-clip: text;
+  background-clip:         text;
+  -webkit-text-fill-color: transparent;
+  color:                   transparent;
+  word-break:              break-word;
+}
+
+.text-glitch-overlay {
+  clip-path:               polygon(0 50%, 100% 50%, 100% 50%, 0 50%);
+  background-color:        #99ca45;
+  -webkit-text-fill-color: currentColor;
+  color:                   #000;
+  transition:              clip-path 400ms ease-out;
+}
 
 /* Hero background — dark-to-void gradient */
 .anim-hero-bg {

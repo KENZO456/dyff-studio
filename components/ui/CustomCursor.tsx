@@ -3,40 +3,24 @@
 import { useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
 
-const TRAIL_COUNT     = 5
-const TRAIL_CLASSES   = ['cursor-trail-0', 'cursor-trail-1', 'cursor-trail-2', 'cursor-trail-3', 'cursor-trail-4']
-const TRAIL_DURATIONS = [0.13, 0.18, 0.23, 0.28, 0.34]
-
 const HOVER_SELECTOR = 'a, button, [role="button"], input, select, textarea, label, [data-cursor-hover]'
 
 export default function CustomCursor() {
-  const dotRef    = useRef<HTMLDivElement>(null)
-  const trailsRef = useRef<(HTMLDivElement | null)[]>(Array(TRAIL_COUNT).fill(null))
-  const splatRef  = useRef<HTMLDivElement>(null)
+  const dotRef   = useRef<HTMLDivElement>(null)
+  const splatRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    const dot    = dotRef.current
-    const trails = trailsRef.current.filter(Boolean) as HTMLDivElement[]
-    const splat  = splatRef.current
+    const dot  = dotRef.current
+    const splat = splatRef.current
     if (!dot) return
 
-    // Position all elements off-screen using GSAP's transform system
-    gsap.set([dot, ...trails, splat].filter(Boolean), { xPercent: -50, yPercent: -50, x: -300, y: -300 })
-    gsap.set(trails, { opacity: 0 })
+    gsap.set([dot, splat].filter(Boolean), { xPercent: -50, yPercent: -50, x: -300, y: -300 })
     if (splat) gsap.set(splat, { opacity: 0, scale: 0 })
 
-    // Hide native cursor
     document.documentElement.style.cursor = 'none'
 
     const onMove = (e: MouseEvent) => {
-      const { clientX: mx, clientY: my } = e
-
-      gsap.to(dot, { x: mx, y: my, duration: 0.07, ease: 'none', overwrite: true })
-
-      trails.forEach((t, i) => {
-        gsap.to(t, { x: mx, y: my, duration: TRAIL_DURATIONS[i], ease: 'power1.out', overwrite: true })
-        gsap.to(t, { opacity: 0.28 - i * 0.05, duration: 0.1, overwrite: 'auto' })
-      })
+      gsap.to(dot, { x: e.clientX, y: e.clientY, duration: 0.07, ease: 'none', overwrite: true })
     }
 
     const onOver = (e: MouseEvent) => {
@@ -57,8 +41,8 @@ export default function CustomCursor() {
       gsap.to(splat,   { scale: 2, opacity: 0, duration: 0.3, ease: 'power1.out' })
     }
 
-    const onLeave = () => { gsap.to([dot, ...trails], { opacity: 0, duration: 0.25 }) }
-    const onEnter = () => { gsap.to(dot,              { opacity: 0.8, duration: 0.2 }) }
+    const onLeave = () => { gsap.to(dot, { opacity: 0, duration: 0.25 }) }
+    const onEnter = () => { gsap.to(dot, { opacity: 0.8, duration: 0.2 }) }
 
     window.addEventListener('mousemove',  onMove)
     window.addEventListener('mouseover',  onOver)
@@ -80,18 +64,7 @@ export default function CustomCursor() {
 
   return (
     <>
-      {/* Main cursor dot */}
       <div ref={dotRef} className="cursor-dot" aria-hidden="true" />
-
-      {/* 5 ghost trail dots — shrinking size via CSS classes */}
-      {Array.from({ length: TRAIL_COUNT }, (_, i) => (
-        <div
-          key={i}
-          ref={el => { trailsRef.current[i] = el }}
-          className={`cursor-trail ${TRAIL_CLASSES[i]}`}
-          aria-hidden="true"
-        />
-      ))}
 
       {/* Ink splatter burst on click */}
       <div ref={splatRef} className="cursor-splatter" aria-hidden="true">

@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
 import { sceneState } from '@/lib/sceneState'
@@ -32,7 +32,7 @@ void main() {
 `
 
 export default function InkTrails() {
-  const { camera } = useThree()
+  const { camera, scene } = useThree()
 
   // Cached vectors — no per-frame allocations
   const _v3  = useRef(new THREE.Vector3())
@@ -84,7 +84,12 @@ export default function InkTrails() {
     return { lineObj, posAttr, opacityAttr }
   }, [])
 
-  useFrame(({ clock }, delta) => {
+  useEffect(() => {
+    scene.add(lineObj)
+    return () => { scene.remove(lineObj) }
+  }, [scene, lineObj])
+
+  useFrame((_, delta) => {
     const mx = sceneState.mouse.x
     const my = sceneState.mouse.y
 
@@ -136,5 +141,5 @@ export default function InkTrails() {
     lineObj.geometry.computeBoundingSphere()
   })
 
-  return <primitive object={lineObj} />
+  return null
 }

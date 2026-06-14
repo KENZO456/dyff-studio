@@ -1,7 +1,6 @@
 'use client'
 
 import { useRef } from 'react'
-import { motion, useScroll, useTransform } from 'framer-motion'
 import { Play, Pause } from 'lucide-react'
 import { Thunder, Body, Label } from '@/components/ui/Typography'
 import { useAudio } from '@/contexts/AudioContext'
@@ -22,35 +21,14 @@ export default function SeriesClient({ series }: { series: AudioSeries }) {
   const { play, togglePlay, currentEpisode, currentSeries, isPlaying } = useAudio()
 
   const bannerRef = useRef<HTMLDivElement>(null)
-  const { scrollYProgress } = useScroll({
-    target:  bannerRef,
-    offset:  ['start start', 'end start'],
-  })
-  // Background drifts at 40% of scroll speed — parallax illusion
-  const bgY = useTransform(scrollYProgress, [0, 1], ['0%', '40%'])
 
   const isCurrentSeries = currentSeries?.slug === series.slug
 
   return (
-    <main className={`series-${series.slug} min-h-screen bg-ink-void`}>
+    <main className={`series-${series.slug} min-h-screen`}>
 
       {/* ── PARALLAX BANNER ───────────────────────────────────────────────── */}
       <section ref={bannerRef} className="relative h-[50vh] md:h-[60vh] overflow-hidden">
-
-        {/* Parallax layer — moves at 0.4× scroll speed */}
-        <motion.div className="absolute inset-0 z-0" style={{ y: bgY }}>
-          <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
-            <video
-              className="yt-bg-frame"
-              src="/Videos/videobg (2).mp4"
-              poster="/Images/bg (2).jpg"
-              autoPlay
-              muted
-              loop
-              playsInline
-            />
-          </div>
-        </motion.div>
 
         {/* Overlays */}
         <div className="absolute inset-0 z-[1] bg-ink-void/80 pointer-events-none" />
@@ -79,14 +57,14 @@ export default function SeriesClient({ series }: { series: AudioSeries }) {
       </section>
 
       {/* ── SUBTITLE BAR ──────────────────────────────────────────────────── */}
-      <div className="border-y border-ink-ash/10 px-6 md:px-12 lg:px-20 py-5">
+      <div className="border-y border-ink-ash/10 px-6 md:px-12 lg:px-20 py-5 bg-[#080808]/75">
         <Body size="sm" className="text-ink-white/60 max-w-2xl leading-relaxed">
           {series.subtitle}
         </Body>
       </div>
 
       {/* ── EPISODE LIST ──────────────────────────────────────────────────── */}
-      <section className="max-w-3xl mx-auto px-6 md:px-10 py-12 md:py-16">
+      <section className="max-w-3xl mx-auto px-6 md:px-10 py-12 md:py-16 bg-[#080808]/80">
 
         {/* Heading */}
         <div className="flex items-center gap-3 mb-8">

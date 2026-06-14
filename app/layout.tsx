@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { Libre_Baskerville, Space_Mono } from 'next/font/google'
 import dynamic from 'next/dynamic'
-import { Suspense } from 'react'
+import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 import SmoothScroll    from '@/components/ui/SmoothScroll'
 import Navbar          from '@/components/ui/Navbar'
@@ -60,9 +60,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <CustomCursor />
 
         {/* Persistent 3D ink background — behind all content */}
-        <Suspense fallback={null}>
-          <InkUniverse />
-        </Suspense>
+        <InkUniverse />
 
         {/* Skip to main content — visually hidden, revealed on keyboard focus */}
         <a
@@ -87,6 +85,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </SmoothScroll>
         </PageTransition>
 
+        <Analytics />
       </body>
     </html>
   )

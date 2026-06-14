@@ -32,7 +32,7 @@ export default function ManifestoSection() {
           start:         'top top',
           end:           `+=500%`,
           pin:           true,
-          anticipatePin: 1,
+          pinType:       'transform',
           scrub:         0.6,
           onUpdate:      (self) => {
             // Drive InkBlob amplitude during this section
@@ -78,24 +78,8 @@ export default function ManifestoSection() {
       ref={sectionRef}
       className="relative min-h-screen overflow-hidden"
     >
-      {/* ── Local video background ── */}
-      <div
-        className="absolute inset-0 z-0 overflow-hidden pointer-events-none"
-        aria-hidden="true"
-      >
-        <video
-          className="yt-bg-frame"
-          src="/Videos/videobg (1).mp4"
-          poster="/Images/bg (5).jpg"
-          autoPlay
-          muted
-          loop
-          playsInline
-        />
-      </div>
-
-      {/* Dark overlay — keeps text legible over video */}
-      <div className="absolute inset-0 z-[1] bg-ink-void/75 pointer-events-none" />
+      {/* Subtle overlay to keep text legible over the 3D blob */}
+      <div className="absolute inset-0 z-[1] bg-ink-void/40 pointer-events-none" />
 
       {/* Grain texture on top of overlay */}
       <div className="ink-grain absolute inset-0 z-[2] pointer-events-none opacity-40" />

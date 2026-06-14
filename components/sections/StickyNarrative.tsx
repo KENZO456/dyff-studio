@@ -51,7 +51,7 @@ export default function StickyNarrative() {
             end:                 () => `+=${window.innerHeight * (PANELS.length - 1)}`,
             scrub:               1,
             pin:                 true,
-            pinSpacing:          true,
+            pinType:             'transform',
             invalidateOnRefresh: true,
           },
         })
@@ -65,7 +65,7 @@ export default function StickyNarrative() {
   }, [])
 
   return (
-    <section ref={sectionRef} className="bg-ink-void">
+    <section ref={sectionRef} className="bg-[#080808]/70 backdrop-blur-[2px]">
       <div className="narrative-inner h-screen flex">
 
         {/* LEFT — desktop only */}

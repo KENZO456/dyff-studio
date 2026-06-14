@@ -53,10 +53,12 @@ export default function InkFluidMesh() {
     uScrollProgress: { value: 0 },
   }), [])
 
-  const meshRef = useRef<THREE.Mesh>(null)
+  const meshRef    = useRef<THREE.Mesh>(null)
+  const elapsedRef = useRef(0)
 
-  useFrame(({ clock }) => {
-    uniforms.uTime.value           = clock.getElapsedTime()
+  useFrame((_, delta) => {
+    elapsedRef.current            += delta
+    uniforms.uTime.value           = elapsedRef.current
     uniforms.uScrollProgress.value = sceneState.scroll
   })
 

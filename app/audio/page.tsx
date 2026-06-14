@@ -6,6 +6,7 @@ import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Thunder, Body, Label } from '@/components/ui/Typography'
 import { AUDIO_SERIES } from '@/lib/audio-data'
+import AudioShelf from '@/components/sections/AudioShelf'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -38,7 +39,6 @@ function SoundwaveHero() {
         <div
           key={i}
           className="soundwave-bar w-[3px] rounded-full bg-ink-green opacity-70"
-          // height + delay are purely numeric per-bar — set as CSS custom props
           style={
             { '--bar-h': `${bar.h}%`, '--bar-delay': `${bar.delay}s` } as React.CSSProperties
           }
@@ -148,24 +148,13 @@ export default function AudioPage() {
   }, [])
 
   return (
-    <main className="min-h-screen bg-ink-void">
+    <main className="min-h-screen">
 
       {/* ── HERO ──────────────────────────────────────────────────────────── */}
       <section className="relative min-h-[80vh] flex flex-col items-center justify-center overflow-hidden px-6 py-32">
 
-        {/* Local video background */}
-        <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none" aria-hidden="true">
-          <video
-            className="yt-bg-frame"
-            src="/Videos/videobg (2).mp4"
-            poster="/Images/bg (3).jpg"
-            autoPlay
-            muted
-            loop
-            playsInline
-          />
-        </div>
-        <div className="absolute inset-0 z-[1] bg-ink-void/85 pointer-events-none" />
+        {/* Dark overlay so blob stays subtle behind text */}
+        <div className="absolute inset-0 z-[1] bg-ink-void/60 pointer-events-none" />
         <div className="ink-grain absolute inset-0 z-[2] pointer-events-none opacity-30" />
 
         {/* Ghost title */}
@@ -204,8 +193,11 @@ export default function AudioPage() {
         </div>
       </section>
 
+      {/* ── AUDIO SHELF (moved from homepage) ────────────────────────────── */}
+      <AudioShelf />
+
       {/* ── SERIES SHELF ──────────────────────────────────────────────────── */}
-      <section className="relative py-16 md:py-24 border-t border-ink-ash/10">
+      <section className="relative py-16 md:py-24 border-t border-ink-ash/10 bg-[#080808]/80">
         <div className="max-w-[1400px] mx-auto px-6 md:px-10">
 
           <div className="flex items-end justify-between mb-10">
@@ -234,7 +226,7 @@ export default function AudioPage() {
       </section>
 
       {/* ── MANIFESTO STRIP ───────────────────────────────────────────────── */}
-      <section className="border-t border-ink-ash/10 py-16 px-6 md:px-10">
+      <section className="border-t border-ink-ash/10 py-16 px-6 md:px-10 bg-[#080808]/70">
         <div className="max-w-[1400px] mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
           <Thunder
             as="p"

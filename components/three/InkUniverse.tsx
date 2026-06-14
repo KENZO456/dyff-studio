@@ -3,6 +3,16 @@
 import { useEffect, useRef } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
+
+// R3F v8 creates a THREE.Clock internally; Three.js r168+ deprecated it.
+// Suppress that specific warning until R3F ships THREE.Timer support.
+if (typeof window !== 'undefined') {
+  const _warn = console.warn.bind(console)
+  console.warn = (...args: Parameters<typeof console.warn>) => {
+    if (typeof args[0] === 'string' && args[0].startsWith('THREE.Clock')) return
+    _warn(...args)
+  }
+}
 import { sceneState } from '@/lib/sceneState'
 import InkParticleField from './InkParticleField'
 import InkFluidMesh     from './InkFluidMesh'
@@ -111,7 +121,12 @@ export default function InkUniverse() {
             depth:            true,
           }}
           dpr={[1, mobile ? 1 : 1.5]}
-          style={{ background: '#080808' }}
+          style={{ background: 'transparent' }}
+          onCreated={({ gl }) => {
+            gl.domElement.addEventListener('webglcontextlost', (e) => {
+              e.preventDefault()
+            }, false)
+          }}
         >
           <InkScene mobile={mobile} />
         </Canvas>

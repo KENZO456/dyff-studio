@@ -61,30 +61,17 @@ export default function BooksPage() {
     : BOOKS.filter(b => b.genre.includes(activeGenre))
 
   return (
-    <main className="min-h-screen bg-ink-void">
+    <main className="min-h-screen">
 
       {/* ══════════════════════════════════════════════
-          HERO — DYFF channel YouTube video background
+          HERO
           ══════════════════════════════════════════════ */}
       <div
         ref={heroRef}
         className="relative min-h-screen flex flex-col justify-center overflow-hidden"
       >
-        {/* Local video background */}
-        <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none" aria-hidden="true">
-          <video
-            className="yt-bg-frame"
-            src="/Videos/videobg (1).mp4"
-            poster="/Images/bg (5).jpg"
-            autoPlay
-            muted
-            loop
-            playsInline
-          />
-        </div>
-
-        {/* Layered overlays */}
-        <div className="absolute inset-0 z-[1] bg-ink-void/82 pointer-events-none" />
+        {/* Dark overlay — blob shows through from behind */}
+        <div className="absolute inset-0 z-[1] bg-ink-void/55 pointer-events-none" />
         <div className="manifesto-vignette absolute inset-0 z-[2] pointer-events-none" />
         <div className="ink-grain absolute inset-0 z-[2] pointer-events-none opacity-35" />
 
@@ -137,7 +124,7 @@ export default function BooksPage() {
       {/* ══════════════════════════════════════════════
           GENRE FILTER — sticky
           ══════════════════════════════════════════════ */}
-      <div className="sticky top-0 z-40 bg-ink-void/96 border-b border-ink-ash/10 backdrop-blur-sm">
+      <div className="sticky top-0 z-40 bg-[#080808]/95 border-b border-ink-ash/10 backdrop-blur-sm">
         <div className="px-6 md:px-16 py-4 flex items-center gap-2 overflow-x-auto">
           {ALL_GENRES.map(genre => (
             <button
@@ -161,7 +148,7 @@ export default function BooksPage() {
       {/* ══════════════════════════════════════════════
           BOOK GRID
           ══════════════════════════════════════════════ */}
-      <section className="px-6 md:px-16 py-20">
+      <section className="px-6 md:px-16 py-20 bg-[#080808]/80">
         <div className="mb-12">
           <Thunder as="h2" size="section" weight={400} className="text-ink-white">
             {filtered.length} {filtered.length === 1 ? 'TITLE' : 'TITLES'}

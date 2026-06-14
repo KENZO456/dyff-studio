@@ -114,10 +114,12 @@ export default function InkParticleField({ mobile = false }: Props) {
     return { geometry: geo, uniforms: u }
   }, [COUNT])
 
-  const groupRef = useRef<THREE.Group>(null)
+  const groupRef   = useRef<THREE.Group>(null)
+  const elapsedRef = useRef(0)
 
-  useFrame(({ clock }) => {
-    uniforms.uTime.value           = clock.getElapsedTime()
+  useFrame((_, delta) => {
+    elapsedRef.current            += delta
+    uniforms.uTime.value           = elapsedRef.current
     uniforms.uScrollProgress.value = sceneState.scroll
     uniforms.uMouse.value.set(sceneState.mouse.x, sceneState.mouse.y)
 

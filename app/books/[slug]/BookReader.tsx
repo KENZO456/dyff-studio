@@ -15,37 +15,34 @@ type ReadingMode = 'ink' | 'parchment' | 'white'
 
 const MODES: Record<ReadingMode, {
   bg: string; text: string; sidebar: string; border: string
-  accent: string; overlay: string; label: string; showVideo: boolean
+  accent: string; overlay: string; label: string
 }> = {
   ink: {
-    bg:        '#080808',
-    text:      '#f2ead8',
-    sidebar:   '#111111',
-    border:    '#2a2a2a',
-    accent:    '#8b0000',
-    overlay:   'rgba(8,8,8,0.88)',
-    label:     'INK BLACK',
-    showVideo: true,
+    bg:      '#080808',
+    text:    '#f2ead8',
+    sidebar: '#111111',
+    border:  '#2a2a2a',
+    accent:  '#8b0000',
+    overlay: 'rgba(8,8,8,0.88)',
+    label:   'INK BLACK',
   },
   parchment: {
-    bg:        '#f5e6c8',
-    text:      '#1a1008',
-    sidebar:   '#ece0c0',
-    border:    '#c4a882',
-    accent:    '#6b3a1a',
-    overlay:   'rgba(245,230,200,1)',
-    label:     'PARCHMENT',
-    showVideo: false,
+    bg:      '#f5e6c8',
+    text:    '#1a1008',
+    sidebar: '#ece0c0',
+    border:  '#c4a882',
+    accent:  '#6b3a1a',
+    overlay: 'rgba(245,230,200,1)',
+    label:   'PARCHMENT',
   },
   white: {
-    bg:        '#ffffff',
-    text:      '#111111',
-    sidebar:   '#f8f8f8',
-    border:    '#e0e0e0',
-    accent:    '#8b0000',
-    overlay:   'rgba(255,255,255,1)',
-    label:     'PURE WHITE',
-    showVideo: false,
+    bg:      '#ffffff',
+    text:    '#111111',
+    sidebar: '#f8f8f8',
+    border:  '#e0e0e0',
+    accent:  '#8b0000',
+    overlay: 'rgba(255,255,255,1)',
+    label:   'PURE WHITE',
   },
 }
 
@@ -159,22 +156,6 @@ export default function BookReader({ book }: { book: Book }) {
           style={{ width: `${readProgress}%`, backgroundColor: m.accent }}
         />
       </div>
-
-      {/* ── Video background (ink mode only) ── */}
-      {m.showVideo && (
-        <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none" aria-hidden="true">
-          <video
-            className="yt-bg-frame"
-            src="/Videos/videobg (1).mp4"
-            poster="/Images/bg (1).jpg"
-            autoPlay
-            muted
-            loop
-            playsInline
-          />
-          <div className="absolute inset-0" style={{ backgroundColor: m.overlay }} />
-        </div>
-      )}
 
       {/* ── Grain texture (ink + parchment modes) ── */}
       {mode !== 'white' && (
