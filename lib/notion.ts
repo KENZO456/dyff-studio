@@ -26,6 +26,15 @@ const notion = new Client({ auth: process.env.NOTION_API_KEY })
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Props = Record<string, any>
 
+// Find the title-type property regardless of what the user named it in Notion
+function getTitle(p: Props): string {
+  for (const key of Object.keys(p)) {
+    const v = p[key]
+    if (v?.type === 'title') return v.title[0]?.plain_text ?? ''
+  }
+  return ''
+}
+
 function getText(p: Props, name: string): string {
   const v = p[name]
   if (!v) return ''
@@ -308,7 +317,6 @@ export const getMarketplaceProducts = unstable_cache(
             { property: 'Category', select: { equals: category   } },
           ] }
         : { property: 'Status', select: { equals: 'Active' } },
-      sorts: [{ property: 'Name', direction: 'ascending' }],
     })
 
     const validCategories = new Set<ProductCategory>(['ART', 'BOOKS', 'BEATS', 'ASSETS'])
@@ -318,7 +326,7 @@ export const getMarketplaceProducts = unstable_cache(
       const rawCat = getSelect(p, 'Category').toUpperCase() as ProductCategory
       return {
         id:          getText(p, 'Slug'),
-        title:       getText(p, 'Name'),
+        title:       getTitle(p),
         subtitle:    getText(p, 'Subtitle'),
         category:    validCategories.has(rawCat) ? rawCat : 'ART',
         priceNGN:    getNumber(p, 'Price NGN'),
