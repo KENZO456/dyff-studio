@@ -13,9 +13,12 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
 
   useEffect(() => {
     const lenisInstance = new Lenis({
-      duration: 1.2,
-      easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      smoothWheel: true,
+      autoRaf:         false,  // GSAP ticker drives RAF — prevents double updates
+      lerp:            0.1,    // simple lerp replaces duration+easing; no long tail
+      smoothWheel:     true,
+      wheelMultiplier: 1,
+      touchMultiplier: 2,
+      infinite:        false,
     })
 
     setLenis(lenisInstance)

@@ -1,16 +1,14 @@
 import { notFound } from 'next/navigation'
-import { getBook } from '@/lib/books-data'
+import { getBookBySlug, getBooks } from '@/lib/notion'
 import BookReader from './BookReader'
 
-export default function BookPage({ params }: { params: { slug: string } }) {
-  const book = getBook(params.slug)
-  if (!book) notFound()
-  return <BookReader book={book} />
+export async function generateStaticParams() {
+  const books = await getBooks()
+  return books.map(b => ({ slug: b.slug }))
 }
 
-export function generateStaticParams() {
-  return [
-    { slug: 'legend-of-leviticus' },
-    { slug: 'ese' },
-  ]
+export default async function BookPage({ params }: { params: { slug: string } }) {
+  const book = await getBookBySlug(params.slug)
+  if (!book) notFound()
+  return <BookReader book={book} />
 }

@@ -49,7 +49,7 @@ export default function StickyNarrative() {
             trigger:             sectionRef.current,
             start:               'top top',
             end:                 () => `+=${window.innerHeight * (PANELS.length - 1)}`,
-            scrub:               1,
+            scrub:               true,
             pin:                 true,
             pinType:             'transform',
             invalidateOnRefresh: true,

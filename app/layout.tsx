@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Libre_Baskerville, Space_Mono } from 'next/font/google'
 import dynamic from 'next/dynamic'
 import { Analytics } from '@vercel/analytics/next'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 import './globals.css'
 import SmoothScroll    from '@/components/ui/SmoothScroll'
 import Navbar          from '@/components/ui/Navbar'
@@ -86,6 +87,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </PageTransition>
 
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   )

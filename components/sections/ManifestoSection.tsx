@@ -33,7 +33,7 @@ export default function ManifestoSection() {
           end:           `+=500%`,
           pin:           true,
           pinType:       'transform',
-          scrub:         0.6,
+          scrub:         true,
           onUpdate:      (self) => {
             // Drive InkBlob amplitude during this section
             sceneState.manifestoGlow = self.progress
