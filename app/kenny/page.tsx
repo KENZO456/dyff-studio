@@ -155,23 +155,22 @@ export default function KennyPage() {
           SECTION 1 — HERO
       ══════════════════════════════════════════════════════════════════ */}
       <section className="relative min-h-screen flex flex-col justify-between px-6 md:px-12 lg:px-20 pt-28 pb-12 overflow-hidden">
-        <div>
+
+        <div className="flex-1 flex flex-col items-center justify-center text-center gap-6">
           <p className="font-thunder text-ink-green text-[0.9rem] tracking-[0.35em] uppercase">
             Creative Full Stack Developer
           </p>
-        </div>
 
-        <div className="flex-1 flex items-center">
-          <h1 className="font-thunder uppercase leading-[0.85] select-none cursor-default">
+          <h1 className="font-thunder uppercase leading-[0.88] select-none cursor-default">
             <span
               className={`block ink-reveal-text${revealed ? ' is-revealed' : ''}`}
-              style={{ fontSize: 'clamp(3.5rem, 18vw, 22rem)', animationDelay: '0s', color: 'transparent', WebkitTextStroke: '1.5px rgba(255,255,255,0.9)' }}
+              style={{ fontSize: 'clamp(3rem, 11vw, 13rem)', animationDelay: '0s', color: 'transparent', WebkitTextStroke: '1.5px rgba(255,255,255,0.9)' }}
             >
               KENNY
             </span>
             <span
               className={`block ink-reveal-text${revealed ? ' is-revealed' : ''}`}
-              style={{ fontSize: 'clamp(3.5rem, 18vw, 22rem)', animationDelay: '0.22s', color: 'transparent', WebkitTextStroke: '1.5px #99ca45' }}
+              style={{ fontSize: 'clamp(3rem, 11vw, 13rem)', animationDelay: '0.22s', color: 'transparent', WebkitTextStroke: '1.5px #99ca45' }}
             >
               OCHONOGOR
             </span>
