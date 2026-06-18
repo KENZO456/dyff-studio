@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import PortfolioLink from '@/components/ui/PortfolioLink'
 
 // TODO: Replace '#' with actual social media profile URLs
 const SOCIAL_LINKS: { label: string; href: string; path: string }[] = [
@@ -128,6 +129,12 @@ export default function Footer() {
         <p className="footer-copyright">
           &copy; DYFF Studios Productions. All rights reserved.
         </p>
+        <PortfolioLink
+          className="font-mono text-[#444] text-[0.5rem] tracking-[0.18em] uppercase
+            hover:text-ink-green hover:underline underline-offset-4 transition-colors duration-200"
+        >
+          Site by Kenny Ochonogor
+        </PortfolioLink>
       </div>
     </footer>
   )
