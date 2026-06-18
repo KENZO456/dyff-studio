@@ -85,7 +85,8 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 // ── Page component ─────────────────────────────────────────────────────────────
 
 export default function KennyPage() {
-  const [revealed, setRevealed] = useState(false)
+  const [revealed, setRevealed]   = useState(false)
+  const [openIdx, setOpenIdx]     = useState<number | null>(null)
 
   const statRef        = useRef<HTMLParagraphElement>(null)
   const skillsRef      = useRef<HTMLDivElement>(null)
@@ -421,38 +422,93 @@ export default function KennyPage() {
       </section>
 
       {/* ══════════════════════════════════════════════════════════════════
-          SECTION 6 — VISUAL WORK
+          SECTION 6 — VISUAL WORK (ACCORDION)
       ══════════════════════════════════════════════════════════════════ */}
-      <section className="py-24 md:py-32 px-6 md:px-12 lg:px-20 border-t border-white/5" style={{ background: SECTION_BG }}>
-        <SectionLabel>Visual Work</SectionLabel>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {PORTFOLIO_TILES.map((tile, i) => (
-            <a
-              key={i}
-              href={tile.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`ink-flood-up group relative block border border-white/10 overflow-hidden
-                ${i === 4 ? 'sm:col-span-2 lg:col-span-1' : ''}`}
-              style={{ minHeight: i % 2 === 0 ? '180px' : '140px' }}
-            >
-              <div className="ink-grain absolute inset-0 opacity-20 z-[1] pointer-events-none" aria-hidden="true" />
-              <div className="relative z-[2] h-full flex items-end p-6 md:p-8" style={{ minHeight: 'inherit' }}>
-                <div className="flex items-center justify-between w-full">
+      <section className="py-28 md:py-40 px-6 md:px-12 lg:px-20 border-t border-white/5">
+        {/* transparent — blob shows through */}
+
+        <div className="max-w-[820px] mx-auto">
+          <SectionLabel>Visual Work</SectionLabel>
+
+          {/* Top rule */}
+          <div className="h-px bg-white/10 mb-0" />
+
+          {PORTFOLIO_TILES.map((tile, i) => {
+            const isOpen = openIdx === i
+            return (
+              <div key={i}>
+                {/* Header row */}
+                <button
+                  onClick={() => setOpenIdx(isOpen ? null : i)}
+                  aria-expanded={isOpen}
+                  className="group w-full flex items-center gap-6 py-7 md:py-9 text-left"
+                >
+                  {/* Index */}
+                  <span className="font-thunder text-white/20 text-[0.75rem] tracking-[0.25em] shrink-0 w-6">
+                    0{i + 1}
+                  </span>
+
+                  {/* Title */}
                   <span
-                    className="font-thunder uppercase text-white/70 group-hover:text-ink-void leading-none transition-colors duration-300"
-                    style={{ fontSize: 'clamp(1.2rem, 3vw, 2rem)' }}
+                    className="font-thunder uppercase leading-none flex-1 transition-colors duration-300"
+                    style={{
+                      fontSize: 'clamp(1.6rem, 4vw, 3.4rem)',
+                      color: isOpen ? '#99ca45' : 'rgba(255,255,255,0.85)',
+                    }}
                   >
                     {tile.label}
                   </span>
-                  <ArrowUpRight
-                    size={18}
-                    className="text-white/40 group-hover:text-ink-void group-hover:translate-x-1 group-hover:-translate-y-1 transition-all duration-300"
-                  />
+
+                  {/* Expand icon */}
+                  <span
+                    className="shrink-0 w-8 h-8 flex items-center justify-center border border-white/15 transition-all duration-400"
+                    style={{
+                      borderColor: isOpen ? '#99ca45' : 'rgba(255,255,255,0.15)',
+                      transform:   isOpen ? 'rotate(45deg)' : 'rotate(0deg)',
+                      transition:  'transform 0.4s cubic-bezier(0.76,0,0.24,1), border-color 0.3s',
+                    }}
+                    aria-hidden="true"
+                  >
+                    <span
+                      className="font-thunder leading-none"
+                      style={{ fontSize: '1.1rem', color: isOpen ? '#99ca45' : 'rgba(255,255,255,0.5)' }}
+                    >
+                      +
+                    </span>
+                  </span>
+                </button>
+
+                {/* Accordion body — CSS grid trick for smooth height */}
+                <div
+                  style={{
+                    display: 'grid',
+                    gridTemplateRows: isOpen ? '1fr' : '0fr',
+                    transition: 'grid-template-rows 0.45s cubic-bezier(0.76,0,0.24,1)',
+                  }}
+                >
+                  <div style={{ overflow: 'hidden' }}>
+                    <div className="pb-8 pl-12 flex items-center gap-8">
+                      <a
+                        href={tile.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-3 font-thunder uppercase text-ink-green tracking-[0.2em] hover:gap-5 transition-all duration-200"
+                        style={{ fontSize: 'clamp(0.85rem, 1.5vw, 1.1rem)' }}
+                      >
+                        Open on Canva <ArrowUpRight size={14} />
+                      </a>
+                      <span className="font-thunder text-white/20 text-[0.65rem] tracking-[0.2em] uppercase">
+                        Visual Design · Canva
+                      </span>
+                    </div>
+                  </div>
                 </div>
+
+                {/* Bottom rule */}
+                <div className="h-px bg-white/10" />
               </div>
-            </a>
-          ))}
+            )
+          })}
         </div>
       </section>
 
