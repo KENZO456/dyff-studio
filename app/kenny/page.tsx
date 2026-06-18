@@ -89,7 +89,6 @@ export default function KennyPage() {
   const [openIdx, setOpenIdx]     = useState<number | null>(null)
 
   const statRef        = useRef<HTMLParagraphElement>(null)
-  const skillsRef      = useRef<HTMLDivElement>(null)
   const projSectionRef = useRef<HTMLElement>(null)
   const projPanelsRef  = useRef<HTMLDivElement>(null)
 
@@ -114,14 +113,6 @@ export default function KennyPage() {
             scrollTrigger: { trigger: statRef.current, start: 'top 72%', toggleActions: 'play none none none' },
           },
         )
-      }
-
-      // Skills stagger entrance
-      if (skillsRef.current) {
-        gsap.from(skillsRef.current.querySelectorAll('.k-skill-card'), {
-          opacity: 0, y: 55, stagger: 0.1, duration: 0.75, ease: 'power3.out',
-          scrollTrigger: { trigger: skillsRef.current, start: 'top 74%', toggleActions: 'play none none none' },
-        })
       }
 
     })
@@ -235,13 +226,24 @@ export default function KennyPage() {
       </section>
 
       {/* ══════════════════════════════════════════════════════════════════
-          SECTION 3 — SKILLS
+          SECTION 3 — DISCIPLINES (TIMELINE)
       ══════════════════════════════════════════════════════════════════ */}
       <section className="py-24 md:py-32 px-6 md:px-12 lg:px-20 border-t border-white/5" style={{ background: SECTION_BG }}>
         <SectionLabel>Disciplines</SectionLabel>
-        <div ref={skillsRef} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
+
+        <div className="relative max-w-[860px]">
+          {/* Ink line — left spine */}
+          <div
+            className="absolute top-3 bottom-0 w-px pointer-events-none"
+            style={{
+              left: '6px',
+              background: 'linear-gradient(to bottom, #99ca45 0%, rgba(153,202,69,0.3) 55%, rgba(255,255,255,0.04) 100%)',
+            }}
+            aria-hidden="true"
+          />
+
           {SKILLS.map((skill, i) => (
-            <SkillCard key={i} {...skill} />
+            <TimelineItem key={i} {...skill} index={i} isLast={i === SKILLS.length - 1} />
           ))}
         </div>
       </section>
@@ -574,50 +576,75 @@ export default function KennyPage() {
 
 // ── SkillCard ────────────────────────────────────────────────────────────────
 
-function SkillCard({ icon, title, tags }: { icon: string; title: string; tags: string[] }) {
-  const wrapRef = useRef<HTMLDivElement>(null)
-  const cardRef = useRef<HTMLDivElement>(null)
-  const [hovered, setHovered] = useState(false)
+// ── TimelineItem ─────────────────────────────────────────────────────────────
 
-  const onMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!wrapRef.current || !cardRef.current) return
-    const r = wrapRef.current.getBoundingClientRect()
-    const x = ((e.clientX - r.left) / r.width  - 0.5) * 2
-    const y = ((e.clientY - r.top)  / r.height - 0.5) * 2
-    gsap.to(cardRef.current, { rotateX: -y * 4, rotateY: x * 8, duration: 0.25, ease: 'power2.out', overwrite: true })
-  }
-  const onLeave = () => {
-    if (!cardRef.current) return
-    setHovered(false)
-    gsap.to(cardRef.current, { rotateX: 0, rotateY: 0, duration: 0.55, ease: 'elastic.out(1, 0.55)', overwrite: true })
-  }
+interface TimelineItemProps {
+  icon:   string
+  title:  string
+  tags:   string[]
+  index:  number
+  isLast: boolean
+}
+
+function TimelineItem({ icon, title, tags, index, isLast }: TimelineItemProps) {
+  const itemRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!itemRef.current) return
+    const el = itemRef.current
+    gsap.set(el, { opacity: 0, x: -50 })
+    const st = ScrollTrigger.create({
+      trigger: el,
+      start:   'top 82%',
+      onEnter: () => gsap.to(el, { opacity: 1, x: 0, duration: 0.85, ease: 'power3.out' }),
+    })
+    return () => st.kill()
+  }, [])
 
   return (
-    <div ref={wrapRef} className="k-skill-card" onMouseMove={onMove} onMouseEnter={() => setHovered(true)} onMouseLeave={onLeave} style={{ perspective: '600px' }}>
+    <div
+      ref={itemRef}
+      className={`relative pl-11 md:pl-14 ${isLast ? 'pb-2' : 'pb-14 md:pb-18'}`}
+    >
+      {/* Node — glowing dot on the spine */}
       <div
-        ref={cardRef}
-        className="h-full flex flex-col gap-4 p-6 md:p-7"
+        className="absolute left-0 top-[8px] w-3 h-3 rounded-full border-2 border-ink-green"
         style={{
-          background:   hovered ? 'rgba(28,28,28,0.85)' : 'rgba(16,16,16,0.7)',
-          borderLeft:   hovered ? '2px solid #99ca45' : '2px solid transparent',
-          borderTop:    '1px solid rgba(255,255,255,0.06)',
-          borderRight:  '1px solid rgba(255,255,255,0.06)',
-          borderBottom: '1px solid rgba(255,255,255,0.06)',
-          transformStyle: 'preserve-3d',
-          transition:   'background 0.3s, border-left 0.3s',
+          background:  'rgba(8,8,8,0.95)',
+          boxShadow:   '0 0 12px rgba(153,202,69,0.55), 0 0 4px rgba(153,202,69,0.3)',
         }}
-      >
-        <span className="font-thunder text-ink-green select-none leading-none" style={{ fontSize: '2rem' }} aria-hidden="true">
+        aria-hidden="true"
+      />
+
+      {/* Meta row — index + icon + hairline */}
+      <div className="flex items-center gap-3 mb-5">
+        <span className="font-thunder text-white/20 text-[0.65rem] tracking-[0.3em]">
+          0{index + 1}
+        </span>
+        <span className="font-thunder text-ink-green text-[1.15rem] leading-none select-none" aria-hidden="true">
           {icon}
         </span>
-        <h3 className="font-thunder uppercase text-white leading-tight" style={{ fontSize: 'clamp(1.3rem, 2.5vw, 2rem)' }}>
-          {title}
-        </h3>
-        <div className="flex flex-wrap gap-x-3 gap-y-1 mt-auto">
-          {tags.map(tag => (
-            <span key={tag} className="font-thunder text-[0.75rem] tracking-wide text-white/50 uppercase">{tag}</span>
-          ))}
-        </div>
+        <div className="flex-1 h-px bg-white/6 ml-1" />
+      </div>
+
+      {/* Discipline title */}
+      <h3
+        className="font-thunder uppercase text-white leading-none mb-5"
+        style={{ fontSize: 'clamp(2rem, 4vw, 3.8rem)' }}
+      >
+        {title}
+      </h3>
+
+      {/* Tags */}
+      <div className="flex flex-wrap gap-x-5 gap-y-1.5">
+        {tags.map(tag => (
+          <span
+            key={tag}
+            className="font-thunder uppercase text-white/38 text-[0.7rem] tracking-[0.15em]"
+          >
+            {tag}
+          </span>
+        ))}
       </div>
     </div>
   )
