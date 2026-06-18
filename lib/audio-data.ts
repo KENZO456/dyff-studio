@@ -16,6 +16,7 @@ export interface AudioSeries {
   accentColor: string
   coverFrom: string   // Tailwind gradient-from class
   coverVia: string    // Tailwind gradient-via class
+  coverUrl?: string   // Notion page cover / file property image URL
   bgVideoId: string   // DYFF YouTube video ID — update per release
   status: 'ongoing' | 'complete'
   episodeCount: number

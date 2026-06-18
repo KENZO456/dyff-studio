@@ -158,11 +158,19 @@ export default function BooksClient({ books }: { books: Book[] }) {
                 <div
                   className={`
                     book-cover relative overflow-hidden rounded-sm
-                    bg-gradient-to-b ${book.coverFrom} via-ink-dark to-ink-void
+                    ${book.coverUrl ? 'bg-ink-dark' : `bg-gradient-to-b ${book.coverFrom} via-ink-dark to-ink-void`}
                     border border-ink-ash/10 group-hover:border-ink-ash/30
                     transition-colors duration-300
                   `}
                 >
+                  {book.coverUrl && (
+                    <img
+                      src={book.coverUrl}
+                      alt=""
+                      aria-hidden="true"
+                      className="absolute inset-0 w-full h-full object-cover z-0 opacity-60"
+                    />
+                  )}
                   <div className="ink-grain absolute inset-0 z-0 pointer-events-none" />
                   <div className="book-cover-glow absolute top-0 inset-x-0 h-48 z-[1]" />
 

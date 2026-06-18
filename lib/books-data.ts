@@ -13,6 +13,7 @@ export interface Book {
   synopsis: string
   accentColor: string
   coverFrom: string   // Tailwind gradient origin class
+  coverUrl?: string   // Notion page cover / file property image URL
   bgVideoId: string   // YouTube video ID — update with actual DYFF channel video IDs
   status: 'complete' | 'ongoing'
   chapterCount: number
