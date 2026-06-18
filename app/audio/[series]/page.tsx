@@ -1,4 +1,4 @@
-import { getAudioSeries } from '@/lib/notion'
+import { getAudioSeries, getSeriesWithEpisodes } from '@/lib/supabase'
 import { notFound } from 'next/navigation'
 import SeriesClient from './SeriesClient'
 
@@ -10,8 +10,7 @@ export async function generateStaticParams() {
 }
 
 export default async function SeriesPage({ params }: { params: { series: string } }) {
-  const all = await getAudioSeries()
-  const series = all.find(s => s.slug === params.series)
-  if (!series) return notFound()
-  return <SeriesClient series={series} />
+  const result = await getSeriesWithEpisodes(params.series)
+  if (!result) return notFound()
+  return <SeriesClient series={result.series} episodes={result.episodes} />
 }

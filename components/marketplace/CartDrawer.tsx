@@ -2,11 +2,11 @@
 
 import { useRef, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { gsap } from 'gsap'
 import { X, Plus, Minus, ShoppingBag } from 'lucide-react'
 import { Thunder, Body, Label } from '@/components/ui/Typography'
 import { useCart } from '@/contexts/CartContext'
-import { productThumb } from '@/lib/marketplace-data'
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -97,21 +97,15 @@ export default function CartDrawer() {
             items.map(item => (
               <div key={item.id} className="cart-item flex gap-3 items-start">
                 {/* Thumbnail */}
-                <img
-                  src={productThumb(item.imageId, 80, 80)}
-                  alt={item.title}
-                  className="w-16 h-16 object-cover rounded-sm shrink-0"
-                  loading="lazy"
-                />
+                <div className="w-16 h-16 relative rounded-sm overflow-hidden shrink-0">
+                  <Image src={item.image_url} alt={item.name} fill className="object-cover" sizes="64px" />
+                </div>
 
                 {/* Meta */}
                 <div className="flex-1 min-w-0">
-                  <Thunder as="h3" size="card" weight={400} className="text-ink-paper leading-tight mb-0.5 text-sm">
-                    {item.title}
+                  <Thunder as="h3" size="card" weight={400} className="text-ink-paper leading-tight mb-2 text-sm">
+                    {item.name}
                   </Thunder>
-                  <p className="font-mono text-ink-ash/50 text-[0.55rem] tracking-wide mb-2">
-                    {item.subtitle}
-                  </p>
 
                   {/* Qty controls */}
                   <div className="flex items-center gap-2">
@@ -136,7 +130,7 @@ export default function CartDrawer() {
                     <button
                       onClick={() => removeItem(item.id)}
                       className="ml-auto text-ink-ash/40 hover:text-ink-ember transition-colors duration-150 cursor-pointer"
-                      aria-label={`Remove ${item.title}`}
+                      aria-label={`Remove ${item.name}`}
                     >
                       <X size={12} />
                     </button>
@@ -146,10 +140,10 @@ export default function CartDrawer() {
                 {/* Price */}
                 <div className="shrink-0 text-right">
                   <p className="font-mono text-ink-paper text-[0.7rem] font-bold">
-                    {fmtNGN(item.priceNGN * item.qty)}
+                    {fmtNGN(item.price_ngn * item.qty)}
                   </p>
                   <p className="font-mono text-ink-ash/40 text-[0.55rem] mt-0.5">
-                    {fmtUSD(item.priceUSD * item.qty)}
+                    {fmtUSD(item.price_usd * item.qty)}
                   </p>
                 </div>
               </div>

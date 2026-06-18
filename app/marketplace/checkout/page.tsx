@@ -19,10 +19,10 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { ArrowLeft, Lock, Shield, Truck } from 'lucide-react'
 import { Thunder, Body, Label } from '@/components/ui/Typography'
 import { useCart } from '@/contexts/CartContext'
-import { productThumb } from '@/lib/marketplace-data'
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -202,21 +202,19 @@ export default function CheckoutPage() {
                   <div className="flex flex-col gap-3 mb-5">
                     {items.map(item => (
                       <div key={item.id} className="flex items-center gap-3">
-                        <img
-                          src={productThumb(item.imageId, 60, 60)}
-                          alt={item.title}
-                          className="w-12 h-12 object-cover rounded-sm shrink-0"
-                        />
+                        <div className="w-12 h-12 relative rounded-sm overflow-hidden shrink-0">
+                          <Image src={item.image_url} alt={item.name} fill className="object-cover" sizes="48px" />
+                        </div>
                         <div className="flex-1 min-w-0">
                           <p className="font-thunder text-ink-paper leading-tight text-sm truncate checkout-item-title">
-                            {item.title}
+                            {item.name}
                           </p>
                           <p className="font-mono text-ink-ash/40 text-[0.52rem] mt-0.5">
                             Qty {item.qty}
                           </p>
                         </div>
                         <p className="font-mono text-ink-paper text-[0.65rem] shrink-0">
-                          {fmtNGN(item.priceNGN * item.qty)}
+                          {fmtNGN(item.price_ngn * item.qty)}
                         </p>
                       </div>
                     ))}

@@ -1,4 +1,4 @@
-import { getAnimations } from '@/lib/notion'
+import { getAnimations } from '@/lib/supabase'
 import AnimationsClient from './AnimationsClient'
 
 export default async function AnimationsPage() {

@@ -5,7 +5,7 @@ import {
   useCallback, useEffect,
   type ReactNode, type RefObject,
 } from 'react'
-import type { Product } from '@/lib/marketplace-data'
+import type { Product } from '@/lib/supabase'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -63,8 +63,8 @@ export default function CartProvider({ children }: { children: ReactNode }) {
 
   // ── Computed ─────────────────────────────────────────────────────────────
   const itemCount = items.reduce((n, i) => n + i.qty, 0)
-  const totalNGN  = items.reduce((n, i) => n + i.priceNGN * i.qty, 0)
-  const totalUSD  = items.reduce((n, i) => n + i.priceUSD  * i.qty, 0)
+  const totalNGN  = items.reduce((n, i) => n + i.price_ngn * i.qty, 0)
+  const totalUSD  = items.reduce((n, i) => n + i.price_usd * i.qty, 0)
 
   // ── Actions ──────────────────────────────────────────────────────────────
   const addItem = useCallback((product: Product) => {

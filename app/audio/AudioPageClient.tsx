@@ -2,10 +2,11 @@
 
 import { useRef, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Thunder, Body, Label } from '@/components/ui/Typography'
-import type { AudioSeries } from '@/lib/audio-data'
+import type { AudioSeries } from '@/lib/supabase'
 import AudioShelf from '@/components/sections/AudioShelf'
 
 gsap.registerPlugin(ScrollTrigger)
@@ -41,8 +42,15 @@ function SeriesTile({ series }: { series: AudioSeries }) {
       className={`audio-shelf-tile series-${series.slug} group relative flex-shrink-0 w-56 md:w-64`}
     >
       <div className="series-cover relative overflow-hidden rounded-sm aspect-[3/4] mb-3">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        {series.coverUrl && <img src={series.coverUrl} alt="" aria-hidden="true" className="absolute inset-0 w-full h-full object-cover z-0 opacity-70" />}
+        {series.cover_url && (
+          <Image
+            src={series.cover_url}
+            alt=""
+            fill
+            className="object-cover z-0 opacity-70"
+            aria-hidden="true"
+          />
+        )}
         <div className="ink-grain absolute inset-0 z-[1] opacity-30 pointer-events-none" />
         <div className="absolute bottom-6 left-0 right-0 z-[2] px-4 flex items-end justify-center gap-[2px] h-12">
           {TILE_BARS.map((bar, i) => (
@@ -55,27 +63,26 @@ function SeriesTile({ series }: { series: AudioSeries }) {
         </div>
         <div className="tile-cover-gradient absolute inset-x-0 bottom-0 z-[3] h-2/3" />
         <div className="absolute inset-0 z-[2] flex items-center justify-center select-none pointer-events-none" aria-hidden="true">
-          <span className="tile-watermark font-thunder uppercase text-center leading-none px-3">{series.title}</span>
+          <span className="tile-watermark font-thunder uppercase text-center leading-none px-3">{series.name}</span>
         </div>
         <div className="absolute top-3 left-3 z-[4]">
           <span className="series-genre-badge">{series.genre}</span>
         </div>
         <div className="absolute top-3 right-3 z-[4]">
           <span className="font-mono text-[0.45rem] tracking-[0.15em] uppercase text-ink-ash/70">
-            {series.status === 'ongoing' ? '● ONGOING' : '✓ COMPLETE'}
+            {series.status === 'active' ? '● ONGOING' : '✓ COMPLETE'}
           </span>
         </div>
         <div className="absolute bottom-0 left-0 right-0 z-[4] p-4">
           <p className="tile-title-size font-thunder uppercase text-ink-paper leading-none mb-1 transition-transform duration-300 group-hover:-translate-y-0.5">
-            {series.title}
+            {series.name}
           </p>
           <p className="font-mono text-ink-ash text-[0.55rem] tracking-wide">
-            {series.episodeCount} EP &nbsp;·&nbsp; {series.year}
+            {series.episode_count} EP
           </p>
         </div>
         <div className="tile-hover-border absolute inset-0 z-[5] rounded-sm pointer-events-none" />
       </div>
-      <p className="font-mono text-ink-ash/60 text-[0.58rem] leading-snug px-1 line-clamp-2">{series.subtitle}</p>
     </Link>
   )
 }

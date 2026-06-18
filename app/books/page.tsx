@@ -1,4 +1,4 @@
-import { getBooks } from '@/lib/notion'
+import { getBooks } from '@/lib/supabase'
 import BooksClient from './BooksClient'
 
 export default async function BooksPage() {

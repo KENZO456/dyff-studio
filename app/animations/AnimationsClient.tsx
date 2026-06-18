@@ -4,30 +4,41 @@ import {
   useRef, useEffect, useState, useCallback,
   type MouseEvent as ReactMouseEvent,
 } from 'react'
+import Image from 'next/image'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { gsap }          from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Play }          from 'lucide-react'
 import { Thunder, Body, Label } from '@/components/ui/Typography'
-import type { AnimationEntry } from '@/lib/animations-data'
+import type { Animation } from '@/lib/supabase'
 
 gsap.registerPlugin(ScrollTrigger)
 
-type FilterValue = 'ALL' | 'SERIES' | 'SHORTS' | 'TRAILER'
+type FilterValue = 'ALL' | Animation['type']
 
 const FILTERS: { value: FilterValue; label: string }[] = [
   { value: 'ALL',     label: 'ALL'      },
-  { value: 'SERIES',  label: 'SERIES'   },
-  { value: 'SHORTS',  label: 'SHORTS'   },
-  { value: 'TRAILER', label: 'TRAILERS' },
+  { value: 'series',  label: 'SERIES'   },
+  { value: 'short',   label: 'SHORTS'   },
+  { value: 'trailer', label: 'TRAILERS' },
+  { value: 'teaser',  label: 'TEASERS'  },
 ]
 
-const thumbHQ  = (id: string) => `https://img.youtube.com/vi/${id}/hqdefault.jpg`
-const thumbMax = (id: string) => `https://img.youtube.com/vi/${id}/maxresdefault.jpg`
+function extractYouTubeId(url: string): string | null {
+  if (!url) return null
+  try {
+    const u = new URL(url)
+    if (u.hostname.includes('youtube.com')) return u.searchParams.get('v')
+    if (u.hostname.includes('youtu.be'))    return u.pathname.slice(1)
+  } catch {
+    if (/^[a-zA-Z0-9_-]{11}$/.test(url)) return url
+  }
+  return null
+}
 
-function catTagClass(cat: AnimationEntry['category']) {
-  if (cat === 'SHORTS')  return 'anim-cat-tag anim-cat-tag-shorts'
-  if (cat === 'TRAILER') return 'anim-cat-tag anim-cat-tag-trailer'
+function typeTagClass(type: Animation['type']) {
+  if (type === 'short')  return 'anim-cat-tag anim-cat-tag-shorts'
+  if (type === 'trailer' || type === 'teaser') return 'anim-cat-tag anim-cat-tag-trailer'
   return 'anim-cat-tag'
 }
 
@@ -74,9 +85,9 @@ function FilterTabs({ active, onChange }: FilterTabsProps) {
 }
 
 interface VideoCardProps {
-  entry:    AnimationEntry
+  entry:    Animation
   isActive: boolean
-  onPlay:   (entry: AnimationEntry, el: HTMLElement) => void
+  onPlay:   (entry: Animation, el: HTMLElement) => void
 }
 
 function VideoCard({ entry, isActive, onPlay }: VideoCardProps) {
@@ -92,8 +103,14 @@ function VideoCard({ entry, isActive, onPlay }: VideoCardProps) {
         onKeyDown={e => { if ((e.key === 'Enter' || e.key === ' ') && cardRef.current) onPlay(entry, cardRef.current) }}
         aria-label={`Play ${entry.title}`}
       >
-        <div className="anim-card-thumb">
-          <img src={thumbHQ(entry.youtubeId)} alt={`${entry.title} thumbnail`} loading="lazy" decoding="async" />
+        <div className="anim-card-thumb relative">
+          <Image
+            src={entry.thumbnail_url}
+            alt={`${entry.title} thumbnail`}
+            fill
+            className="object-cover"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          />
           <div className="absolute top-2.5 right-2.5 z-[2] flex items-center gap-1.5">
             <span className="anim-runtime-pill">{entry.runtime}</span>
           </div>
@@ -105,14 +122,13 @@ function VideoCard({ entry, isActive, onPlay }: VideoCardProps) {
         </div>
         <div className="px-4 py-3.5 flex flex-col gap-1.5">
           <div className="flex items-center gap-2">
-            <span className={catTagClass(entry.category)}>{entry.category}</span>
-            <span className="font-mono text-ink-ash/40 text-[0.5rem]">{entry.year}</span>
+            <span className={typeTagClass(entry.type)}>{entry.type.toUpperCase()}</span>
           </div>
           <Thunder as="h3" size="card" weight={400} className="text-ink-paper leading-tight line-clamp-1">
             {entry.title}
           </Thunder>
-          <p className="font-mono text-ink-ash/55 text-[0.58rem] tracking-wide leading-none">
-            {entry.subtitle}
+          <p className="font-mono text-ink-ash/55 text-[0.58rem] tracking-wide leading-none line-clamp-1">
+            {entry.description}
           </p>
         </div>
       </div>
@@ -121,24 +137,33 @@ function VideoCard({ entry, isActive, onPlay }: VideoCardProps) {
 }
 
 interface FeaturedPlayerProps {
-  entry:          AnimationEntry
+  entry:          Animation
   playerRef:      React.RefObject<HTMLDivElement>
   showIframe:     boolean
   onOverlayClick: () => void
 }
 
 function FeaturedPlayer({ entry, playerRef, showIframe, onOverlayClick }: FeaturedPlayerProps) {
+  const youtubeId = extractYouTubeId(entry.video_url)
   return (
     <div ref={playerRef} className="anim-player anim-player-vignette relative w-full aspect-video bg-ink-void overflow-hidden">
-      <img src={thumbMax(entry.youtubeId)} alt={entry.title} className="absolute inset-0 w-full h-full object-cover" draggable="false" />
+      <Image src={entry.thumbnail_url} alt={entry.title} fill className="object-cover" draggable="false" priority />
       <div className="absolute inset-0 bg-ink-void/55 z-[1]" />
-      {showIframe && (
+      {showIframe && youtubeId && (
         <iframe
-          src={`https://www.youtube.com/embed/${entry.youtubeId}?autoplay=1&rel=0&modestbranding=1`}
+          src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1&rel=0&modestbranding=1`}
           title={entry.title}
           allow="autoplay; encrypted-media; fullscreen"
           allowFullScreen
           className="anim-player-iframe absolute inset-0 w-full h-full z-[4]"
+        />
+      )}
+      {showIframe && !youtubeId && (
+        <video
+          src={entry.video_url}
+          autoPlay
+          controls
+          className="absolute inset-0 w-full h-full z-[4] object-cover"
         />
       )}
       {!showIframe && (
@@ -148,7 +173,7 @@ function FeaturedPlayer({ entry, playerRef, showIframe, onOverlayClick }: Featur
           </button>
           <div className="text-center">
             <Thunder as="p" size="card" weight={400} className="text-ink-paper leading-none mb-1">{entry.title}</Thunder>
-            <p className="font-mono text-ink-ash/60 text-[0.6rem] tracking-[0.18em] uppercase">{entry.subtitle}</p>
+            <p className="font-mono text-ink-ash/60 text-[0.6rem] tracking-[0.18em] uppercase">{entry.runtime}</p>
           </div>
         </div>
       )}
@@ -156,10 +181,10 @@ function FeaturedPlayer({ entry, playerRef, showIframe, onOverlayClick }: Featur
   )
 }
 
-export default function AnimationsClient({ animations }: { animations: AnimationEntry[] }) {
+export default function AnimationsClient({ animations }: { animations: Animation[] }) {
   const firstEntry = animations[0]
 
-  const [activeEntry,    setActiveEntry]    = useState<AnimationEntry | null>(firstEntry ?? null)
+  const [activeEntry,    setActiveEntry]    = useState<Animation | null>(firstEntry ?? null)
   const [showIframe,     setShowIframe]     = useState(false)
   const [activeCategory, setActiveCategory] = useState<FilterValue>('ALL')
 
@@ -172,7 +197,7 @@ export default function AnimationsClient({ animations }: { animations: Animation
 
   const filteredEntries = activeCategory === 'ALL'
     ? animations
-    : animations.filter(a => a.category === activeCategory)
+    : animations.filter(a => a.type === activeCategory)
 
   const { scrollYProgress: heroScroll } = useScroll({ target: heroRef, offset: ['start start', 'end start'] })
   const heroTextY = useTransform(heroScroll, [0, 1], ['0%', '28%'])
@@ -199,7 +224,7 @@ export default function AnimationsClient({ animations }: { animations: Animation
     return () => { if (flipTimerRef.current) clearTimeout(flipTimerRef.current) }
   }, [])
 
-  const handleCardPlay = useCallback((entry: AnimationEntry, cardEl: HTMLElement) => {
+  const handleCardPlay = useCallback((entry: Animation, cardEl: HTMLElement) => {
     if (entry.id === activeEntry?.id) {
       playerSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
       return
@@ -213,7 +238,7 @@ export default function AnimationsClient({ animations }: { animations: Animation
     Object.assign(clone.style, {
       position: 'fixed', left: `${cardRect.left}px`, top: `${cardRect.top}px`,
       width: `${cardRect.width}px`, height: `${cardRect.height}px`,
-      backgroundImage: `url('${thumbHQ(entry.youtubeId)}')`, backgroundSize: 'cover',
+      backgroundImage: `url('${entry.thumbnail_url}')`, backgroundSize: 'cover',
       backgroundPosition: 'center', zIndex: '1000', borderRadius: '4px',
       pointerEvents: 'none', willChange: 'transform',
     })
@@ -285,7 +310,7 @@ export default function AnimationsClient({ animations }: { animations: Animation
             <div className="w-[3px] h-5 rounded-full bg-ink-green shrink-0" />
             <Label variant="tag" className="text-ink-ash/60">NOW PLAYING</Label>
             <span className="font-mono text-ink-ash/40 text-[0.55rem] tracking-wider uppercase">
-              {activeEntry.title} — {activeEntry.subtitle}
+              {activeEntry.title}
             </span>
           </div>
 
@@ -300,13 +325,13 @@ export default function AnimationsClient({ animations }: { animations: Animation
             <div>
               <Thunder as="h2" size="card" weight={400} className="text-ink-paper leading-tight mb-1">{activeEntry.title}</Thunder>
               <p className="font-mono text-ink-ash/55 text-[0.6rem] tracking-wide">
-                {activeEntry.subtitle} &nbsp;·&nbsp; {activeEntry.runtime} &nbsp;·&nbsp; {activeEntry.year}
+                {activeEntry.runtime}
               </p>
             </div>
-            <span className={catTagClass(activeEntry.category)}>{activeEntry.category}</span>
+            <span className={typeTagClass(activeEntry.type)}>{activeEntry.type.toUpperCase()}</span>
           </div>
 
-          <Body size="sm" className="text-ink-paper/70 mt-3 px-1 leading-relaxed max-w-xl">{activeEntry.logline}</Body>
+          <Body size="sm" className="text-ink-paper/70 mt-3 px-1 leading-relaxed max-w-xl">{activeEntry.description}</Body>
         </div>
       )}
 
@@ -331,7 +356,7 @@ export default function AnimationsClient({ animations }: { animations: Animation
           {filteredEntries.length === 0 && (
             <div className="col-span-full py-20 flex flex-col items-center gap-4 text-center">
               <Thunder as="p" size="card" weight={400} className="text-ink-paper/20 leading-none">NOTHING HERE YET</Thunder>
-              <Body size="sm" className="text-ink-ash/40">No {activeCategory.toLowerCase()} entries in the catalogue.</Body>
+              <Body size="sm" className="text-ink-ash/40">No {activeCategory} entries in the catalogue.</Body>
             </div>
           )}
         </div>

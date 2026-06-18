@@ -1,7 +1,7 @@
 'use client'
 
 import { createContext, useContext, useRef, useState, useCallback, useEffect } from 'react'
-import type { AudioSeries, Episode } from '@/lib/audio-data'
+import type { AudioSeries, Episode } from '@/lib/supabase'
 
 // ─── Types ────────────────────────────────────────────────────────────────
 
@@ -84,7 +84,7 @@ export default function AudioProvider({ children }: { children: React.ReactNode 
     if (!isSame) {
       setCurrentSeries(series)
       setCurrentEpisode(episode)
-      a.src = episode.audioUrl
+      a.src = episode.audio_url
       a.load()
     }
 

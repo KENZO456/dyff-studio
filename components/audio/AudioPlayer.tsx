@@ -122,13 +122,13 @@ export default function AudioPlayer() {
         {/* Cover swatch — hidden on mobile for compact mode */}
         <div
           className="hidden md:flex w-12 h-12 rounded-sm shrink-0 items-center justify-center"
-          style={{ background: `linear-gradient(135deg, ${currentSeries?.accentColor ?? '#8b0000'}60, #111)` }}
+          style={{ background: 'linear-gradient(135deg, #1a3a1a60, #111)' }}
         >
           <span
             className="font-thunder text-ink-paper text-[0.55rem] tracking-wider uppercase leading-none text-center px-1"
             style={{ fontWeight: 400 }}
           >
-            {currentSeries?.title.slice(0, 4)}
+            {currentSeries?.name.slice(0, 4)}
           </span>
         </div>
 
@@ -140,7 +140,7 @@ export default function AudioPlayer() {
             {currentEpisode.title}
           </p>
           <p className="font-mono text-ink-ash text-[0.6rem] tracking-wide truncate mt-0.5">
-            {currentSeries?.title} &middot; EP {currentEpisode.number}
+            {currentSeries?.name} &middot; EP {currentEpisode.episode_number}
           </p>
         </div>
       </div>

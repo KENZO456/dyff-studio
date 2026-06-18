@@ -7,7 +7,7 @@ import {
   ChevronUp, Minus, Plus, AlignLeft,
 } from 'lucide-react'
 import { Thunder, Label, Body } from '@/components/ui/Typography'
-import type { Book } from '@/lib/books-data'
+import type { Book, Chapter } from '@/lib/supabase'
 
 // ─── Reading mode definitions ────────────────────────────────────────────────
 
@@ -48,7 +48,7 @@ const MODES: Record<ReadingMode, {
 
 // ─── Component ───────────────────────────────────────────────────────────────
 
-export default function BookReader({ book }: { book: Book }) {
+export default function BookReader({ book, chapters }: { book: Book; chapters: Chapter[] }) {
   const [chapterIdx, setChapterIdx]   = useState(0)
   const [mode, setMode]               = useState<ReadingMode>('ink')
   const [fontSize, setFontSize]       = useState(18)
@@ -61,10 +61,11 @@ export default function BookReader({ book }: { book: Book }) {
   const contentRef = useRef<HTMLDivElement>(null)
   const chapterTitleRef = useRef<HTMLHeadingElement>(null)
 
-  const chapter = book.chapters[chapterIdx] ?? null
-  const m       = MODES[mode]
-  const prevCh  = chapterIdx > 0
-  const nextCh  = chapterIdx < book.chapters.length - 1
+  const chapter    = chapters[chapterIdx] ?? null
+  const m          = MODES[mode]
+  const prevCh     = chapterIdx > 0
+  const nextCh     = chapterIdx < chapters.length - 1
+  const paragraphs = chapter ? chapter.content.split(/\n\n+/).filter(Boolean) : []
 
   /* ── Detect mobile + load persisted preferences on mount ─────── */
   useEffect(() => {
@@ -72,7 +73,6 @@ export default function BookReader({ book }: { book: Book }) {
     const handleResize = () => setIsMobile(window.innerWidth < 768)
     window.addEventListener('resize', handleResize, { passive: true })
 
-    // Restore font settings from localStorage
     const savedSize   = localStorage.getItem('reader-font-size')
     const savedFamily = localStorage.getItem('reader-font-family')
     if (savedSize)   setFontSize(parseInt(savedSize, 10))
@@ -121,7 +121,7 @@ export default function BookReader({ book }: { book: Book }) {
 
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' })
 
-  // No chapters in Notion yet — show placeholder (all hooks already called above)
+  // No chapters available yet
   if (!chapter) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: m.bg }}>
@@ -175,68 +175,58 @@ export default function BookReader({ book }: { book: Book }) {
 
       {/* ════════════════════════════════════════════════════
           SIDEBAR
-          Desktop: slides in from left (w-72)
-          Mobile:  bottom sheet slides up from bottom (65vh)
           ════════════════════════════════════════════════════ */}
       <aside
         id="reader-sidebar"
         className={`reader-sidebar fixed z-40 flex flex-col ${isMobile ? 'w-full' : 'top-0 left-0 bottom-0 w-72'}`}
         style={sidebarStyle}
       >
-        {/* Drag handle on mobile */}
         {isMobile && (
           <div className="flex justify-center pt-3 pb-1 shrink-0">
             <div className="w-10 h-1 rounded-full" style={{ backgroundColor: m.border }} />
           </div>
         )}
 
-        {/* Sidebar header */}
         <div className="flex items-center justify-between px-5 py-4 border-b shrink-0"
           style={{ borderColor: m.border }}>
           <Link href="/books" className="flex items-center gap-2 opacity-70 hover:opacity-100 transition-opacity">
             <ChevronLeft size={14} />
             <Label style={{ color: m.text }}>LIBRARY</Label>
           </Link>
-          <button type="button" onClick={closeSidebar} className="cursor-pointer"
-            aria-label="Close sidebar">
+          <button type="button" onClick={closeSidebar} className="cursor-pointer" aria-label="Close sidebar">
             <X size={16} style={{ color: m.text }} />
           </button>
         </div>
 
-        {/* Book title */}
         <div className="px-5 py-5 border-b shrink-0" style={{ borderColor: m.border }}>
-          <Thunder as="h2" size="card" weight={400}
-            className="leading-tight mb-1"
-            style={{ color: m.text }}>
+          <Thunder as="h2" size="card" weight={400} className="leading-tight mb-1" style={{ color: m.text }}>
             {book.title}
           </Thunder>
           <Label className="opacity-50" style={{ color: m.text }}>{book.author}</Label>
         </div>
 
-        {/* Progress bar */}
         <div className="px-5 py-4 border-b shrink-0" style={{ borderColor: m.border }}>
           <div className="flex items-center justify-between mb-2">
             <Label className="opacity-50" style={{ color: m.text }}>PROGRESS</Label>
             <Label style={{ color: m.accent }}>
-              {Math.round((chapterIdx / book.chapters.length) * 100)}%
+              {Math.round((chapterIdx / chapters.length) * 100)}%
             </Label>
           </div>
           <div className="h-1 rounded-full" style={{ backgroundColor: m.border }}>
             <div
               className="h-full rounded-full transition-all duration-500"
               style={{
-                width:           `${(chapterIdx / book.chapters.length) * 100}%`,
+                width:           `${(chapterIdx / chapters.length) * 100}%`,
                 backgroundColor: m.accent,
               }}
             />
           </div>
         </div>
 
-        {/* Chapter list */}
         <nav className="flex-1 overflow-y-auto py-4" aria-label="Chapter list">
-          {book.chapters.map((ch, i) => (
+          {chapters.map((ch, i) => (
             <button
-              key={ch.number}
+              key={ch.id}
               type="button"
               onClick={() => { setChapterIdx(i); closeSidebar() }}
               className="w-full text-left px-5 py-3 cursor-pointer transition-all duration-150"
@@ -247,14 +237,13 @@ export default function BookReader({ book }: { book: Book }) {
                 opacity:         i === chapterIdx ? 1 : 0.6,
               }}
             >
-              <Label className="block" style={{ color: m.accent }}>CH. {ch.number}</Label>
+              <Label className="block" style={{ color: m.accent }}>CH. {ch.chapter_number}</Label>
               <span className="text-sm font-serif mt-0.5 block">{ch.title}</span>
             </button>
           ))}
         </nav>
       </aside>
 
-      {/* Backdrop for mobile bottom sheet */}
       {isMobile && sidebarOpen && (
         <div
           className="fixed inset-0 z-30"
@@ -269,7 +258,6 @@ export default function BookReader({ book }: { book: Book }) {
           ════════════════════════════════════════════════════ */}
       <div className="relative z-10">
 
-        {/* Top bar */}
         <header
           className="sticky top-[3px] z-30 flex items-center justify-between px-5 py-3"
           style={{ backgroundColor: `${m.bg}f0`, borderBottom: `1px solid ${m.border}` }}
@@ -282,13 +270,12 @@ export default function BookReader({ book }: { book: Book }) {
           >
             <Menu size={16} style={{ color: m.text }} />
             <Label className="hidden md:block" style={{ color: m.text }}>
-              CH. {chapter.number} — {chapter.title}
+              CH. {chapter.chapter_number} — {chapter.title}
             </Label>
           </button>
 
           <div className="flex items-center gap-3">
-            <Link href="/books"
-              className="flex items-center gap-1.5 transition-opacity hover:opacity-70">
+            <Link href="/books" className="flex items-center gap-1.5 transition-opacity hover:opacity-70">
               <ChevronLeft size={12} style={{ color: m.text }} />
               <Label style={{ color: m.text }}>LIBRARY</Label>
             </Link>
@@ -305,15 +292,10 @@ export default function BookReader({ book }: { book: Book }) {
           </div>
         </header>
 
-        {/* Reading column — full-width on mobile, 72ch centred on desktop */}
-        <article
-          ref={contentRef}
-          className="mx-auto px-6 py-20 pb-40"
-          style={{ maxWidth: '72ch' }}
-        >
+        <article ref={contentRef} className="mx-auto px-6 py-20 pb-40" style={{ maxWidth: '72ch' }}>
           <div className="mb-6">
             <Label style={{ color: m.accent }} className="tracking-[0.3em]">
-              CHAPTER {chapter.number}
+              CHAPTER {chapter.chapter_number}
             </Label>
           </div>
 
@@ -338,7 +320,7 @@ export default function BookReader({ book }: { book: Book }) {
               color:        m.text,
             }}
           >
-            {chapter.paragraphs.map((para, i) => (
+            {paragraphs.map((para, i) => (
               <p
                 key={i}
                 className={i === 0 ? 'drop-cap' : ''}
@@ -349,7 +331,6 @@ export default function BookReader({ book }: { book: Book }) {
             ))}
           </div>
 
-          {/* Chapter navigation at bottom of content */}
           <div
             className="flex items-center justify-between mt-24 pt-8"
             style={{ borderTop: `1px solid ${m.border}` }}
@@ -365,7 +346,7 @@ export default function BookReader({ book }: { book: Book }) {
               <span className="text-xs font-mono tracking-[0.15em] uppercase">Prev Chapter</span>
             </button>
             <Label style={{ color: m.accent }}>
-              {chapterIdx + 1} / {book.chapters.length}
+              {chapterIdx + 1} / {chapters.length}
             </Label>
             <button
               type="button"
@@ -383,7 +364,6 @@ export default function BookReader({ book }: { book: Book }) {
 
       {/* ════════════════════════════════════════════════════
           CONTROLS BAR — sticky at bottom
-          Stacks vertically on mobile via flex-wrap
           ════════════════════════════════════════════════════ */}
       <div
         className="fixed bottom-0 left-0 right-0 z-30 flex items-center justify-between
@@ -394,7 +374,6 @@ export default function BookReader({ book }: { book: Book }) {
           backdropFilter:  'blur(8px)',
         }}
       >
-        {/* Font size */}
         <div className="flex items-center gap-1">
           <button type="button"
             onClick={() => setFontSize(s => Math.max(14, s - 1))}
@@ -411,7 +390,6 @@ export default function BookReader({ book }: { book: Book }) {
           </button>
         </div>
 
-        {/* Font family toggle */}
         <button
           type="button"
           onClick={() => setFontFamily(f => f === 'serif' ? 'sans' : 'serif')}
@@ -422,7 +400,6 @@ export default function BookReader({ book }: { book: Book }) {
           <Label style={{ color: m.text }}>{fontFamily === 'serif' ? 'SERIF' : 'SANS'}</Label>
         </button>
 
-        {/* Reading mode switcher */}
         <div className="flex items-center gap-1">
           {(['ink', 'parchment', 'white'] as ReadingMode[]).map(m2 => (
             <button
@@ -445,7 +422,6 @@ export default function BookReader({ book }: { book: Book }) {
           ))}
         </div>
 
-        {/* Chapter navigation */}
         <div className="flex items-center gap-2">
           <button
             type="button"
@@ -471,7 +447,6 @@ export default function BookReader({ book }: { book: Book }) {
         </div>
       </div>
 
-      {/* ── Scroll-to-top button ── */}
       {showTop && (
         <button
           type="button"

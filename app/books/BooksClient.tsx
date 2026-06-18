@@ -2,16 +2,23 @@
 
 import { useRef, useEffect, useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { ArrowUpRight, BookOpen } from 'lucide-react'
 import { Thunder, Label, Body } from '@/components/ui/Typography'
-import type { Book } from '@/lib/books-data'
+import type { Book } from '@/lib/supabase'
 
 gsap.registerPlugin(ScrollTrigger)
 
 const ALL_GENRES = ['ALL', 'ACTION', 'ROMANCE', 'SUPERNATURAL', 'DRAMA', 'DARK FANTASY', 'LITERARY FICTION']
+
+function statusLabel(status: Book['status']): string {
+  if (status === 'coming_soon') return 'COMING SOON'
+  if (status === 'draft')       return 'DRAFT'
+  return 'PUBLISHED'
+}
 
 export default function BooksClient({ books }: { books: Book[] }) {
   const heroRef  = useRef<HTMLDivElement>(null)
@@ -55,7 +62,7 @@ export default function BooksClient({ books }: { books: Book[] }) {
 
   const filtered = activeGenre === 'ALL'
     ? books
-    : books.filter(b => b.genre.includes(activeGenre))
+    : books.filter(b => b.genre.map(g => g.toUpperCase()).includes(activeGenre))
 
   return (
     <main className="min-h-screen">
@@ -151,31 +158,24 @@ export default function BooksClient({ books }: { books: Book[] }) {
               className="book-card book-card-3d opacity-0 group cursor-pointer"
               onMouseMove={onTiltMove}
               onMouseLeave={onTiltLeave}
-              style={{ '--accent': book.accentColor } as React.CSSProperties}
             >
               <Link href={`/books/${book.slug}`} className="block h-full">
 
-                <div
-                  className={`
-                    book-cover relative overflow-hidden rounded-sm
-                    ${book.coverUrl ? 'bg-ink-dark' : `bg-gradient-to-b ${book.coverFrom} via-ink-dark to-ink-void`}
-                    border border-ink-ash/10 group-hover:border-ink-ash/30
-                    transition-colors duration-300
-                  `}
-                >
-                  {book.coverUrl && (
-                    <img
-                      src={book.coverUrl}
+                <div className="book-cover relative overflow-hidden rounded-sm bg-ink-dark border border-ink-ash/10 group-hover:border-ink-ash/30 transition-colors duration-300">
+                  {book.cover_url && (
+                    <Image
+                      src={book.cover_url}
                       alt=""
+                      fill
+                      className="object-cover z-0 opacity-60"
                       aria-hidden="true"
-                      className="absolute inset-0 w-full h-full object-cover z-0 opacity-60"
                     />
                   )}
-                  <div className="ink-grain absolute inset-0 z-0 pointer-events-none" />
-                  <div className="book-cover-glow absolute top-0 inset-x-0 h-48 z-[1]" />
+                  <div className="ink-grain absolute inset-0 z-[1] pointer-events-none" />
+                  <div className="book-cover-glow absolute top-0 inset-x-0 h-48 z-[2]" />
 
                   <div
-                    className="absolute inset-0 z-[2] flex items-center justify-center pointer-events-none select-none"
+                    className="absolute inset-0 z-[3] flex items-center justify-center pointer-events-none select-none"
                     aria-hidden="true"
                   >
                     <span className="book-watermark-text font-thunder uppercase text-center px-4 leading-none tracking-tight">
@@ -183,19 +183,19 @@ export default function BooksClient({ books }: { books: Book[] }) {
                     </span>
                   </div>
 
-                  <div className="book-rule-grid absolute inset-0 z-[3] pointer-events-none" />
+                  <div className="book-rule-grid absolute inset-0 z-[4] pointer-events-none" />
 
-                  <div className="absolute bottom-0 inset-x-0 z-[4] p-5 bg-gradient-to-t from-ink-void via-ink-void/80 to-transparent pt-14">
+                  <div className="absolute bottom-0 inset-x-0 z-[5] p-5 bg-gradient-to-t from-ink-void via-ink-void/80 to-transparent pt-14">
                     <Thunder as="h3" size="card" weight={400}
                       className="text-ink-paper leading-tight group-hover:text-ink-white transition-colors duration-200">
                       {book.title}
                     </Thunder>
-                    <p className="font-serif italic text-ink-ash/70 text-sm mt-1">{book.subtitle}</p>
+                    <p className="font-mono text-ink-ash/50 text-[0.55rem] tracking-[0.15em] uppercase mt-1">{book.author}</p>
                   </div>
 
-                  <div className="absolute top-4 right-4 z-[5]">
+                  <div className="absolute top-4 right-4 z-[6]">
                     <Label variant="badge" className="book-badge-accent">
-                      {book.status === 'ongoing' ? 'ONGOING' : 'COMPLETE'}
+                      {statusLabel(book.status)}
                     </Label>
                   </div>
                 </div>
@@ -215,10 +215,9 @@ export default function BooksClient({ books }: { books: Book[] }) {
                     <div className="flex items-center gap-1.5">
                       <BookOpen size={12} className="text-ink-ash/60" />
                       <Label className="text-ink-ash/60">
-                        {book.chapterCount} {book.chapterCount === 1 ? 'Chapter' : 'Chapters'}
+                        {book.chapter_count} {book.chapter_count === 1 ? 'Chapter' : 'Chapters'}
                       </Label>
                     </div>
-                    <Label className="text-ink-ash/40">{book.year}</Label>
                   </div>
 
                   <div className="ink-flood-up flex items-center justify-between border border-ink-ash/25

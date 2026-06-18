@@ -2,48 +2,64 @@
 
 import {
   useRef, useEffect, useState, useCallback, useMemo,
-  type MouseEvent as RMouseEvent,
 } from 'react'
+import Image from 'next/image'
 import { gsap }          from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Eye }           from 'lucide-react'
 import { Thunder, Body, Label } from '@/components/ui/Typography'
 import { useCart }       from '@/contexts/CartContext'
 import StickyNarrative   from '@/components/sections/StickyNarrative'
-import {
-  sortProducts, productThumb,
-  type Product, type ProductCategory, type SortOption,
-} from '@/lib/marketplace-data'
+import type { Product, ProductCategory, ProductSort } from '@/lib/supabase'
 
 gsap.registerPlugin(ScrollTrigger)
 
 type FilterCat = 'ALL' | ProductCategory
 
+const CAT_CLASS: Record<ProductCategory, string> = {
+  digital_art: 'market-cat-art',
+  books:       'market-cat-books',
+  beats:       'market-cat-beats',
+  assets:      'market-cat-assets',
+}
+const CAT_LABEL: Record<ProductCategory, string> = {
+  digital_art: 'ART',
+  books:       'BOOKS',
+  beats:       'BEATS',
+  assets:      'ASSETS',
+}
+
+function catClass(cat: ProductCategory) { return CAT_CLASS[cat] }
+function fmtNGN(n: number) { return '₦' + n.toLocaleString('en-NG') }
+function fmtUSD(n: number) { return '$' + n.toFixed(2) }
+
+function sortProducts(products: Product[], sort: ProductSort): Product[] {
+  if (sort === 'price_asc')  return [...products].sort((a, b) => a.price_ngn - b.price_ngn)
+  if (sort === 'price_desc') return [...products].sort((a, b) => b.price_ngn - a.price_ngn)
+  return products
+}
+
 const CAT_FILTERS: { value: FilterCat; label: string }[] = [
-  { value: 'ALL',    label: 'ALL'    },
-  { value: 'ART',    label: 'ART'    },
-  { value: 'BOOKS',  label: 'BOOKS'  },
-  { value: 'BEATS',  label: 'BEATS'  },
-  { value: 'ASSETS', label: 'ASSETS' },
+  { value: 'ALL',         label: 'ALL'    },
+  { value: 'digital_art', label: 'ART'    },
+  { value: 'books',       label: 'BOOKS'  },
+  { value: 'beats',       label: 'BEATS'  },
+  { value: 'assets',      label: 'ASSETS' },
 ]
 
-const SORT_OPTIONS: { value: SortOption; label: string }[] = [
+const SORT_OPTIONS: { value: ProductSort; label: string }[] = [
   { value: 'newest',     label: 'Newest'  },
   { value: 'popular',    label: 'Popular' },
-  { value: 'price-asc',  label: 'Price ↑' },
-  { value: 'price-desc', label: 'Price ↓' },
+  { value: 'price_asc',  label: 'Price ↑' },
+  { value: 'price_desc', label: 'Price ↓' },
 ]
 
 const HERO_PILLS: { cat: ProductCategory; dot: string }[] = [
-  { cat: 'ART',    dot: '·' },
-  { cat: 'BOOKS',  dot: '·' },
-  { cat: 'BEATS',  dot: '·' },
-  { cat: 'ASSETS', dot: ''  },
+  { cat: 'digital_art', dot: '·' },
+  { cat: 'books',       dot: '·' },
+  { cat: 'beats',       dot: '·' },
+  { cat: 'assets',      dot: ''  },
 ]
-
-function catClass(cat: ProductCategory) { return `market-cat-${cat.toLowerCase()}` }
-function fmtNGN(n: number) { return '₦' + n.toLocaleString('en-NG') }
-function fmtUSD(n: number) { return '$' + n.toFixed(2) }
 
 interface CardProps {
   product:   Product
@@ -52,11 +68,11 @@ interface CardProps {
 
 function ProductCard({ product, onPreview }: CardProps) {
   const { addItem, cartIconRef } = useCart()
-  const wrapRef = useRef<HTMLDivElement>(null)
-  const cardRef = useRef<HTMLDivElement>(null)
-  const imgRef  = useRef<HTMLImageElement>(null)
+  const wrapRef         = useRef<HTMLDivElement>(null)
+  const cardRef         = useRef<HTMLDivElement>(null)
+  const imgContainerRef = useRef<HTMLDivElement>(null)
 
-  const handleMouseMove = (e: RMouseEvent<HTMLDivElement>) => {
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!wrapRef.current || !cardRef.current) return
     const r = wrapRef.current.getBoundingClientRect()
     const x = ((e.clientX - r.left) / r.width  - 0.5) * 2
@@ -71,10 +87,10 @@ function ProductCard({ product, onPreview }: CardProps) {
 
   const handleAddToCart = useCallback(() => {
     addItem(product)
-    const cartIcon = cartIconRef.current
-    const img      = imgRef.current
-    if (!img || !cartIcon) return
-    const imgRect  = img.getBoundingClientRect()
+    const cartIcon    = cartIconRef.current
+    const imgContainer = imgContainerRef.current
+    if (!imgContainer || !cartIcon) return
+    const imgRect  = imgContainer.getBoundingClientRect()
     const cartRect = cartIcon.getBoundingClientRect()
     const clone = document.createElement('div')
     clone.setAttribute('aria-hidden', 'true')
@@ -83,7 +99,7 @@ function ProductCard({ product, onPreview }: CardProps) {
       left: `${imgRect.left + imgRect.width / 2 - 20}px`,
       top:  `${imgRect.top  + imgRect.height / 2 - 20}px`,
       width: '40px', height: '40px', borderRadius: '4px',
-      backgroundImage: `url('${productThumb(product.imageId, 80, 80)}')`,
+      backgroundImage: `url('${product.image_url}')`,
       backgroundSize: 'cover', zIndex: '1001', pointerEvents: 'none', willChange: 'transform, opacity',
     })
     document.body.appendChild(clone)
@@ -95,9 +111,15 @@ function ProductCard({ product, onPreview }: CardProps) {
   return (
     <div ref={wrapRef} className={`market-card-wrap ${catClass(product.category)}`} onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave}>
       <div ref={cardRef} className="market-card">
-        <div className="market-card-img">
-          <img ref={imgRef} src={productThumb(product.imageId)} alt={product.title} loading="lazy" decoding="async" />
-          {product.isNew && (
+        <div ref={imgContainerRef} className="market-card-img relative">
+          <Image
+            src={product.image_url}
+            alt={product.name}
+            fill
+            className="object-cover"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+          />
+          {product.tags.includes('new') && (
             <div className="absolute top-2.5 left-2.5 z-[3]">
               <span className="market-badge-new">NEW</span>
             </div>
@@ -110,21 +132,20 @@ function ProductCard({ product, onPreview }: CardProps) {
         </div>
         <div className="px-4 pt-3 pb-4 flex flex-col gap-2">
           <div className="flex items-center gap-2">
-            <span className="market-cat-pill">{product.category}</span>
+            <span className="market-cat-pill">{CAT_LABEL[product.category]}</span>
           </div>
-          <Thunder as="h3" size="card" weight={400} className="text-ink-paper leading-tight line-clamp-1">{product.title}</Thunder>
-          <p className="font-mono text-ink-ash/50 text-[0.56rem] tracking-wide leading-none">{product.subtitle}</p>
+          <Thunder as="h3" size="card" weight={400} className="text-ink-paper leading-tight line-clamp-1">{product.name}</Thunder>
           <div className="flex items-end gap-2 mt-1">
             <span className="font-thunder text-ink-paper leading-none" style={{ fontSize: '1.4rem', fontWeight: 400 }}>
-              {fmtNGN(product.priceNGN)}
+              {fmtNGN(product.price_ngn)}
             </span>
-            <span className="font-mono text-ink-ash/40 text-[0.58rem] mb-0.5">{fmtUSD(product.priceUSD)}</span>
+            <span className="font-mono text-ink-ash/40 text-[0.58rem] mb-0.5">{fmtUSD(product.price_usd)}</span>
           </div>
           <div className="flex items-center gap-2 mt-2">
-            <button onClick={handleAddToCart} className="market-add-btn ink-flood-up" aria-label={`Add ${product.title} to cart`}>
+            <button onClick={handleAddToCart} className="market-add-btn ink-flood-up" aria-label={`Add ${product.name} to cart`}>
               ADD TO CART
             </button>
-            <button onClick={() => onPreview(product)} className="market-preview-btn" aria-label={`Preview ${product.title}`}>
+            <button onClick={() => onPreview(product)} className="market-preview-btn" aria-label={`Preview ${product.name}`}>
               <Eye size={14} />
             </button>
           </div>
@@ -136,9 +157,9 @@ function ProductCard({ product, onPreview }: CardProps) {
 
 interface FilterBarProps {
   activeCat: FilterCat
-  sortBy:    SortOption
+  sortBy:    ProductSort
   onCat:     (v: FilterCat) => void
-  onSort:    (v: SortOption) => void
+  onSort:    (v: ProductSort) => void
 }
 
 function FilterBar({ activeCat, sortBy, onCat, onSort }: FilterBarProps) {
@@ -175,7 +196,7 @@ function FilterBar({ activeCat, sortBy, onCat, onSort }: FilterBarProps) {
           ))}
           <div ref={underlineRef} className="market-filter-underline" aria-hidden="true" />
         </div>
-        <select value={sortBy} onChange={e => onSort(e.target.value as SortOption)} className="market-sort-select" aria-label="Sort products">
+        <select value={sortBy} onChange={e => onSort(e.target.value as ProductSort)} className="market-sort-select" aria-label="Sort products">
           {SORT_OPTIONS.map(o => (
             <option key={o.value} value={o.value}>{o.label}</option>
           ))}
@@ -186,9 +207,9 @@ function FilterBar({ activeCat, sortBy, onCat, onSort }: FilterBarProps) {
 }
 
 export default function MarketplaceClient({ initialProducts }: { initialProducts: Product[] }) {
-  const [activeCat,  setActiveCat]  = useState<FilterCat>('ALL')
-  const [sortBy,     setSortBy]     = useState<SortOption>('newest')
-  const [previewProduct, setPreview] = useState<Product | null>(null)
+  const [activeCat,      setActiveCat]  = useState<FilterCat>('ALL')
+  const [sortBy,         setSortBy]     = useState<ProductSort>('newest')
+  const [previewProduct, setPreview]    = useState<Product | null>(null)
 
   const heroRef       = useRef<HTMLElement>(null)
   const pillsRef      = useRef<HTMLDivElement>(null)
@@ -254,9 +275,9 @@ export default function MarketplaceClient({ initialProducts }: { initialProducts
                 <button
                   className={`market-hero-pill ${catClass(cat)}`}
                   onClick={() => setActiveCat(cat)}
-                  aria-label={`Filter by ${cat}`}
+                  aria-label={`Filter by ${CAT_LABEL[cat]}`}
                 >
-                  {cat}
+                  {CAT_LABEL[cat]}
                 </button>
                 {dot && <span className="font-mono text-ink-ash/30 text-xs select-none">{dot}</span>}
               </div>
@@ -272,7 +293,7 @@ export default function MarketplaceClient({ initialProducts }: { initialProducts
       <section className="max-w-[1400px] mx-auto px-5 md:px-10 py-12 md:py-16">
         <div className="flex items-center gap-3 mb-8">
           <span className="font-mono text-ink-ash/40 text-[0.58rem] tracking-[0.15em] uppercase">
-            {visible.length} {visible.length === 1 ? 'product' : 'products'}{activeCat !== 'ALL' ? ` · ${activeCat}` : ''}
+            {visible.length} {visible.length === 1 ? 'product' : 'products'}{activeCat !== 'ALL' ? ` · ${CAT_LABEL[activeCat as ProductCategory]}` : ''}
           </span>
           <div className="flex-1 h-px bg-ink-ash/10" />
         </div>
@@ -294,16 +315,18 @@ export default function MarketplaceClient({ initialProducts }: { initialProducts
         <div className="fixed inset-0 z-[80] flex items-center justify-center p-6" onClick={() => setPreview(null)}>
           <div className="absolute inset-0 bg-ink-void/85" aria-hidden="true" />
           <div className="relative z-[1] bg-ink-dark border border-ink-ash/20 rounded-sm max-w-md w-full overflow-hidden" onClick={e => e.stopPropagation()}>
-            <img src={productThumb(previewProduct.imageId)} alt={previewProduct.title} className="w-full aspect-video object-cover" />
+            <div className="relative w-full aspect-video">
+              <Image src={previewProduct.image_url} alt={previewProduct.name} fill className="object-cover" />
+            </div>
             <div className="p-5">
               <div className={`${catClass(previewProduct.category)} mb-3 flex items-center gap-2`}>
-                <span className="market-cat-pill">{previewProduct.category}</span>
+                <span className="market-cat-pill">{CAT_LABEL[previewProduct.category]}</span>
               </div>
-              <Thunder as="h2" size="card" weight={400} className="text-ink-paper leading-tight mb-2">{previewProduct.title}</Thunder>
+              <Thunder as="h2" size="card" weight={400} className="text-ink-paper leading-tight mb-2">{previewProduct.name}</Thunder>
               <Body size="sm" className="text-ink-ash/70 leading-relaxed mb-4">{previewProduct.description}</Body>
               <div className="flex items-center justify-between">
                 <span className="font-thunder text-ink-paper" style={{ fontSize: '1.5rem', fontWeight: 400 }}>
-                  {fmtNGN(previewProduct.priceNGN)}
+                  {fmtNGN(previewProduct.price_ngn)}
                 </span>
                 <button
                   onClick={() => setPreview(null)}

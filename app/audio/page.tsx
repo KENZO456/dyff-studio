@@ -1,4 +1,4 @@
-import { getAudioSeries } from '@/lib/notion'
+import { getAudioSeries } from '@/lib/supabase'
 import AudioPageClient from './AudioPageClient'
 
 export default async function AudioPage() {

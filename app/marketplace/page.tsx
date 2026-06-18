@@ -1,7 +1,7 @@
-import { getMarketplaceProducts } from '@/lib/notion'
+import { getProducts } from '@/lib/supabase'
 import MarketplaceClient from './MarketplaceClient'
 
 export default async function MarketplacePage() {
-  const products = await getMarketplaceProducts()
+  const products = await getProducts()
   return <MarketplaceClient initialProducts={products} />
 }
