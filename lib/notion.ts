@@ -79,6 +79,31 @@ function getCheckbox(p: Props, name: string): boolean {
   return v?.type === 'checkbox' ? v.checkbox : false
 }
 
+// Extract the first file URL from a files-type property (tries each name in order)
+function getFileUrl(p: Props, ...names: string[]): string {
+  for (const name of names) {
+    const v = p[name]
+    if (!v || v.type !== 'files' || !v.files.length) continue
+    const f = v.files[0]
+    return f.type === 'external' ? (f.external?.url ?? '') : (f.file?.url ?? '')
+  }
+  return ''
+}
+
+// Extract the Notion page cover image URL (external link or hosted S3 file)
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function getCoverUrl(page: any): string {
+  if (!page?.cover) return ''
+  return page.cover.type === 'external'
+    ? (page.cover.external?.url ?? '')
+    : (page.cover.file?.url ?? '')
+}
+
+// Convert a display string to a URL-safe slug
+function slugify(text: string): string {
+  return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
+}
+
 // ─── Blocks → paragraph strings ──────────────────────────────────────────────
 
 async function fetchParagraphs(pageId: string): Promise<string[]> {
@@ -125,13 +150,45 @@ async function mapChapter(pageId: string): Promise<Chapter> {
   if (!isFullPage(page)) throw new Error(`Chapter ${pageId} is not a full page`)
   const p = page.properties as Props
   return {
-    number:     getNumber(p, 'Chapter Number'),
-    title:      getText(p, 'Title'),
+    number:     getNumber(p, 'Chapter Number') || getNumber(p, 'Number') || getNumber(p, 'Order'),
+    title:      getText(p, 'Title') || getTitle(p),
     paragraphs: await fetchParagraphs(page.id),
   }
 }
 
-async function assembleBook(pageId: string): Promise<Book> {
+/**
+ * Build a Book from an already-fetched DB page — NO extra API calls.
+ * Used by getBooks() for fast listing without chapter content.
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function assembleBookMeta(page: any): Book {
+  const p = page.properties as Props
+  const chapterIds = getRelationIds(p, 'Chapters')
+  const rawTitle = getText(p, 'Title') || getTitle(p)
+  const rawSlug  = getText(p, 'Slug')
+  return {
+    slug:         slugify(rawSlug || rawTitle),
+    title:        rawTitle,
+    subtitle:     getText(p, 'Subtitle'),
+    author:       getText(p, 'Author'),
+    genre:        getMultiSelect(p, 'Genre'),
+    synopsis:     getAllText(p, 'Synopsis'),
+    accentColor:  getText(p, 'Accent Color'),
+    coverFrom:    getText(p, 'Cover From'),
+    coverUrl:     getCoverUrl(page) || getFileUrl(p, 'Cover', 'Image', 'Thumbnail'),
+    bgVideoId:    getText(p, 'BG Video ID'),
+    status:       getSelect(p, 'Status') === 'Published' ? 'complete' : 'ongoing',
+    chapterCount: chapterIds.length,
+    year:         getNumber(p, 'Year'),
+    chapters: [],   // populated by assembleBookFull (reader only)
+  }
+}
+
+/**
+ * Build a Book from a page ID with full chapter content.
+ * Used by getBookBySlug() for the book reader — one book at a time.
+ */
+async function assembleBookFull(pageId: string): Promise<Book> {
   const page = await notion.pages.retrieve({ page_id: pageId })
   if (!isFullPage(page)) throw new Error(`Book ${pageId} not a full page`)
   const p = page.properties as Props
@@ -140,18 +197,21 @@ async function assembleBook(pageId: string): Promise<Book> {
   const chapters = await Promise.all(chapterIds.map(mapChapter))
   chapters.sort((a, b) => a.number - b.number)
 
-  const status = getSelect(p, 'Status')
+  const rawTitle = getText(p, 'Title') || getTitle(p)
+  const rawSlug  = getText(p, 'Slug')
+
   return {
-    slug:         getText(p, 'Slug'),
-    title:        getText(p, 'Title'),
+    slug:         slugify(rawSlug || rawTitle),
+    title:        rawTitle,
     subtitle:     getText(p, 'Subtitle'),
     author:       getText(p, 'Author'),
     genre:        getMultiSelect(p, 'Genre'),
     synopsis:     getAllText(p, 'Synopsis'),
     accentColor:  getText(p, 'Accent Color'),
     coverFrom:    getText(p, 'Cover From'),
+    coverUrl:     getCoverUrl(page) || getFileUrl(p, 'Cover', 'Image', 'Thumbnail'),
     bgVideoId:    getText(p, 'BG Video ID'),
-    status:       status === 'Published' ? 'complete' : 'ongoing',
+    status:       getSelect(p, 'Status') === 'Published' ? 'complete' : 'ongoing',
     chapterCount: chapters.length,
     year:         getNumber(p, 'Year'),
     chapters,
@@ -161,42 +221,39 @@ async function assembleBook(pageId: string): Promise<Book> {
 // ─── Public helpers ───────────────────────────────────────────────────────────
 
 /**
- * Fetch all published books. Each book includes its chapters with full text.
+ * Fetch all books from Notion (listing metadata only — no chapter content).
+ * Fast: only the DB query, no per-page or per-block fetches.
  * Cached for 1 hour; purge with revalidateTag('books').
  */
 export const getBooks = unstable_cache(
   async (): Promise<Book[]> => {
     const { results } = await notion.databases.query({
       database_id: process.env.NOTION_BOOKS_DB_ID!,
-      filter: { property: 'Status', select: { equals: 'Published' } },
-      sorts:  [{ property: 'Title', direction: 'ascending' }],
     })
-
-    const pages = results.filter(isFullPage)
-    return Promise.all(pages.map(p => assembleBook(p.id)))
+    return results.filter(isFullPage).map(assembleBookMeta)
   },
   ['notion-books'],
   { revalidate: 3600, tags: ['books'] },
 )
 
 /**
- * Fetch a single book by its slug. Returns undefined if not found.
+ * Fetch a single book with full chapter content for the reader.
+ * Finds the page in the DB, then fetches all chapters and paragraphs.
  * Cached per slug; purge with revalidateTag('books').
  */
 export const getBookBySlug = unstable_cache(
   async (slug: string): Promise<Book | undefined> => {
     const { results } = await notion.databases.query({
       database_id: process.env.NOTION_BOOKS_DB_ID!,
-      filter: {
-        and: [
-          { property: 'Slug',   rich_text: { equals: slug }       },
-          { property: 'Status', select:    { equals: 'Published' } },
-        ],
-      },
     })
-    const page = results.filter(isFullPage)[0]
+    const page = results.filter(isFullPage).find(p => {
+      const props = p.properties as Props
+      const rawSlug = getText(props, 'Slug')
+      const title   = getText(props, 'Title') || getTitle(props)
+      return slugify(rawSlug || title) === slug
+    })
     if (!page) return undefined
-    return assembleBook(page.id)
+    return assembleBookFull(page.id)
   },
   ['notion-book-by-slug'],
   { revalidate: 3600, tags: ['books'] },
@@ -210,25 +267,27 @@ export const getAudioSeries = unstable_cache(
   async (): Promise<AudioSeries[]> => {
     const { results: seriesPages } = await notion.databases.query({
       database_id: process.env.NOTION_AUDIO_DB_ID!,
-      sorts: [{ property: 'Series Name', direction: 'ascending' }],
     })
 
     return Promise.all(
       seriesPages.filter(isFullPage).map(async seriesPage => {
         const p = seriesPage.properties as Props
         const episodes = await getEpisodesBySeries(seriesPage.id)
+        const rawTitle = getTitle(p) || getText(p, 'Series Name') || getText(p, 'Title')
+        const rawSlug  = getText(p, 'Slug')
 
         return {
-          slug:         getText(p, 'Slug'),
-          title:        getText(p, 'Series Name'),
+          slug:         slugify(rawSlug || rawTitle),
+          title:        rawTitle,
           subtitle:     getText(p, 'Subtitle'),
           genre:        getSelect(p, 'Genre'),
           accentColor:  getText(p, 'Accent Color'),
           coverFrom:    getText(p, 'Cover From'),
           coverVia:     getText(p, 'Cover Via'),
+          coverUrl:     getCoverUrl(seriesPage) || getFileUrl(p, 'Cover', 'Image', 'Thumbnail'),
           bgVideoId:    getText(p, 'BG Video ID'),
           status:       getSelect(p, 'Status') === 'Complete' ? 'complete' : 'ongoing',
-          episodeCount: getNumber(p, 'Episode Count'),
+          episodeCount: getNumber(p, 'Episode Count') || episodes.length,
           year:         getNumber(p, 'Year'),
           logline:      getAllText(p, 'Description'),
           episodes,
@@ -242,29 +301,39 @@ export const getAudioSeries = unstable_cache(
 
 /**
  * Fetch all episodes for a given series page ID.
- * Results are sorted by Episode Number ascending.
+ * Scans ALL relation-type properties on each episode so the relation can be
+ * named anything in Notion (e.g. "Series", "Show", "Audio Series", etc.).
  */
 export const getEpisodesBySeries = unstable_cache(
   async (seriesId: string): Promise<Episode[]> => {
     const { results } = await notion.databases.query({
       database_id: process.env.NOTION_EPISODES_DB_ID!,
-      filter: { property: 'Series', relation: { contains: seriesId } },
-      sorts:  [{ property: 'Episode Number', direction: 'ascending' }],
+      page_size: 100,
     })
 
-    return results.filter(isFullPage).map(page => {
-      const p = page.properties as Props
-      const dur = getText(p, 'Duration')
-      return {
-        id:              page.id,
-        number:          getNumber(p, 'Episode Number'),
-        title:           getText(p, 'Title'),
-        description:     getAllText(p, 'Description'),
-        duration:        dur,
-        durationSeconds: parseDuration(dur),
-        audioUrl:        getText(p, 'Audio URL'),
-      } satisfies Episode
-    })
+    return results
+      .filter(isFullPage)
+      .filter(page => {
+        const props = page.properties as Props
+        return Object.values(props).some(v =>
+          v?.type === 'relation' &&
+          (v.relation as Array<{ id: string }>).some(r => r.id === seriesId),
+        )
+      })
+      .map(page => {
+        const p = page.properties as Props
+        const dur = getText(p, 'Duration')
+        return {
+          id:              page.id,
+          number:          getNumber(p, 'Episode Number') || getNumber(p, 'Number') || getNumber(p, 'Order'),
+          title:           getTitle(p) || getText(p, 'Title') || getText(p, 'Name'),
+          description:     getAllText(p, 'Description'),
+          duration:        dur,
+          durationSeconds: parseDuration(dur),
+          audioUrl:        getText(p, 'Audio URL') || getText(p, 'Audio') || getText(p, 'URL'),
+        } satisfies Episode
+      })
+      .sort((a, b) => a.number - b.number)
   },
   ['notion-episodes'],
   { revalidate: 3600, tags: ['audio'] },
@@ -278,7 +347,6 @@ export const getAnimations = unstable_cache(
   async (): Promise<AnimationEntry[]> => {
     const { results } = await notion.databases.query({
       database_id: process.env.NOTION_ANIMATIONS_DB_ID!,
-      sorts: [{ property: 'Title', direction: 'ascending' }],
     })
 
     const typeMap: Record<string, AnimationEntry['category']> = {
@@ -287,13 +355,14 @@ export const getAnimations = unstable_cache(
 
     return results.filter(isFullPage).map(page => {
       const p = page.properties as Props
+      const rawTitle = getTitle(p) || getText(p, 'Title')
       return {
-        id:        getText(p, 'Slug'),
-        title:     getText(p, 'Title'),
+        id:        getText(p, 'Slug') || slugify(rawTitle),
+        title:     rawTitle,
         subtitle:  getText(p, 'Subtitle'),
         runtime:   getText(p, 'Runtime'),
         category:  typeMap[getSelect(p, 'Type')] ?? 'SERIES',
-        youtubeId: youtubeId(getText(p, 'Video URL')),
+        youtubeId: youtubeId(getText(p, 'Video URL') || getText(p, 'YouTube URL')),
         year:      getNumber(p, 'Year'),
         logline:   getAllText(p, 'Description'),
       } satisfies AnimationEntry

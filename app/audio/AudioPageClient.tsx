@@ -41,6 +41,8 @@ function SeriesTile({ series }: { series: AudioSeries }) {
       className={`audio-shelf-tile series-${series.slug} group relative flex-shrink-0 w-56 md:w-64`}
     >
       <div className="series-cover relative overflow-hidden rounded-sm aspect-[3/4] mb-3">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        {series.coverUrl && <img src={series.coverUrl} alt="" aria-hidden="true" className="absolute inset-0 w-full h-full object-cover z-0 opacity-70" />}
         <div className="ink-grain absolute inset-0 z-[1] opacity-30 pointer-events-none" />
         <div className="absolute bottom-6 left-0 right-0 z-[2] px-4 flex items-end justify-center gap-[2px] h-12">
           {TILE_BARS.map((bar, i) => (

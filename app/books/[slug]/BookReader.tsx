@@ -61,7 +61,7 @@ export default function BookReader({ book }: { book: Book }) {
   const contentRef = useRef<HTMLDivElement>(null)
   const chapterTitleRef = useRef<HTMLHeadingElement>(null)
 
-  const chapter = book.chapters[chapterIdx]
+  const chapter = book.chapters[chapterIdx] ?? null
   const m       = MODES[mode]
   const prevCh  = chapterIdx > 0
   const nextCh  = chapterIdx < book.chapters.length - 1
@@ -120,6 +120,17 @@ export default function BookReader({ book }: { book: Book }) {
   }, [sidebarOpen, closeSidebar, isMobile])
 
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' })
+
+  // No chapters in Notion yet — show placeholder (all hooks already called above)
+  if (!chapter) {
+    return (
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: m.bg }}>
+        <p className="font-mono text-ink-ash/60 text-sm tracking-[0.2em] uppercase">
+          No chapters yet
+        </p>
+      </div>
+    )
+  }
 
   // ── Sidebar positioning: left-slide on desktop, bottom-sheet on mobile ──
   const sidebarStyle = isMobile

@@ -30,6 +30,10 @@ export default function SeriesClient({ series }: { series: AudioSeries }) {
       {/* ── PARALLAX BANNER ───────────────────────────────────────────────── */}
       <section ref={bannerRef} className="relative h-[50vh] md:h-[60vh] overflow-hidden">
 
+        {/* Cover image (Notion page cover) */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        {series.coverUrl && <img src={series.coverUrl} alt="" aria-hidden="true" className="absolute inset-0 w-full h-full object-cover z-0" />}
+
         {/* Overlays */}
         <div className="absolute inset-0 z-[1] bg-ink-void/80 pointer-events-none" />
         <div className="series-banner-gradient absolute inset-0 z-[2] pointer-events-none" />
