@@ -1,6 +1,7 @@
 'use client'
 
 import * as React from 'react'
+import Image from 'next/image'
 import { motion, useReducedMotion } from 'framer-motion'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
@@ -235,12 +236,13 @@ function DyffFanCard({ item, active }: { item: CardStackItem; active: boolean })
       {/* Image */}
       <div className="absolute inset-0">
         {item.imageSrc ? (
-          <img
+          <Image
             src={item.imageSrc}
             alt={item.title}
-            className="h-full w-full object-cover"
+            fill
+            className="object-cover"
             draggable={false}
-            loading="eager"
+            priority
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center bg-ink-surface text-ink-ash text-sm">

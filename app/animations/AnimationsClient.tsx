@@ -280,7 +280,7 @@ export default function AnimationsClient({ animations }: { animations: Animation
 
       <section ref={heroRef} className="film-grain relative min-h-[75vh] flex flex-col items-center justify-center overflow-hidden">
         <div className="anim-hero-bg absolute inset-0 z-0" />
-        <img src="/Images/bg (4).jpg" alt="" aria-hidden="true" className="absolute inset-0 w-full h-full object-cover opacity-15 z-0" />
+        <Image src="/Images/bg (4).jpg" alt="" fill className="object-cover opacity-15 z-0" aria-hidden="true" />
         <div className="anim-hero-glow absolute inset-0 z-[1] pointer-events-none" aria-hidden="true" />
         <div className="absolute inset-0 z-[2] flex items-center justify-center select-none pointer-events-none overflow-hidden" aria-hidden="true">
           <span className="anim-hero-ghost font-thunder uppercase text-ink-paper/[0.025] leading-none tracking-tight">MOTION</span>

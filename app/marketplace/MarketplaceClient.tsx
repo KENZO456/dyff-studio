@@ -252,7 +252,7 @@ export default function MarketplaceClient({ initialProducts }: { initialProducts
         ref={heroRef}
         className="relative flex flex-col items-center justify-center text-center min-h-[55vh] pt-16 pb-12 px-6 overflow-hidden"
       >
-        <img src="/Images/bg (2).jpg" alt="" aria-hidden="true" className="absolute inset-0 w-full h-full object-cover opacity-10 z-0" />
+        <Image src="/Images/bg (2).jpg" alt="" fill className="object-cover opacity-10 z-0" aria-hidden="true" />
         <div className="anim-hero-glow absolute inset-0 z-[1] pointer-events-none" aria-hidden="true" />
         <div className="ink-grain absolute inset-0 z-[2] pointer-events-none opacity-20" />
         <div className="absolute inset-0 z-[3] flex items-center justify-center select-none pointer-events-none overflow-hidden" aria-hidden="true">
