@@ -1,12 +1,7 @@
 'use client'
 
-import { useRef, useEffect } from 'react'
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Thunder, Label, Body } from '@/components/ui/Typography'
 import { Play } from 'lucide-react'
-
-gsap.registerPlugin(ScrollTrigger)
 
 const SERIES = [
   {
@@ -57,39 +52,8 @@ const SERIES = [
 ]
 
 export default function AudioShelf() {
-  const sectionRef = useRef<HTMLDivElement>(null)
-  const headingRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    if (!sectionRef.current) return
-    const ctx = gsap.context(() => {
-      gsap.fromTo(headingRef.current,
-        { y: 40, opacity: 0 },
-        {
-          y: 0, opacity: 1, duration: 1, ease: 'power3.out',
-          scrollTrigger: { trigger: headingRef.current, start: 'top 85%', once: true },
-        }
-      )
-    }, sectionRef)
-    return () => ctx.revert()
-  }, [])
-
   return (
-    <section ref={sectionRef} className="relative overflow-hidden bg-ink-dark">
-
-      {/* Section header */}
-      <div
-        ref={headingRef}
-        className="opacity-0 px-6 md:px-16 pt-24 pb-10 flex items-end justify-between gap-8 flex-wrap"
-      >
-        <div>
-          <Label variant="meta" className="mb-4 block">04 — Audio</Label>
-          <Thunder as="h2" size="section" weight={400} className="text-ink-paper">
-            NOW PLAYING AT DYFF
-          </Thunder>
-        </div>
-        <Label className="text-ink-ash hidden md:block">DRAG TO EXPLORE →</Label>
-      </div>
+    <section className="relative overflow-hidden bg-ink-dark">
 
       {/* CSS horizontal scroll — no GSAP pin, no DOM wrapping */}
       <div className="audio-shelf-track flex gap-6 px-6 md:px-16 pb-20 overflow-x-auto">
