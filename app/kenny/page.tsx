@@ -1,7 +1,6 @@
 'use client'
 
 import { useRef, useEffect, useState, useCallback } from 'react'
-import Link from 'next/link'
 import { motion, useInView } from 'framer-motion'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -52,7 +51,7 @@ const PROJECTS = [
     stack: ['Next.js', 'Supabase', 'Three.js', 'GSAP'],
     href: 'https://dyff-studio.vercel.app/',
     accent: '#99ca45',
-    bg: 'linear-gradient(135deg, #0e1a09 0%, #0c0c0c 100%)',
+    bg: 'linear-gradient(135deg, #0e1a09 0%, #050505 100%)',
   },
   {
     num: '02',
@@ -61,7 +60,7 @@ const PROJECTS = [
     stack: ['Lovable', 'Supabase', 'AI-Assisted Dev'],
     href: 'https://pet-connect-lagos.lovable.app/',
     accent: '#c9a84c',
-    bg: 'linear-gradient(135deg, #1a150a 0%, #0c0c0c 100%)',
+    bg: 'linear-gradient(135deg, #1a150a 0%, #050505 100%)',
   },
   {
     num: '03',
@@ -70,7 +69,7 @@ const PROJECTS = [
     stack: ['Next.js', 'Canva', 'Brand Design'],
     href: 'https://ai-maestro-website.vercel.app/',
     accent: '#a45cff',
-    bg: 'linear-gradient(135deg, #120a1a 0%, #0c0c0c 100%)',
+    bg: 'linear-gradient(135deg, #120a1a 0%, #050505 100%)',
   },
   {
     num: '04',
@@ -79,7 +78,7 @@ const PROJECTS = [
     stack: ['React', 'UI/UX', 'Brand Strategy'],
     href: 'https://canva.link/600ficj8m7jfrkn',
     accent: '#ff4444',
-    bg: 'linear-gradient(135deg, #1a0a0a 0%, #0c0c0c 100%)',
+    bg: 'linear-gradient(135deg, #1a0a0a 0%, #050505 100%)',
   },
 ]
 
@@ -101,9 +100,9 @@ const TECH_GROUPS = [
   {
     label: 'BACKEND',
     items: [
-      { name: 'Supabase',             size: 'lg' },
-      { name: 'Node.js',              size: 'md' },
-      { name: 'API Integration',      size: 'md' },
+      { name: 'Supabase',              size: 'lg' },
+      { name: 'Node.js',               size: 'md' },
+      { name: 'API Integration',       size: 'md' },
       { name: 'Database Architecture', size: 'sm' },
     ],
   },
@@ -140,18 +139,21 @@ const STATEMENT =
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
+// Semi-transparent section bg — lets the 3D blob glow through
+const SECTION_BG = 'rgba(8, 8, 8, 0.78)'
+
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <p className="font-mono text-ink-green text-[0.65rem] tracking-[0.3em] uppercase mb-8">
+    <p className="font-thunder text-ink-green text-[0.9rem] tracking-[0.3em] uppercase mb-8">
       {children}
     </p>
   )
 }
 
 function PillSize(size: string) {
-  if (size === 'lg') return 'text-[0.85rem] px-4 py-2'
-  if (size === 'md') return 'text-[0.75rem] px-3 py-1.5'
-  return 'text-[0.65rem] px-2.5 py-1'
+  if (size === 'lg') return 'text-[0.9rem] px-4 py-2'
+  if (size === 'md') return 'text-[0.8rem] px-3 py-1.5'
+  return 'text-[0.7rem] px-2.5 py-1'
 }
 
 // ── Page component ────────────────────────────────────────────────────────────
@@ -159,11 +161,6 @@ function PillSize(size: string) {
 export default function KennyPage() {
   const [revealed, setRevealed] = useState(false)
 
-  // Refs
-  const turbRef     = useRef<SVGFETurbulenceElement>(null)
-  const dispRef     = useRef<SVGFEDisplacementMapElement>(null)
-  const inkVal      = useRef({ v: 0 })
-  const hoverTween  = useRef<gsap.core.Tween | null>(null)
   const statRef     = useRef<HTMLParagraphElement>(null)
   const skillsRef   = useRef<HTMLDivElement>(null)
   const projRef     = useRef<HTMLDivElement>(null)
@@ -173,32 +170,7 @@ export default function KennyPage() {
 
   const techInView = useInView(techRef, { once: true, margin: '-80px 0px' })
 
-  // ── Ink turbulence on name hover ─────────────────────────────────────────
-  const handleNameEnter = useCallback(() => {
-    hoverTween.current?.kill()
-    hoverTween.current = gsap.to(inkVal.current, {
-      v: 1, duration: 0.55, ease: 'power2.inOut',
-      onUpdate: () => {
-        const v = inkVal.current.v
-        turbRef.current?.setAttribute('baseFrequency', `${(0.01 + v * 0.04).toFixed(4)} ${(0.008 + v * 0.03).toFixed(4)}`)
-        dispRef.current?.setAttribute('scale', String((v * 16).toFixed(1)))
-      },
-    })
-  }, [])
-
-  const handleNameLeave = useCallback(() => {
-    hoverTween.current?.kill()
-    hoverTween.current = gsap.to(inkVal.current, {
-      v: 0, duration: 0.8, ease: 'power2.inOut',
-      onUpdate: () => {
-        const v = inkVal.current.v
-        turbRef.current?.setAttribute('baseFrequency', `${(0.01 + v * 0.04).toFixed(4)} ${(0.008 + v * 0.03).toFixed(4)}`)
-        dispRef.current?.setAttribute('scale', String((v * 16).toFixed(1)))
-      },
-    })
-  }, [])
-
-  // ── Reveal name on mount ─────────────────────────────────────────────────
+  // ── Reveal hero text on mount ────────────────────────────────────────────
   useEffect(() => {
     const t = setTimeout(() => setRevealed(true), 400)
     return () => clearTimeout(t)
@@ -212,10 +184,10 @@ export default function KennyPage() {
       if (statRef.current) {
         gsap.fromTo(
           statRef.current.querySelectorAll('.k-word'),
-          { opacity: 0, y: 10, filter: 'blur(4px)' },
+          { opacity: 0, y: 12, filter: 'blur(4px)' },
           {
             opacity: 1, y: 0, filter: 'blur(0px)',
-            duration: 0.65, stagger: 0.055, ease: 'power2.out',
+            duration: 0.6, stagger: 0.05, ease: 'power2.out',
             scrollTrigger: { trigger: statRef.current, start: 'top 72%', toggleActions: 'play none none none' },
           },
         )
@@ -253,7 +225,7 @@ export default function KennyPage() {
     const th  = thumbRefs.current[i]
     const num = projNumRefs.current[i]
     if (th)  gsap.to(th,  { clipPath: 'inset(0 100% 0 0)', duration: 0.4,  ease: 'power3.inOut' })
-    if (num) gsap.to(num, { color: 'transparent', '-webkit-text-stroke': '1px rgba(242,234,216,0.25)', duration: 0.3 })
+    if (num) gsap.to(num, { color: 'transparent', '-webkit-text-stroke': '1px rgba(255,255,255,0.2)', duration: 0.3 })
   }, [])
 
   // ── Framer Motion pill variants ──────────────────────────────────────────
@@ -263,74 +235,46 @@ export default function KennyPage() {
   }
   const pillItem = {
     hidden: { opacity: 0, y: 18, scale: 0.85 },
-    show:   { opacity: 1, y: 0,  scale: 1, transition: { ease: [0.76, 0, 0.24, 1] as [number,number,number,number], duration: 0.45 } },
+    show:   { opacity: 1, y: 0, scale: 1, transition: { ease: [0.76, 0, 0.24, 1] as [number, number, number, number], duration: 0.45 } },
   }
 
   return (
-    <div style={{ background: '#0c0c0c', color: '#e8e0d0' }}>
-
-      {/* ── Hidden SVG turbulence filter ─────────────────────────────────── */}
-      <svg style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }} aria-hidden="true">
-        <defs>
-          <filter id="ink-turbulence-filter" x="-20%" y="-20%" width="140%" height="140%">
-            <feTurbulence
-              ref={turbRef}
-              type="turbulence"
-              baseFrequency="0.01 0.008"
-              numOctaves="3"
-              seed="2"
-              result="noise"
-            />
-            <feDisplacementMap
-              ref={dispRef}
-              in="SourceGraphic"
-              in2="noise"
-              scale="0"
-              xChannelSelector="R"
-              yChannelSelector="G"
-            />
-          </filter>
-        </defs>
-      </svg>
+    // No background — lets the fixed InkUniverse blob show through all sections
+    <div style={{ color: '#ffffff' }}>
 
       {/* ════════════════════════════════════════════════════════════════════
-          SECTION 1 — HERO
+          SECTION 1 — HERO  (fully transparent so blob is fully visible)
       ════════════════════════════════════════════════════════════════════ */}
       <section className="relative min-h-screen flex flex-col justify-between px-6 md:px-12 lg:px-20 pt-28 pb-12 overflow-hidden">
 
         {/* Top label */}
         <div>
-          <p className="font-mono text-ink-green text-[0.6rem] tracking-[0.35em] uppercase">
+          <p className="font-thunder text-ink-green text-[0.9rem] tracking-[0.35em] uppercase">
             Creative Full Stack Developer
           </p>
         </div>
 
-        {/* Center — name */}
-        <div
-          className="flex-1 flex items-center"
-          onMouseEnter={handleNameEnter}
-          onMouseLeave={handleNameLeave}
-          onTouchStart={handleNameEnter}
-          onTouchEnd={handleNameLeave}
-        >
-          <h1
-            className="font-thunder uppercase leading-[0.85] select-none cursor-default"
-            style={{ filter: 'url(#ink-turbulence-filter)', willChange: 'filter' }}
-          >
+        {/* Center — name (stroke, no fill) */}
+        <div className="flex-1 flex items-center">
+          <h1 className="font-thunder uppercase leading-[0.85] select-none cursor-default">
             <span
-              className={`block text-ink-paper ink-reveal-text${revealed ? ' is-revealed' : ''}`}
+              className={`block ink-reveal-text${revealed ? ' is-revealed' : ''}`}
               style={{
                 fontSize: 'clamp(3.5rem, 18vw, 22rem)',
                 animationDelay: '0s',
+                color: 'transparent',
+                WebkitTextStroke: '1.5px rgba(255,255,255,0.9)',
               }}
             >
               KENNY
             </span>
             <span
-              className={`block text-ink-green ink-reveal-text${revealed ? ' is-revealed' : ''}`}
+              className={`block ink-reveal-text${revealed ? ' is-revealed' : ''}`}
               style={{
                 fontSize: 'clamp(3.5rem, 18vw, 22rem)',
                 animationDelay: '0.22s',
+                color: 'transparent',
+                WebkitTextStroke: '1.5px #99ca45',
               }}
             >
               OCHONOGOR
@@ -340,36 +284,34 @@ export default function KennyPage() {
 
         {/* Bottom row */}
         <div className="flex items-end justify-between gap-4">
-          {/* Location */}
-          <p className="font-mono text-[#666666] text-[0.58rem] tracking-[0.2em] uppercase leading-relaxed">
+          <p className="font-thunder text-white/60 text-[0.85rem] tracking-[0.2em] uppercase">
             Lagos, Nigeria&nbsp;&nbsp;·&nbsp;&nbsp;Available for projects
           </p>
 
-          {/* Social links */}
-          <div className="flex items-center gap-5">
+          <div className="flex items-center gap-6">
             <a
               href="https://github.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1.5 font-mono text-[#666666] text-[0.55rem] tracking-wide uppercase hover:text-ink-green transition-colors duration-200"
+              className="flex items-center gap-2 font-thunder text-white/60 text-[0.8rem] tracking-wide uppercase hover:text-ink-green transition-colors duration-200"
             >
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.37.6.11.82-.26.82-.58v-2.03c-3.34.72-4.04-1.6-4.04-1.6-.54-1.38-1.33-1.75-1.33-1.75-1.08-.74.08-.73.08-.73 1.2.09 1.83 1.23 1.83 1.23 1.07 1.83 2.8 1.3 3.49 1 .1-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.14-.3-.54-1.52.1-3.18 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 3-.4c1.02 0 2.04.13 3 .4 2.28-1.55 3.29-1.23 3.29-1.23.64 1.66.24 2.88.12 3.18.77.84 1.23 1.91 1.23 3.22 0 4.61-2.8 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.82.58C20.56 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.37.6.11.82-.26.82-.58v-2.03c-3.34.72-4.04-1.6-4.04-1.6-.54-1.38-1.33-1.75-1.33-1.75-1.08-.74.08-.73.08-.73 1.2.09 1.83 1.23 1.83 1.23 1.07 1.83 2.8 1.3 3.49 1 .1-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.14-.3-.54-1.52.1-3.18 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 3-.4c1.02 0 2.04.13 3 .4 2.28-1.55 3.29-1.23 3.29-1.23.64 1.66.24 2.88.12 3.18.77.84 1.23 1.91 1.23 3.22 0 4.61-2.8 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.82.58C20.56 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg>
               GitHub
             </a>
             <a
               href="https://linkedin.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1.5 font-mono text-[#666666] text-[0.55rem] tracking-wide uppercase hover:text-ink-green transition-colors duration-200"
+              className="flex items-center gap-2 font-thunder text-white/60 text-[0.8rem] tracking-wide uppercase hover:text-ink-green transition-colors duration-200"
             >
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.44-2.14 2.94v5.67H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14zM7.12 20.45H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.22.79 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"/></svg>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.44-2.14 2.94v5.67H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14zM7.12 20.45H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.22.79 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"/></svg>
               LinkedIn
             </a>
             <a
               href="#selected-work"
-              className="flex items-center gap-1.5 font-mono text-[#666666] text-[0.55rem] tracking-wide uppercase hover:text-ink-green transition-colors duration-200"
+              className="flex items-center gap-2 font-thunder text-white/60 text-[0.8rem] tracking-wide uppercase hover:text-ink-green transition-colors duration-200"
             >
-              <ArrowUpRight size={12} /> Portfolio
+              <ArrowUpRight size={13} /> Portfolio
             </a>
           </div>
         </div>
@@ -384,15 +326,18 @@ export default function KennyPage() {
       {/* ════════════════════════════════════════════════════════════════════
           SECTION 2 — STATEMENT
       ════════════════════════════════════════════════════════════════════ */}
-      <section className="py-28 md:py-40 px-6 md:px-12 lg:px-20 border-t border-[#1e1e1e]">
-        <div className="max-w-3xl mx-auto">
+      <section
+        className="py-28 md:py-40 px-6 md:px-12 lg:px-20 border-t border-white/5"
+        style={{ background: SECTION_BG }}
+      >
+        <div className="max-w-4xl mx-auto">
           <p
             ref={statRef}
-            className="font-serif italic text-[1.25rem] md:text-[1.4rem] leading-relaxed text-[#c8c0b0]"
-            style={{ wordSpacing: '0.08em' }}
+            className="font-thunder uppercase text-white leading-tight"
+            style={{ fontSize: 'clamp(1.6rem, 3.5vw, 3rem)', wordSpacing: '0.05em' }}
           >
             {STATEMENT.split(' ').map((word, i) => (
-              <span key={i} className="k-word inline-block" style={{ marginRight: '0.32em', opacity: 0 }}>
+              <span key={i} className="k-word inline-block" style={{ marginRight: '0.28em', opacity: 0 }}>
                 {word}
               </span>
             ))}
@@ -403,7 +348,10 @@ export default function KennyPage() {
       {/* ════════════════════════════════════════════════════════════════════
           SECTION 3 — SKILLS
       ════════════════════════════════════════════════════════════════════ */}
-      <section className="py-24 md:py-32 px-6 md:px-12 lg:px-20 border-t border-[#1e1e1e]">
+      <section
+        className="py-24 md:py-32 px-6 md:px-12 lg:px-20 border-t border-white/5"
+        style={{ background: SECTION_BG }}
+      >
         <SectionLabel>Disciplines</SectionLabel>
 
         <div ref={skillsRef} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
@@ -418,7 +366,8 @@ export default function KennyPage() {
       ════════════════════════════════════════════════════════════════════ */}
       <section
         id="selected-work"
-        className="py-24 md:py-32 px-6 md:px-12 lg:px-20 border-t border-[#1e1e1e]"
+        className="py-24 md:py-32 px-6 md:px-12 lg:px-20 border-t border-white/5"
+        style={{ background: SECTION_BG }}
       >
         <SectionLabel>Selected Work</SectionLabel>
 
@@ -427,7 +376,7 @@ export default function KennyPage() {
             <div
               key={i}
               className="k-proj-card group relative flex items-stretch gap-6 md:gap-10 py-8 md:py-10
-                border-b border-[#1e1e1e] cursor-pointer overflow-hidden"
+                border-b border-white/5 cursor-pointer overflow-hidden"
               onMouseEnter={() => handleProjEnter(i)}
               onMouseLeave={() => handleProjLeave(i)}
             >
@@ -438,7 +387,7 @@ export default function KennyPage() {
                 style={{
                   fontSize: 'clamp(3rem, 6vw, 6rem)',
                   color: 'transparent',
-                  WebkitTextStroke: '1px rgba(242,234,216,0.25)',
+                  WebkitTextStroke: '1px rgba(255,255,255,0.2)',
                   transition: 'all 0.3s ease',
                   minWidth: '5rem',
                 }}
@@ -449,19 +398,21 @@ export default function KennyPage() {
               {/* Content */}
               <div className="flex-1 min-w-0 flex flex-col justify-center gap-3">
                 <h3
-                  className="font-thunder uppercase text-ink-paper leading-none"
+                  className="font-thunder uppercase text-white leading-none"
                   style={{ fontSize: 'clamp(1.8rem, 4vw, 3.5rem)' }}
                 >
                   {proj.name}
                 </h3>
-                <p className="font-serif text-[#888] text-sm md:text-base leading-relaxed">
+                <p className="font-thunder text-white/80 uppercase leading-relaxed"
+                  style={{ fontSize: 'clamp(0.85rem, 1.5vw, 1rem)' }}
+                >
                   {proj.desc}
                 </p>
                 <div className="flex flex-wrap gap-2">
                   {proj.stack.map(t => (
                     <span
                       key={t}
-                      className="font-mono text-[0.6rem] tracking-wide text-[#555] border border-[#2a2a2a] px-2.5 py-1 rounded-none"
+                      className="font-thunder text-[0.75rem] tracking-wide text-white/50 border border-white/10 px-2.5 py-1"
                     >
                       {t}
                     </span>
@@ -472,7 +423,7 @@ export default function KennyPage() {
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={e => e.stopPropagation()}
-                  className="inline-flex items-center gap-2 font-mono text-[0.6rem] tracking-[0.2em] uppercase
+                  className="inline-flex items-center gap-2 font-thunder text-[0.8rem] tracking-[0.2em] uppercase
                     text-ink-green hover:gap-3 transition-all duration-200 mt-1 w-fit"
                 >
                   View Project <ArrowUpRight size={11} />
@@ -511,13 +462,16 @@ export default function KennyPage() {
       {/* ════════════════════════════════════════════════════════════════════
           SECTION 5 — TECH STACK
       ════════════════════════════════════════════════════════════════════ */}
-      <section className="py-24 md:py-32 px-6 md:px-12 lg:px-20 border-t border-[#1e1e1e]">
+      <section
+        className="py-24 md:py-32 px-6 md:px-12 lg:px-20 border-t border-white/5"
+        style={{ background: SECTION_BG }}
+      >
         <SectionLabel>Tools &amp; Technologies</SectionLabel>
 
         <div ref={techRef} className="flex flex-col gap-10">
           {TECH_GROUPS.map(group => (
             <div key={group.label}>
-              <p className="font-mono text-[#333] text-[0.5rem] tracking-[0.4em] uppercase mb-4">
+              <p className="font-thunder text-white/30 text-[0.7rem] tracking-[0.4em] uppercase mb-4">
                 {group.label}
               </p>
               <motion.div
@@ -531,8 +485,8 @@ export default function KennyPage() {
                     key={item.name}
                     variants={pillItem}
                     whileHover={{ scale: 1.06, boxShadow: '0 0 12px rgba(153,202,69,0.35)', borderColor: '#99ca45' }}
-                    className={`font-mono border border-[#2a2a2a] text-[#888] rounded-none
-                      hover:text-ink-green cursor-default transition-colors duration-200
+                    className={`font-thunder border border-white/15 text-white/70 rounded-none
+                      hover:text-ink-green hover:border-ink-green cursor-default transition-colors duration-200
                       ${PillSize(item.size)}`}
                   >
                     {item.name}
@@ -547,7 +501,10 @@ export default function KennyPage() {
       {/* ════════════════════════════════════════════════════════════════════
           SECTION 6 — PORTFOLIO SHOWCASE
       ════════════════════════════════════════════════════════════════════ */}
-      <section className="py-24 md:py-32 px-6 md:px-12 lg:px-20 border-t border-[#1e1e1e]">
+      <section
+        className="py-24 md:py-32 px-6 md:px-12 lg:px-20 border-t border-white/5"
+        style={{ background: SECTION_BG }}
+      >
         <SectionLabel>Visual Work</SectionLabel>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -557,7 +514,7 @@ export default function KennyPage() {
               href={tile.href}
               target="_blank"
               rel="noopener noreferrer"
-              className={`ink-flood-up group relative block border border-[#1e1e1e] overflow-hidden
+              className={`ink-flood-up group relative block border border-white/10 overflow-hidden
                 ${i === 4 ? 'sm:col-span-2 lg:col-span-1' : ''}`}
               style={{ minHeight: i % 2 === 0 ? '180px' : '140px' }}
             >
@@ -565,15 +522,15 @@ export default function KennyPage() {
               <div className="relative z-[2] h-full flex items-end p-6 md:p-8" style={{ minHeight: 'inherit' }}>
                 <div className="flex items-center justify-between w-full">
                   <span
-                    className="font-thunder uppercase text-ink-paper/60 group-hover:text-ink-void leading-none
-                      transition-colors duration-400"
+                    className="font-thunder uppercase text-white/70 group-hover:text-ink-void leading-none
+                      transition-colors duration-300"
                     style={{ fontSize: 'clamp(1.2rem, 3vw, 2rem)' }}
                   >
                     {tile.label}
                   </span>
                   <ArrowUpRight
                     size={18}
-                    className="text-ink-paper/40 group-hover:text-ink-void group-hover:translate-x-1
+                    className="text-white/40 group-hover:text-ink-void group-hover:translate-x-1
                       group-hover:-translate-y-1 transition-all duration-300"
                   />
                 </div>
@@ -586,17 +543,22 @@ export default function KennyPage() {
       {/* ════════════════════════════════════════════════════════════════════
           SECTION 7 — CONTACT / CTA
       ════════════════════════════════════════════════════════════════════ */}
-      <section className="relative py-28 md:py-40 px-6 md:px-12 lg:px-20 border-t border-[#1e1e1e] overflow-hidden">
-        <div className="ink-grain absolute inset-0 opacity-15 pointer-events-none" aria-hidden="true" />
-
+      <section
+        className="relative py-28 md:py-40 px-6 md:px-12 lg:px-20 border-t border-white/5 overflow-hidden"
+        style={{ background: SECTION_BG }}
+      >
         {/* Ghost background text */}
         <div
           className="absolute inset-0 flex items-center justify-center select-none pointer-events-none overflow-hidden"
           aria-hidden="true"
         >
           <span
-            className="font-thunder uppercase text-ink-paper/[0.02] leading-none"
-            style={{ fontSize: 'clamp(8rem, 28vw, 30rem)' }}
+            className="font-thunder uppercase leading-none"
+            style={{
+              fontSize: 'clamp(8rem, 28vw, 30rem)',
+              color: 'transparent',
+              WebkitTextStroke: '1px rgba(255,255,255,0.03)',
+            }}
           >
             CONTACT
           </span>
@@ -606,11 +568,11 @@ export default function KennyPage() {
 
           {/* Left */}
           <div>
-            <p className="font-mono text-ink-green text-[0.6rem] tracking-[0.35em] uppercase mb-6">
+            <p className="font-thunder text-ink-green text-[0.9rem] tracking-[0.35em] uppercase mb-6">
               Let&apos;s Build Something
             </p>
             <h2
-              className="font-thunder uppercase leading-[0.85] text-ink-paper"
+              className="font-thunder uppercase leading-[0.85] text-white"
               style={{ fontSize: 'clamp(3rem, 10vw, 10rem)' }}
             >
               GET IN<br />
@@ -620,23 +582,21 @@ export default function KennyPage() {
 
           {/* Right */}
           <div className="flex flex-col gap-6 lg:justify-center lg:pt-12">
-            {/* Email */}
             <a
               href="mailto:kennyprince25.kp@gmail.com"
-              className="group font-mono text-[#888] hover:text-ink-green transition-colors duration-200 break-all"
-              style={{ fontSize: 'clamp(0.75rem, 1.8vw, 1.05rem)' }}
+              className="group font-thunder text-white/80 hover:text-ink-green transition-colors duration-200 break-all uppercase"
+              style={{ fontSize: 'clamp(0.85rem, 1.8vw, 1.15rem)' }}
             >
               kennyprince25.kp@gmail.com
               <ArrowUpRight size={14} className="inline ml-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
             </a>
 
-            {/* Buttons */}
             <div className="flex flex-col sm:flex-row gap-3">
               <a
                 href="https://linkedin.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="ink-flood-up border border-[#2a2a2a] px-6 py-3 font-mono text-[0.65rem] tracking-[0.2em] uppercase text-ink-paper"
+                className="ink-flood-up border border-white/20 px-6 py-3 font-thunder text-[0.8rem] tracking-[0.2em] uppercase text-white"
               >
                 <span>LinkedIn</span>
               </a>
@@ -644,13 +604,13 @@ export default function KennyPage() {
                 href="https://github.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="ink-flood-up border border-[#2a2a2a] px-6 py-3 font-mono text-[0.65rem] tracking-[0.2em] uppercase text-ink-paper"
+                className="ink-flood-up border border-white/20 px-6 py-3 font-thunder text-[0.8rem] tracking-[0.2em] uppercase text-white"
               >
                 <span>GitHub</span>
               </a>
             </div>
 
-            <p className="font-mono text-[#444] text-[0.52rem] tracking-[0.18em] uppercase mt-2">
+            <p className="font-thunder text-white/40 text-[0.7rem] tracking-[0.18em] uppercase mt-2">
               Available for freelance · Remote-friendly · Based in Lagos, Nigeria
             </p>
           </div>
@@ -671,8 +631,8 @@ interface SkillCardProps {
 }
 
 function SkillCard({ icon, title, tags }: SkillCardProps) {
-  const wrapRef  = useRef<HTMLDivElement>(null)
-  const cardRef  = useRef<HTMLDivElement>(null)
+  const wrapRef = useRef<HTMLDivElement>(null)
+  const cardRef = useRef<HTMLDivElement>(null)
   const [hovered, setHovered] = useState(false)
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -700,15 +660,14 @@ function SkillCard({ icon, title, tags }: SkillCardProps) {
     >
       <div
         ref={cardRef}
-        className="h-full flex flex-col gap-4 p-6 md:p-7 transition-colors duration-300"
+        className="h-full flex flex-col gap-4 p-6 md:p-7"
         style={{
-          background: hovered ? '#1c1c1c' : '#161616',
+          background: hovered ? 'rgba(28, 28, 28, 0.85)' : 'rgba(16, 16, 16, 0.7)',
           borderLeft: hovered ? '2px solid #99ca45' : '2px solid transparent',
-          borderTop: '1px solid #1e1e1e',
-          borderRight: '1px solid #1e1e1e',
-          borderBottom: '1px solid #1e1e1e',
+          borderTop: '1px solid rgba(255,255,255,0.06)',
+          borderRight: '1px solid rgba(255,255,255,0.06)',
+          borderBottom: '1px solid rgba(255,255,255,0.06)',
           transformStyle: 'preserve-3d',
-          transform: 'perspective(600px)',
           transition: 'background 0.3s, border-left 0.3s',
         }}
       >
@@ -723,17 +682,17 @@ function SkillCard({ icon, title, tags }: SkillCardProps) {
 
         {/* Title */}
         <h3
-          className="font-thunder uppercase text-ink-paper leading-tight"
+          className="font-thunder uppercase text-white leading-tight"
           style={{ fontSize: 'clamp(1.3rem, 2.5vw, 2rem)' }}
         >
           {title}
         </h3>
 
         {/* Tags */}
-        <div className="flex flex-wrap gap-1.5 mt-auto">
+        <div className="flex flex-wrap gap-x-3 gap-y-1 mt-auto">
           {tags.map(tag => (
-            <span key={tag} className="font-mono text-[0.55rem] tracking-wide text-[#555]">
-              {tag}{' '}
+            <span key={tag} className="font-thunder text-[0.75rem] tracking-wide text-white/50 uppercase">
+              {tag}
             </span>
           ))}
         </div>
