@@ -1,9 +1,9 @@
 /**
  * POST /api/revalidate?secret=<REVALIDATE_SECRET>&tag=<tag>
  *
- * Notion webhook endpoint. Configure a Notion automation to POST here
- * whenever a database page is updated. Purges the matching Next.js cache tag
- * so fresh data is served on the next request.
+ * Webhook endpoint for on-demand cache revalidation. Call this from a
+ * Supabase Database Webhook (or any POST trigger) whenever content changes.
+ * Purges the matching Next.js cache tag so fresh data is served immediately.
  *
  * Valid tags: books | audio | animations | marketplace
  *
@@ -55,7 +55,6 @@ export async function POST(req: NextRequest) {
   })
 }
 
-// Notion webhooks use POST; block all other methods.
 export async function GET() {
   return NextResponse.json({ error: 'Method not allowed.' }, { status: 405 })
 }

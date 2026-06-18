@@ -9,7 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@notionhq/client": "^2.2.15",
     "@react-three/drei": "^9.122.0",
     "@react-three/fiber": "^8.18.0",
     "@studio-freight/lenis": "^1.0.42",
