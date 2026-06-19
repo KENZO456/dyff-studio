@@ -288,7 +288,7 @@ export default function AnimationsClient({ animations }: { animations: Animation
 
         <motion.div className="relative z-[3] flex flex-col items-center text-center gap-6 px-6" style={{ y: heroTextY }}>
           <Label variant="tag" className="text-ink-green">DYFF ANIMATIONS</Label>
-          <Thunder as="h1" size="hero" weight={400} className="text-ink-paper leading-none">ANIMA&shy;TIONS</Thunder>
+          <Thunder as="h1" size="hero" weight={400} className="text-ink-paper leading-none">THE INK<br />MOVES.</Thunder>
           <div className="flex items-center gap-3 mt-2">
             <div className="w-10 h-px bg-ink-green" />
             <span className="font-mono text-ink-ash/50 text-[0.6rem] tracking-[0.25em] uppercase">
@@ -297,7 +297,9 @@ export default function AnimationsClient({ animations }: { animations: Animation
             <div className="w-10 h-px bg-ink-green" />
           </div>
           <Body size="base" className="text-ink-white/80 max-w-[40ch] leading-relaxed mt-1">
-            Dark. Precise. Unapologetic. Every frame drawn before it moved.
+            Animation is where the DYFF Art Style comes fully alive. The same characters
+            from the books and audio series — now in motion. Built by the same hands that
+            wrote the stories. This is the beginning of a much larger animated universe.
           </Body>
         </motion.div>
 

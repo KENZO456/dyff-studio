@@ -95,18 +95,19 @@ export default function BooksClient({ books }: { books: Book[] }) {
           <div className="-ml-1">
             <Thunder as="h1" size="display" weight={400}
               className="thunder-outline block leading-none tracking-tight">
-              THE
+              THE WORDS
             </Thunder>
             <Thunder as="h1" size="hero" weight={400}
               className="text-ink-paper block leading-none tracking-tight -mt-3">
-              LIBRARY
+              CAME FIRST.
             </Thunder>
           </div>
 
           <div className="mt-8 max-w-xl">
-            <Body size="lg" className="text-ink-white/80 italic leading-relaxed">
-              Every universe DYFF has built, bound between two covers.
-              Read it first. Listen to it after. Watch it become something else entirely.
+            <Body size="lg" className="text-ink-white/80 leading-relaxed">
+              Every world in the DYFF universe began as words. Before the audio, before the
+              animation — there was a story written down. This is where you find it in its
+              purest form. Read at your own pace. The worlds are patient.
             </Body>
           </div>
 

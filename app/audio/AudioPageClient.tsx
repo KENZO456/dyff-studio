@@ -113,14 +113,15 @@ export default function AudioPageClient({ series }: { series: AudioSeries[] }) {
         <div className="relative z-[4] flex flex-col items-center text-center gap-8 max-w-2xl">
           <Label variant="tag" className="text-ink-green">DYFF AUDIO SERIES</Label>
           <Thunder as="h1" size="hero" weight={400} className="text-ink-paper leading-none">
-            STORIES<br />THAT BREATHE
+            CLOSE YOUR EYES.<br />LISTEN.
           </Thunder>
           <div className="w-full max-w-xs">
             <SoundwaveHero />
           </div>
           <Body size="lg" className="text-ink-white/80 max-w-[38ch] leading-relaxed">
-            Cinematic audio dramas produced with original scores.
-            Every episode is written before it is recorded.
+            DYFF audio series are not audiobooks. They are full cinematic productions —
+            original music, professional sound design, voice performance, and stories built
+            specifically for the audio medium. Put in your earphones. Let the world come to you.
           </Body>
           <div className="flex items-center gap-2 mt-2">
             <div className="w-12 h-px bg-ink-green" />
@@ -157,12 +158,12 @@ export default function AudioPageClient({ series }: { series: AudioSeries[] }) {
       <section className="border-t border-ink-ash/10 py-16 px-6 md:px-10 bg-[#080808]/70">
         <div className="max-w-[1400px] mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
           <Thunder as="p" size="display" weight={400} className="text-ink-paper/20 leading-none select-none" aria-hidden="true">
-            THE INK<br />SPEAKS.
+            CINEMA<br />FOR YOUR EARS.
           </Thunder>
           <Body size="base" className="text-ink-white/80 max-w-sm leading-relaxed">
-            Every DYFF Audio episode is written as prose first.
+            Every DYFF audio episode is written as prose first.
             The score is composed after the script. The performance is recorded last.
-            Ink before sound.
+            Sound built from ink.
           </Body>
         </div>
       </section>

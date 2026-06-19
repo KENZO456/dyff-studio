@@ -263,11 +263,12 @@ export default function MarketplaceClient({ initialProducts }: { initialProducts
         <div className="relative z-[4] flex flex-col items-center gap-6 max-w-3xl">
           <Label variant="tag" className="text-ink-green">DYFF MARKETPLACE</Label>
           <Thunder as="h1" size="hero" weight={400} className="text-ink-paper leading-none">
-            THE<br />MARKET&shy;PLACE
+            OWN A PIECE<br />OF THE WORLD.
           </Thunder>
           <Body size="base" className="text-ink-white/80 max-w-[42ch] leading-relaxed">
-            Art. Books. Beats. Assets. Everything DYFF creates is available here —
-            digital, direct, and yours.
+            Digital art, original music, books, and creative assets from the DYFF universe.
+            Everything here was made by the same people who built the stories. When you buy
+            from the DYFF marketplace, you are directly funding the next chapter.
           </Body>
           <div ref={pillsRef} className="flex flex-wrap items-center justify-center gap-3 mt-2">
             {HERO_PILLS.map(({ cat, dot }) => (
