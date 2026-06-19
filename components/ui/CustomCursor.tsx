@@ -14,56 +14,43 @@ export default function CustomCursor() {
     const splat = splatRef.current
     if (!dot) return
 
-    // Start off-screen; snap to real position on first move, then animate
+    // Start off-screen; appears the moment user moves their mouse
     gsap.set([dot, splat].filter(Boolean), { xPercent: -50, yPercent: -50, x: -300, y: -300 })
     if (splat) gsap.set(splat, { opacity: 0, scale: 0 })
 
-    let firstMove = true
+    // Track mouse — gsap.set = zero lag, no smear/trail behind cursor
     const onMove = (e: MouseEvent) => {
-      if (firstMove) {
-        // Snap instantly on first move so the dot is never "catching up" from off-screen
-        gsap.set(dot, { x: e.clientX, y: e.clientY })
-        firstMove = false
-        return
-      }
-      gsap.to(dot, { x: e.clientX, y: e.clientY, duration: 0.07, ease: 'none', overwrite: true })
+      gsap.set(dot, { x: e.clientX, y: e.clientY })
     }
 
     const onOver = (e: MouseEvent) => {
       if (!(e.target as Element).closest(HOVER_SELECTOR)) return
       dot.classList.add('cursor-hovered')
-      gsap.to(dot, { scale: 2.6, duration: 0.22, ease: 'elastic.out(1.1, 0.6)' })
+      gsap.to(dot, { scale: 2.2, duration: 0.18, ease: 'power2.out' })
     }
 
     const onOut = (e: MouseEvent) => {
       if (!(e.target as Element).closest(HOVER_SELECTOR)) return
       dot.classList.remove('cursor-hovered')
-      gsap.to(dot, { scale: 1, duration: 0.22, ease: 'elastic.out(1.1, 0.6)' })
+      gsap.to(dot, { scale: 1, duration: 0.18, ease: 'power2.out' })
     }
 
     const onClick = (e: MouseEvent) => {
       if (!splat) return
-      gsap.set(splat,  { x: e.clientX, y: e.clientY, scale: 0, opacity: 1 })
-      gsap.to(splat,   { scale: 2, opacity: 0, duration: 0.3, ease: 'power1.out' })
+      gsap.set(splat, { x: e.clientX, y: e.clientY, scale: 0, opacity: 1 })
+      gsap.to(splat,  { scale: 2, opacity: 0, duration: 0.3, ease: 'power1.out' })
     }
 
-    const onLeave = () => { gsap.to(dot, { opacity: 0, duration: 0.25 }) }
-    const onEnter = () => { gsap.to(dot, { opacity: 0.8, duration: 0.2 }) }
-
-    window.addEventListener('mousemove',  onMove)
-    window.addEventListener('mouseover',  onOver)
-    window.addEventListener('mouseout',   onOut)
-    window.addEventListener('click',      onClick)
-    document.documentElement.addEventListener('mouseleave', onLeave)
-    document.documentElement.addEventListener('mouseenter', onEnter)
+    window.addEventListener('mousemove', onMove)
+    window.addEventListener('mouseover', onOver)
+    window.addEventListener('mouseout',  onOut)
+    window.addEventListener('click',     onClick)
 
     return () => {
-      window.removeEventListener('mousemove',  onMove)
-      window.removeEventListener('mouseover',  onOver)
-      window.removeEventListener('mouseout',   onOut)
-      window.removeEventListener('click',      onClick)
-      document.documentElement.removeEventListener('mouseleave', onLeave)
-      document.documentElement.removeEventListener('mouseenter', onEnter)
+      window.removeEventListener('mousemove', onMove)
+      window.removeEventListener('mouseover', onOver)
+      window.removeEventListener('mouseout',  onOut)
+      window.removeEventListener('click',     onClick)
     }
   }, [])
 
