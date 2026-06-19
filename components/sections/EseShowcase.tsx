@@ -27,28 +27,21 @@ export default function EseShowcase() {
     const canvas  = canvasRef.current
     if (!section || !canvas) return
 
-    const ctx = canvas.getContext('2d', { willReadFrequently: false })
+    const ctx = canvas.getContext('2d')
     if (!ctx) return
 
-    // ── Load all frames eagerly ──────────────────────────────────────────
-    const images: HTMLImageElement[] = FRAMES.map(src => {
-      const img = new window.Image()
-      img.src = src
-      return img
-    })
-
-    // Track current drawn index for resize redraws
-    let currentIdx = 0
-
-    // Stable non-null aliases for use inside closures
     const cvs = canvas
     const c   = ctx
     const sec = section
 
-    // ── Cover-fill canvas ────────────────────────────────────────────────
+    let currentIdx = 0
+
+    // ── Cover-fill draw ──────────────────────────────────────────────────
     function drawFrame(img: HTMLImageElement) {
       if (!img.complete || img.naturalWidth === 0) return
-      const cW = cvs.width, cH = cvs.height
+      const cW = cvs.width
+      const cH = cvs.height
+      if (cW === 0 || cH === 0) return
       const iAR = img.naturalWidth / img.naturalHeight
       const cAR = cW / cH
       let dW: number, dH: number, dX: number, dY: number
@@ -61,24 +54,30 @@ export default function EseShowcase() {
       c.drawImage(img, dX, dY, dW, dH)
     }
 
-    // ── Resize handler ───────────────────────────────────────────────────
+    // ── Resize — sets pixel dimensions and redraws current frame ────────
     function resize() {
-      cvs.width  = sec.clientWidth
-      cvs.height = sec.clientHeight
+      cvs.width  = sec.clientWidth  || window.innerWidth
+      cvs.height = sec.clientHeight || window.innerHeight
       drawFrame(images[currentIdx])
     }
 
-    resize()
-    // Draw first frame as soon as it loads (shows something immediately)
-    if (images[0].complete) {
-      drawFrame(images[0])
-    } else {
-      images[0].onload = () => drawFrame(images[0])
-    }
+    // ── Load images — set onload BEFORE src to avoid cache race ─────────
+    const images: HTMLImageElement[] = FRAMES.map((src, i) => {
+      const img = new window.Image()
+      img.onload = () => {
+        // When frame 0 arrives, re-run resize so canvas gets correct dims
+        if (i === 0) resize()
+        // If this is the current frame (e.g. user already scrolled), redraw
+        if (i === currentIdx) drawFrame(img)
+      }
+      img.src = src
+      return img
+    })
 
+    resize()
     window.addEventListener('resize', resize)
 
-    // ── GSAP frame-sequence + text reveals ───────────────────────────────
+    // ── GSAP frame-sequence ──────────────────────────────────────────────
     const proxy = { frame: 0 }
 
     const tl = gsap.timeline({
@@ -90,13 +89,13 @@ export default function EseShowcase() {
         pinType:             'transform',
         scrub:               0.6,
         invalidateOnRefresh: true,
+        onRefresh:           resize,
       },
     })
 
-    // 0 → 100 % — frame advance
     tl.to(proxy, {
-      frame: TOTAL - 1,
-      ease:  'none',
+      frame:    TOTAL - 1,
+      ease:     'none',
       duration: 1,
       onUpdate() {
         const idx = Math.round(proxy.frame)
@@ -105,37 +104,27 @@ export default function EseShowcase() {
       },
     })
 
-    // ── Text reveals (positions are fractions of total timeline duration) ──
-
-    // Gradient overlay darkens first
+    // ── Text reveals ─────────────────────────────────────────────────────
     tl.fromTo(overlayRef.current,
       { opacity: 0 },
       { opacity: 1, duration: 0.14, ease: 'power2.out' },
       0.26,
     )
-
-    // Section label
     tl.fromTo(labelRef.current,
       { opacity: 0, y: 14 },
       { opacity: 1, y: 0, duration: 0.1, ease: 'power2.out' },
       0.3,
     )
-
-    // Headline — "ESE — THE SAGA BEGINS."
     tl.fromTo(headlineRef.current,
       { opacity: 0, y: 60 },
       { opacity: 1, y: 0, duration: 0.14, ease: 'power3.out' },
       0.36,
     )
-
-    // Body paragraph
     tl.fromTo(bodyRef.current,
       { opacity: 0, y: 36 },
       { opacity: 1, y: 0, duration: 0.12, ease: 'power2.out' },
       0.52,
     )
-
-    // CTA button
     tl.fromTo(btnRef.current,
       { opacity: 0, y: 18 },
       { opacity: 1, y: 0, duration: 0.1, ease: 'power2.out' },
@@ -144,6 +133,7 @@ export default function EseShowcase() {
 
     return () => {
       window.removeEventListener('resize', resize)
+      tl.scrollTrigger?.kill()
     }
   }, [])
 
@@ -153,14 +143,13 @@ export default function EseShowcase() {
       className="relative w-full overflow-hidden bg-black"
       style={{ height: '100vh' }}
     >
-      {/* ── Sequence canvas ─────────────────────────────────────────────── */}
+      {/* Sequence canvas */}
       <canvas
         ref={canvasRef}
-        className="absolute inset-0"
-        style={{ width: '100%', height: '100%' }}
+        className="absolute inset-0 w-full h-full"
       />
 
-      {/* ── Bottom gradient overlay — fades in with text ────────────────── */}
+      {/* Gradient overlay — fades in with text */}
       <div
         ref={overlayRef}
         className="absolute inset-0 pointer-events-none"
@@ -171,13 +160,12 @@ export default function EseShowcase() {
         }}
       />
 
-      {/* ── Film-grain texture ──────────────────────────────────────────── */}
+      {/* Film-grain */}
       <div className="ink-grain absolute inset-0 z-[1] pointer-events-none opacity-15" />
 
-      {/* ── Text content ────────────────────────────────────────────────── */}
+      {/* Text content */}
       <div className="absolute bottom-0 left-0 right-0 z-10 px-6 md:px-16 lg:px-24 pb-14 md:pb-20">
 
-        {/* Section label */}
         <p
           ref={labelRef}
           className="font-mono text-ink-green text-[0.58rem] tracking-[0.32em] uppercase mb-5"
@@ -186,7 +174,6 @@ export default function EseShowcase() {
           05 — Ese Showcase
         </p>
 
-        {/* Headline */}
         <h2
           ref={headlineRef}
           className="font-thunder uppercase text-white leading-[0.86] mb-6"
@@ -199,7 +186,6 @@ export default function EseShowcase() {
           ESE —<br />THE SAGA BEGINS.
         </h2>
 
-        {/* Body */}
         <p
           ref={bodyRef}
           className="font-thunder uppercase text-white/65 max-w-lg leading-snug mb-10"
@@ -211,7 +197,6 @@ export default function EseShowcase() {
           a people, and a destiny.
         </p>
 
-        {/* CTA */}
         <a
           ref={btnRef}
           href="https://open.spotify.com/album/57utUjzbYMmiRm6wbsAHY0?si=FToSlsghQyaVNTWlefrWtA"
