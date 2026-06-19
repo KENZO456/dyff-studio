@@ -9,7 +9,7 @@ gsap.registerPlugin(ScrollTrigger)
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
-const ACCENT     = '#8b0000'
+const ACCENT     = '#99ca45'
 const SECTION_BG = 'rgba(8, 8, 8, 0.78)'
 
 // ── Data ──────────────────────────────────────────────────────────────────────
@@ -159,7 +159,7 @@ export default function DanielPage() {
           content: '';
           position: absolute;
           inset: 0;
-          background: #8b0000;
+          background: #99ca45;
           clip-path: inset(100% 0 0 0);
           transition: clip-path 0.4s cubic-bezier(0.76, 0, 0.24, 1);
           z-index: 0;
@@ -170,6 +170,10 @@ export default function DanielPage() {
         .daniel-flood > * {
           position: relative;
           z-index: 1;
+          transition: color 0.4s cubic-bezier(0.76, 0, 0.24, 1);
+        }
+        .daniel-flood:hover > span {
+          color: #0c0c0c;
         }
       `}</style>
 
@@ -198,7 +202,7 @@ export default function DanielPage() {
             </span>
           </h1>
 
-          <p className="font-serif italic" style={{ color: ACCENT, fontSize: '1.4rem', letterSpacing: '0.2em' }}>
+          <p className="font-thunder uppercase tracking-[0.35em]" style={{ color: ACCENT, fontSize: '1.1rem' }}>
             Nobu Savage
           </p>
         </div>
@@ -631,7 +635,7 @@ function DanielTimelineItem({ icon, title, tags, index, isLast }: DanielTimeline
         style={{
           borderColor: ACCENT,
           background:  'rgba(8,8,8,0.95)',
-          boxShadow:   `0 0 12px rgba(139,0,0,0.55), 0 0 4px rgba(139,0,0,0.3)`,
+          boxShadow:   '0 0 12px rgba(153,202,69,0.55), 0 0 4px rgba(153,202,69,0.3)',
         }}
         aria-hidden="true"
       />

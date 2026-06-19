@@ -132,16 +132,16 @@ export default function Footer() {
         <div className="flex items-center gap-3">
           <PortfolioLink
             href="/kenny"
-            className="font-mono text-[#444] text-[0.5rem] tracking-[0.18em] uppercase
+            className="font-mono text-white text-[0.5rem] tracking-[0.18em] uppercase
               hover:text-ink-green hover:underline underline-offset-4 transition-colors duration-200"
           >
             Site by Kenny Ochonogor
           </PortfolioLink>
-          <span className="font-mono text-[#2a2a2a] text-[0.5rem]">·</span>
+          <span className="font-mono text-white/30 text-[0.5rem]">·</span>
           <PortfolioLink
             href="/daniel"
-            className="font-mono text-[#444] text-[0.5rem] tracking-[0.18em] uppercase
-              hover:text-[#8b0000] hover:underline underline-offset-4 transition-colors duration-200"
+            className="font-mono text-white text-[0.5rem] tracking-[0.18em] uppercase
+              hover:text-ink-green hover:underline underline-offset-4 transition-colors duration-200"
           >
             Art by Nobu Savage
           </PortfolioLink>
