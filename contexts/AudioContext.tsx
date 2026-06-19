@@ -6,21 +6,20 @@ import type { AudioSeries, Episode } from '@/lib/supabase'
 // ─── Types ────────────────────────────────────────────────────────────────
 
 interface AudioContextValue {
-  /** Ref to the hidden <audio> element — AudioPlayer attaches event listeners here */
   audioRef: React.RefObject<HTMLAudioElement>
 
   currentSeries:  AudioSeries | null
   currentEpisode: Episode | null
   isPlaying:      boolean
-  volume:         number      // 0–1
-  playbackRate:   number      // 0.75 | 1 | 1.25 | 1.5 | 2
+  volume:         number
+  playbackRate:   number
 
-  /** Load + play a new episode (or resume if same episode) */
-  play: (series: AudioSeries, episode: Episode) => void
-  togglePlay: () => void
-  skip: (seconds: number) => void
-  seek: (time: number) => void
-  setVolume: (vol: number) => void
+  /** Load + play an episode. Pass allEpisodes to enable autonext. */
+  play: (series: AudioSeries, episode: Episode, allEpisodes?: Episode[]) => void
+  togglePlay:      () => void
+  skip:            (seconds: number) => void
+  seek:            (time: number) => void
+  setVolume:       (vol: number) => void
   setPlaybackRate: (rate: number) => void
 }
 
@@ -45,26 +44,46 @@ export default function AudioProvider({ children }: { children: React.ReactNode 
   const [volume,         setVolumeState]    = useState(0.8)
   const [playbackRate,   setRateState]      = useState(1)
 
-  // Sync volume/rate to audio element whenever they change
-  useEffect(() => {
-    const a = audioRef.current
-    if (!a) return
-    a.volume = volume
-  }, [volume])
+  // Refs for stable access inside event listeners (no stale closure)
+  const currentEpisodeRef = useRef<Episode | null>(null)
+  const currentSeriesRef  = useRef<AudioSeries | null>(null)
+  const episodesRef       = useRef<Episode[]>([])
 
-  useEffect(() => {
-    const a = audioRef.current
-    if (!a) return
-    a.playbackRate = playbackRate
-  }, [playbackRate])
+  useEffect(() => { currentEpisodeRef.current = currentEpisode }, [currentEpisode])
+  useEffect(() => { currentSeriesRef.current  = currentSeries  }, [currentSeries])
 
-  // Track play/pause state from native audio events
+  // Sync volume/rate to audio element
+  useEffect(() => { if (audioRef.current) audioRef.current.volume      = volume      }, [volume])
+  useEffect(() => { if (audioRef.current) audioRef.current.playbackRate = playbackRate }, [playbackRate])
+
+  // Native audio event listeners — uses refs so the effect runs once only
   useEffect(() => {
     const a = audioRef.current
     if (!a) return
+
     const onPlay  = () => setIsPlaying(true)
     const onPause = () => setIsPlaying(false)
-    const onEnded = () => setIsPlaying(false)
+    const onEnded = () => {
+      const eps = episodesRef.current
+      const ep  = currentEpisodeRef.current
+      const ser = currentSeriesRef.current
+
+      // Advance to next episode if one exists
+      if (eps.length && ep && ser) {
+        const idx = eps.findIndex(e => e.id === ep.id)
+        if (idx >= 0 && idx < eps.length - 1) {
+          const next = eps[idx + 1]
+          setCurrentEpisode(next)
+          currentEpisodeRef.current = next
+          a.src = next.audio_url
+          a.load()
+          a.play().catch(() => {})
+          return
+        }
+      }
+      setIsPlaying(false)
+    }
+
     a.addEventListener('play',  onPlay)
     a.addEventListener('pause', onPause)
     a.addEventListener('ended', onEnded)
@@ -75,27 +94,34 @@ export default function AudioProvider({ children }: { children: React.ReactNode 
     }
   }, [])
 
-  const play = useCallback((series: AudioSeries, episode: Episode) => {
+  const play = useCallback((
+    series:      AudioSeries,
+    episode:     Episode,
+    allEpisodes?: Episode[],
+  ) => {
     const a = audioRef.current
     if (!a) return
 
-    const isSame = currentEpisode?.id === episode.id
+    if (allEpisodes) episodesRef.current = allEpisodes
 
+    const isSame = currentEpisodeRef.current?.id === episode.id
     if (!isSame) {
       setCurrentSeries(series)
       setCurrentEpisode(episode)
+      currentEpisodeRef.current = episode
+      currentSeriesRef.current  = series
       a.src = episode.audio_url
       a.load()
     }
 
-    a.play().catch(() => {/* autoplay policy — user interaction required */})
-  }, [currentEpisode])
+    a.play().catch(() => {})
+  }, [])
 
   const togglePlay = useCallback(() => {
     const a = audioRef.current
-    if (!a || !currentEpisode) return
-    isPlaying ? a.pause() : a.play().catch(() => {})
-  }, [isPlaying, currentEpisode])
+    if (!a || !currentEpisodeRef.current) return
+    if (a.paused) { a.play().catch(() => {}) } else { a.pause() }
+  }, [])
 
   const skip = useCallback((seconds: number) => {
     const a = audioRef.current
@@ -125,7 +151,7 @@ export default function AudioProvider({ children }: { children: React.ReactNode 
       isPlaying, volume, playbackRate,
       play, togglePlay, skip, seek, setVolume, setPlaybackRate,
     }}>
-      {/* Hidden audio element — lives here so it persists across /audio navigation */}
+      {/* Hidden audio element — lives at root so it persists across all route changes */}
       <audio ref={audioRef} preload="metadata" style={{ display: 'none' }} />
       {children}
     </AudioContext.Provider>

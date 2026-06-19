@@ -7,7 +7,6 @@ import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Thunder, Body, Label } from '@/components/ui/Typography'
 import type { AudioSeries } from '@/lib/supabase'
-import AudioShelf from '@/components/sections/AudioShelf'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -132,8 +131,6 @@ export default function AudioPageClient({ series }: { series: AudioSeries[] }) {
           </div>
         </div>
       </section>
-
-      <AudioShelf />
 
       <section className="relative py-16 md:py-24 border-t border-ink-ash/10 bg-[#080808]/80">
         <div className="max-w-[1400px] mx-auto px-6 md:px-10">

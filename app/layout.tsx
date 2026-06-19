@@ -8,6 +8,7 @@ import SmoothScroll    from '@/components/ui/SmoothScroll'
 import Navbar          from '@/components/ui/Navbar'
 import Footer          from '@/components/ui/Footer'
 import PageTransition  from '@/components/ui/PageTransition'
+import AudioProvider   from '@/contexts/AudioContext'
 
 const libreBaskerville = Libre_Baskerville({
   subsets:  ['latin'],
@@ -25,6 +26,7 @@ const spaceMono = Space_Mono({
 const InkUniverse   = dynamic(() => import('@/components/three/InkUniverse'),   { ssr: false, loading: () => null })
 const CustomCursor  = dynamic(() => import('@/components/ui/CustomCursor'),     { ssr: false })
 const LoadingScreen = dynamic(() => import('@/components/ui/LoadingScreen'),    { ssr: false })
+const AudioPlayer   = dynamic(() => import('@/components/audio/AudioPlayer'),   { ssr: false })
 
 // TODO: Replace metadataBase with your live domain once deployed
 export const metadata: Metadata = {
@@ -73,18 +75,23 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Skip to content
         </a>
 
-        {/* Ink panel page transition — wraps scroll context + page content */}
-        <PageTransition>
-          <SmoothScroll>
-            <div className="content-layer">
-              <Navbar />
-              <main id="main-content">
-                {children}
-              </main>
-              <Footer />
-            </div>
-          </SmoothScroll>
-        </PageTransition>
+        {/* AudioProvider at root — audio element persists across all routes */}
+        <AudioProvider>
+          {/* Ink panel page transition — wraps scroll context + page content */}
+          <PageTransition>
+            <SmoothScroll>
+              <div className="content-layer">
+                <Navbar />
+                <main id="main-content">
+                  {children}
+                </main>
+                <Footer />
+              </div>
+            </SmoothScroll>
+          </PageTransition>
+          {/* Persistent player — returns null when nothing is loaded */}
+          <AudioPlayer />
+        </AudioProvider>
 
         <Analytics />
         <SpeedInsights />

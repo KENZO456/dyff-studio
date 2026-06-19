@@ -87,13 +87,13 @@ export default function SeriesClient({
               <div
                 key={episode.id}
                 className={`episode-item px-4 py-5 cursor-pointer rounded-sm ${isActive ? 'is-active' : ''}`}
-                onClick={() => isActive ? togglePlay() : play(series, episode)}
+                onClick={() => isActive ? togglePlay() : play(series, episode, episodes)}
                 role="button"
                 tabIndex={0}
                 onKeyDown={e => {
                   if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault()
-                    isActive ? togglePlay() : play(series, episode)
+                    isActive ? togglePlay() : play(series, episode, episodes)
                   }
                 }}
                 aria-label={`${isThisPlaying ? 'Pause' : 'Play'} ${episode.title}`}
