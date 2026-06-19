@@ -1586,6 +1586,11 @@ img, video { display: block; max-width: 100%; }
 
 /* ─── Custom Cursor ──────────────────────────────────────────────────────── */
 
+/* Hide native cursor immediately — no JS delay */
+@media (pointer: fine) {
+  *, *::before, *::after { cursor: none !important; }
+}
+
 /* Hidden on touch / pointer-coarse devices */
 @media (pointer: coarse) {
   .cursor-dot,

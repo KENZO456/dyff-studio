@@ -1,20 +1,15 @@
 import type { Metadata } from 'next'
-import { Libre_Baskerville, Space_Mono } from 'next/font/google'
+import { Space_Mono } from 'next/font/google'
 import dynamic from 'next/dynamic'
 import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import './globals.css'
-import SmoothScroll    from '@/components/ui/SmoothScroll'
-import Navbar          from '@/components/ui/Navbar'
-import Footer          from '@/components/ui/Footer'
-import PageTransition  from '@/components/ui/PageTransition'
-import AudioProvider   from '@/contexts/AudioContext'
-
-const libreBaskerville = Libre_Baskerville({
-  subsets:  ['latin'],
-  weight:   ['400', '700'],
-  variable: '--font-baskerville',
-})
+import SmoothScroll   from '@/components/ui/SmoothScroll'
+import Navbar         from '@/components/ui/Navbar'
+import Footer         from '@/components/ui/Footer'
+import PageTransition from '@/components/ui/PageTransition'
+import AudioProvider  from '@/contexts/AudioContext'
+import CustomCursor   from '@/components/ui/CustomCursor'
 
 const spaceMono = Space_Mono({
   subsets:  ['latin'],
@@ -22,9 +17,8 @@ const spaceMono = Space_Mono({
   variable: '--font-space-mono',
 })
 
-// Lazy-load — never SSR'd; browser-only APIs (Three.js, mouse events, sessionStorage)
+// Heavy / browser-only — lazy loaded so they don't block first paint
 const InkUniverse   = dynamic(() => import('@/components/three/InkUniverse'),   { ssr: false, loading: () => null })
-const CustomCursor  = dynamic(() => import('@/components/ui/CustomCursor'),     { ssr: false })
 const LoadingScreen = dynamic(() => import('@/components/ui/LoadingScreen'),    { ssr: false })
 const AudioPlayer   = dynamic(() => import('@/components/audio/AudioPlayer'),   { ssr: false })
 
@@ -53,7 +47,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${libreBaskerville.variable} ${spaceMono.variable}`}>
+    <html lang="en" className={spaceMono.variable}>
       <body className="font-thunder font-light bg-ink-void text-ink-paper">
 
         {/* First-visit loading animation (sessionStorage-gated) */}

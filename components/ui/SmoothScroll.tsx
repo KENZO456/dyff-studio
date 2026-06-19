@@ -13,11 +13,11 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
 
   useEffect(() => {
     const lenisInstance = new Lenis({
-      autoRaf:         false,  // GSAP ticker drives RAF — prevents double updates
-      lerp:            0.1,    // simple lerp replaces duration+easing; no long tail
+      autoRaf:         false,
+      lerp:            0.14,   // 0.1 felt heavy; 0.14 is snappy while still smooth
       smoothWheel:     true,
-      wheelMultiplier: 1,
-      touchMultiplier: 2,
+      wheelMultiplier: 1.3,    // more travel per scroll notch
+      touchMultiplier: 2.2,
       infinite:        false,
     })
 

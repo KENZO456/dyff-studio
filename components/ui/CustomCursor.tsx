@@ -14,12 +14,18 @@ export default function CustomCursor() {
     const splat = splatRef.current
     if (!dot) return
 
+    // Start off-screen; snap to real position on first move, then animate
     gsap.set([dot, splat].filter(Boolean), { xPercent: -50, yPercent: -50, x: -300, y: -300 })
     if (splat) gsap.set(splat, { opacity: 0, scale: 0 })
 
-    document.documentElement.style.cursor = 'none'
-
+    let firstMove = true
     const onMove = (e: MouseEvent) => {
+      if (firstMove) {
+        // Snap instantly on first move so the dot is never "catching up" from off-screen
+        gsap.set(dot, { x: e.clientX, y: e.clientY })
+        firstMove = false
+        return
+      }
       gsap.to(dot, { x: e.clientX, y: e.clientY, duration: 0.07, ease: 'none', overwrite: true })
     }
 
@@ -52,7 +58,6 @@ export default function CustomCursor() {
     document.documentElement.addEventListener('mouseenter', onEnter)
 
     return () => {
-      document.documentElement.style.cursor = ''
       window.removeEventListener('mousemove',  onMove)
       window.removeEventListener('mouseover',  onOver)
       window.removeEventListener('mouseout',   onOut)
