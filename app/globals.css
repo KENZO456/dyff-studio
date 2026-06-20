@@ -1283,6 +1283,10 @@ img, video { display: block; max-width: 100%; }
 }
 .cart-qty-btn:hover { border-color: var(--ink-green); color: var(--ink-green); }
 
+.cart-backdrop        { display: none; }
+.cart-subtotal-amount { font-weight: 400; }
+.cart-checkout-label  { font-weight: 400; font-size: 1.1rem; }
+
 /* Checkout CTA in cart footer */
 .cart-checkout-btn {
   display:       block;

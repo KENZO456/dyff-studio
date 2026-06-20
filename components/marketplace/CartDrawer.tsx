@@ -37,8 +37,7 @@ export default function CartDrawer() {
       {/* Backdrop */}
       <div
         ref={backdropRef}
-        className="fixed inset-0 z-[60] bg-ink-void/70"
-        style={{ display: 'none' }}
+        className="cart-backdrop fixed inset-0 z-[60] bg-ink-void/70"
         onClick={closeCart}
         aria-hidden="true"
       />
@@ -63,6 +62,7 @@ export default function CartDrawer() {
             )}
           </div>
           <button
+            type="button"
             onClick={closeCart}
             className="w-8 h-8 flex items-center justify-center text-white/60 hover:text-white transition-colors duration-150 cursor-pointer"
             aria-label="Close cart"
@@ -96,17 +96,18 @@ export default function CartDrawer() {
                   </Thunder>
 
                   <div className="flex items-center gap-2">
-                    <button onClick={() => updateQty(item.id, -1)} className="cart-qty-btn" aria-label="Decrease quantity">
+                    <button type="button" onClick={() => updateQty(item.id, -1)} className="cart-qty-btn" aria-label="Decrease quantity">
                       <Minus size={10} />
                     </button>
                     <span className="font-mono text-white text-[0.7rem] w-5 text-center">
                       {item.qty}
                     </span>
-                    <button onClick={() => updateQty(item.id, +1)} className="cart-qty-btn" aria-label="Increase quantity">
+                    <button type="button" onClick={() => updateQty(item.id, +1)} className="cart-qty-btn" aria-label="Increase quantity">
                       <Plus size={10} />
                     </button>
 
                     <button
+                      type="button"
                       onClick={() => removeItem(item.id)}
                       className="ml-auto text-white/40 hover:text-red-400 transition-colors duration-150 cursor-pointer"
                       aria-label={`Remove ${item.name}`}
@@ -135,7 +136,7 @@ export default function CartDrawer() {
             <div className="flex items-end justify-between mb-5">
               <Label variant="tag" className="text-white/70">SUBTOTAL</Label>
               <div className="text-right">
-                <p className="font-thunder text-white text-xl leading-none" style={{ fontWeight: 400 }}>
+                <p className="font-thunder text-white text-xl leading-none cart-subtotal-amount">
                   {fmtNGN(totalNGN)}
                 </p>
                 <p className="font-mono text-white/50 text-[0.6rem] mt-0.5">
@@ -149,7 +150,7 @@ export default function CartDrawer() {
               onClick={closeCart}
               className="ink-flood-up cart-checkout-btn block w-full text-center"
             >
-              <span className="font-thunder uppercase text-white tracking-wide" style={{ fontWeight: 400, fontSize: '1.1rem' }}>
+              <span className="font-thunder uppercase text-white tracking-wide cart-checkout-label">
                 PROCEED TO CHECKOUT
               </span>
             </Link>
