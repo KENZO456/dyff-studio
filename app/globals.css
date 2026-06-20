@@ -745,6 +745,145 @@ img, video { display: block; max-width: 100%; }
 /* Checkout preview price */
 .checkout-total-size { font-size: 1.6rem; font-weight: 400; }
 
+/* ─── What We Do section ─────────────────────────────────────────────────────
+
+   Design: 4 horizontal blade rows.
+   Default: category name at low opacity (dormant).
+   Hover:   name wakes to full white, description fades in, green bar scales up. */
+
+.wwd-section {
+  width:   100%;
+  padding: 7rem clamp(1.5rem, 6vw, 6rem) 8rem;
+}
+
+.wwd-header {
+  display:         flex;
+  align-items:     baseline;
+  justify-content: space-between;
+  gap:             2rem;
+  margin-bottom:   1rem;
+  padding-bottom:  1.5rem;
+  border-bottom:   1px solid rgba(242,234,216,0.08);
+}
+
+.wwd-eyebrow {
+  font-size:      0.55rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color:          var(--ink-green);
+}
+
+.wwd-sub {
+  font-size:   0.58rem;
+  color:       rgba(242,234,216,0.32);
+  line-height: 1.65;
+  text-align:  right;
+}
+
+/* ── Pillar row ──────────────────────────────────────────────────────────── */
+
+.wwd-pillar {
+  position:        relative;
+  display:         flex;
+  align-items:     center;
+  justify-content: space-between;
+  gap:             2rem;
+  padding:         1.8rem 0;
+  border-bottom:   1px solid rgba(242,234,216,0.06);
+  text-decoration: none;
+  overflow:        hidden;
+}
+
+/* Green left bar */
+.wwd-bar {
+  position:         absolute;
+  left:             0;
+  top:              0;
+  bottom:           0;
+  width:            2.5px;
+  background:       var(--ink-green);
+  transform:        scaleY(0);
+  transform-origin: bottom center;
+  transition:       transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.wwd-pillar:hover .wwd-bar,
+.wwd-pillar:focus-visible .wwd-bar { transform: scaleY(1); }
+
+.wwd-pillar-left {
+  display:        flex;
+  flex-direction: column;
+  gap:            0.6rem;
+}
+
+/* Dormant name — wakes on hover */
+.wwd-pillar-name {
+  font-size:      clamp(3.2rem, 8vw, 7.5rem);
+  font-weight:    400;
+  line-height:    0.88;
+  text-transform: uppercase;
+  color:          var(--ink-paper);
+  opacity:        0.28;
+  transition:     opacity 0.32s ease;
+}
+.wwd-pillar:hover .wwd-pillar-name,
+.wwd-pillar:focus-visible .wwd-pillar-name { opacity: 1; }
+
+/* Description — invisible until hover */
+.wwd-pillar-desc {
+  font-size:   0.6rem;
+  line-height: 1.75;
+  color:       rgba(242,234,216,0);
+  max-width:   52ch;
+  transition:  color 0.28s ease 0.06s;
+}
+.wwd-pillar:hover .wwd-pillar-desc,
+.wwd-pillar:focus-visible .wwd-pillar-desc { color: rgba(242,234,216,0.55); }
+
+/* Right meta — slides in on hover */
+.wwd-pillar-right {
+  display:        flex;
+  flex-direction: column;
+  align-items:    flex-end;
+  gap:            0.6rem;
+  flex-shrink:    0;
+  opacity:        0;
+  transform:      translateX(10px);
+  transition:     opacity 0.22s ease, transform 0.22s ease;
+}
+.wwd-pillar:hover .wwd-pillar-right,
+.wwd-pillar:focus-visible .wwd-pillar-right {
+  opacity:   1;
+  transform: translateX(0);
+}
+
+.wwd-pillar-tag {
+  font-size:      0.48rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color:          var(--ink-green);
+  white-space:    nowrap;
+}
+
+.wwd-pillar-arrow {
+  font-size: 1.1rem;
+  color:     var(--ink-green);
+  line-height: 1;
+}
+
+/* ── Mobile — no hover, show content statically ─────────────────────────── */
+@media (max-width: 640px) {
+  .wwd-sub          { display: none; }
+  .wwd-pillar-right { display: none; }
+  .wwd-pillar-name  { opacity: 0.65; }
+  .wwd-pillar-desc  { color: rgba(242,234,216,0.42); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wwd-bar, .wwd-pillar-name, .wwd-pillar-desc, .wwd-pillar-right {
+    transition: none;
+  }
+}
+
 /* ─── Animations page — static helper classes ───────────────────────────────
    Keeps dynamic radial glow, ghost text, and iframe border out of JSX style=  */
 
@@ -1456,6 +1595,9 @@ img, video { display: block; max-width: 100%; }
   50%  { background-position: 100% 50% }
   100% { background-position: 0%   50% }
 }
+
+/* CTA scroll wrapper — 100vh container so footer slides over the sticky CTA */
+.cta-scroll-wrapper { position: relative; height: 100vh; }
 
 .footer-new {
   position:            relative;

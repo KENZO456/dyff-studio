@@ -9,7 +9,6 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Eye }           from 'lucide-react'
 import { Thunder, Body, Label } from '@/components/ui/Typography'
 import { useCart }       from '@/contexts/CartContext'
-import StickyNarrative   from '@/components/sections/StickyNarrative'
 import type { Product, ProductCategory, ProductSort } from '@/lib/supabase'
 
 gsap.registerPlugin(ScrollTrigger)
@@ -287,8 +286,6 @@ export default function MarketplaceClient({ initialProducts }: { initialProducts
           </div>
         </div>
       </section>
-
-      <StickyNarrative />
 
       <FilterBar activeCat={activeCat} sortBy={sortBy} onCat={setActiveCat} onSort={setSortBy} />
 
