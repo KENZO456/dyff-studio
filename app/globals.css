@@ -420,11 +420,6 @@ img, video { display: block; max-width: 100%; }
   border:    none;
 }
 
-/* Crimson vignette used in ManifestoSection */
-.manifesto-vignette {
-  background: radial-gradient(ellipse at 50% 60%, rgba(153, 202, 69,0.12) 0%, transparent 70%);
-}
-
 /* ─── Audio Player ───────────────────────────────────────────────────────── */
 
 /* Glassy dark bar */
