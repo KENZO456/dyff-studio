@@ -711,8 +711,7 @@ img, video { display: block; max-width: 100%; }
   font-size:     0.55rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color:         rgba(58, 58, 58, 0.9);
-  color:         rgba(242, 234, 216, 0.45);
+  color:         rgba(242, 234, 216, 0.8);
   margin-bottom: 0.5rem;
 }
 
@@ -720,7 +719,7 @@ img, video { display: block; max-width: 100%; }
 .checkout-input {
   width:         100%;
   background:    rgba(8, 8, 8, 0.7);
-  border:        1px solid rgba(58, 58, 58, 0.4);
+  border:        1px solid rgba(242, 234, 216, 0.15);
   border-radius: 2px;
   padding:       0.65rem 0.85rem;
   font-family:   'Space Mono', monospace;
@@ -729,7 +728,7 @@ img, video { display: block; max-width: 100%; }
   outline:       none;
   transition:    border-color 0.2s ease;
 }
-.checkout-input::placeholder { color: rgba(58, 58, 58, 0.6); }
+.checkout-input::placeholder { color: rgba(242, 234, 216, 0.28); }
 .checkout-input:focus        { border-color: rgba(153, 202, 69,0.5); }
 
 /* Checkout pay button */
@@ -1273,16 +1272,16 @@ img, video { display: block; max-width: 100%; }
 .cart-qty-btn {
   width:  22px;
   height: 22px;
-  border: 1px solid rgba(58, 58, 58, 0.5);
+  border: 1px solid rgba(242, 234, 216, 0.2);
   border-radius: 2px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color:   var(--ink-ash);
+  color:   var(--ink-paper);
   cursor:  pointer;
   transition: border-color 0.15s ease, color 0.15s ease;
 }
-.cart-qty-btn:hover { border-color: var(--ink-green); color: var(--ink-paper); }
+.cart-qty-btn:hover { border-color: var(--ink-green); color: var(--ink-green); }
 
 /* Checkout CTA in cart footer */
 .cart-checkout-btn {

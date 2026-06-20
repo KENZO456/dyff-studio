@@ -7,8 +7,6 @@ import { ArrowLeft, Lock, Shield, Truck, Loader2 } from 'lucide-react'
 import { Thunder, Body, Label } from '@/components/ui/Typography'
 import { useCart } from '@/contexts/CartContext'
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-
 function fmtNGN(n: number) { return '₦' + n.toLocaleString('en-NG') }
 function fmtUSD(n: number) { return '$' + n.toFixed(2) }
 
@@ -19,8 +17,6 @@ const FIELD_AUTOCOMPLETE: Record<string, string> = {
   phone:     'tel',
 }
 
-// ─── Component ───────────────────────────────────────────────────────────────
-
 export default function CheckoutPage() {
   const { items, totalNGN, totalUSD, itemCount } = useCart()
 
@@ -30,7 +26,7 @@ export default function CheckoutPage() {
     email:     '',
     phone:     '',
   })
-  const [loading, setLoading] = useState(false)
+  const [loading,  setLoading]  = useState(false)
   const [payError, setPayError] = useState('')
 
   const handleField = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -50,7 +46,6 @@ export default function CheckoutPage() {
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error ?? 'Failed to create order')
-      // Redirect to Paystack — they redirect back to /marketplace/checkout/success
       window.location.href = data.authorization_url
     } catch (err: unknown) {
       setPayError(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
@@ -65,34 +60,34 @@ export default function CheckoutPage() {
         {/* Back link */}
         <Link
           href="/marketplace"
-          className="inline-flex items-center gap-2 font-mono text-ink-ash/50 text-[0.58rem] tracking-[0.15em] uppercase hover:text-ink-paper transition-colors duration-150 mb-10"
+          className="inline-flex items-center gap-2 font-mono text-white/50 text-[0.58rem] tracking-[0.15em] uppercase hover:text-white transition-colors duration-150 mb-10"
         >
           <ArrowLeft size={12} />
           Back to Marketplace
         </Link>
 
-        <Thunder as="h1" size="section" weight={400} className="text-ink-paper leading-none mb-10">
+        <Thunder as="h1" size="section" weight={400} className="text-white leading-none mb-10">
           CHECKOUT
         </Thunder>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-10">
 
-          {/* ── LEFT: Contact + Payment ──────────────────────────────────── */}
+          {/* ── LEFT ──────────────────────────────────────────────────────── */}
           <div className="flex flex-col gap-8">
 
             {/* Contact */}
             <section className="checkout-section">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-[2px] h-5 bg-ink-green rounded-full shrink-0" />
-                <Label variant="tag" className="text-ink-ash/70">CONTACT DETAILS</Label>
+                <Label variant="tag" className="text-white/80">CONTACT DETAILS</Label>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {[
-                  { name: 'firstName', label: 'First Name',    placeholder: 'Emeka'           },
-                  { name: 'lastName',  label: 'Last Name',     placeholder: 'Okafor'          },
-                  { name: 'email',     label: 'Email Address', placeholder: 'you@example.com' },
-                  { name: 'phone',     label: 'Phone (optional)', placeholder: '+234 801 234 5678' },
+                  { name: 'firstName', label: 'First Name',       placeholder: 'Emeka'              },
+                  { name: 'lastName',  label: 'Last Name',        placeholder: 'Okafor'             },
+                  { name: 'email',     label: 'Email Address',    placeholder: 'you@example.com'    },
+                  { name: 'phone',     label: 'Phone (optional)', placeholder: '+234 801 234 5678'  },
                 ].map(({ name, label, placeholder }) => (
                   <div key={name} className={name === 'email' || name === 'phone' ? 'sm:col-span-2' : ''}>
                     <label className="checkout-label" htmlFor={`field-${name}`}>{label}</label>
@@ -111,17 +106,17 @@ export default function CheckoutPage() {
               </div>
             </section>
 
-            {/* Delivery note */}
+            {/* Delivery */}
             <section className="checkout-section">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-[2px] h-5 bg-ink-green rounded-full shrink-0" />
-                <Label variant="tag" className="text-ink-ash/70">DELIVERY</Label>
+                <Label variant="tag" className="text-white/80">DELIVERY</Label>
               </div>
-              <div className="flex items-start gap-3 p-4 bg-ink-dark/50 rounded-sm border border-ink-ash/10">
-                <Truck size={16} className="text-ink-ash/50 shrink-0 mt-0.5" />
-                <Body size="sm" className="text-ink-ash/60 leading-relaxed">
-                  All DYFF products are <strong className="text-ink-paper/70">digital downloads</strong>.
-                  A download link will be sent to your email address immediately after payment.
+              <div className="flex items-start gap-3 p-4 bg-ink-dark/50 rounded-sm border border-white/10">
+                <Truck size={16} className="text-white/50 shrink-0 mt-0.5" />
+                <Body size="sm" className="text-white/70 leading-relaxed">
+                  All DYFF products are <strong className="text-white">digital downloads</strong>.
+                  A download link will be sent to your email immediately after payment.
                   No shipping required.
                 </Body>
               </div>
@@ -131,23 +126,21 @@ export default function CheckoutPage() {
             <section className="checkout-section">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-[2px] h-5 bg-ink-green rounded-full shrink-0" />
-                <Label variant="tag" className="text-ink-ash/70">PAYMENT</Label>
+                <Label variant="tag" className="text-white/80">PAYMENT</Label>
               </div>
 
-              {/* Paystack badge */}
-              <div className="flex items-center gap-3 p-4 bg-ink-dark/50 rounded-sm border border-ink-ash/10 mb-5">
+              <div className="flex items-center gap-3 p-4 bg-ink-dark/50 rounded-sm border border-white/10 mb-5">
                 <Shield size={16} className="text-ink-green shrink-0" />
                 <div>
-                  <p className="font-mono text-ink-paper/70 text-[0.6rem] tracking-[0.15em] uppercase mb-0.5">
+                  <p className="font-mono text-white text-[0.6rem] tracking-[0.15em] uppercase mb-0.5">
                     Secure Checkout
                   </p>
-                  <p className="font-mono text-ink-ash/50 text-[0.55rem]">
+                  <p className="font-mono text-white/60 text-[0.55rem]">
                     Powered by Paystack · Cards · Bank Transfer · USSD · Mobile Money
                   </p>
                 </div>
               </div>
 
-              {/* Pay button */}
               <button
                 type="button"
                 onClick={handlePaystack}
@@ -156,10 +149,7 @@ export default function CheckoutPage() {
                 aria-label={`Pay ${fmtNGN(totalNGN)} with Paystack`}
               >
                 <div className="flex items-center justify-center gap-3 py-4">
-                  {loading
-                    ? <Loader2 size={14} className="animate-spin" />
-                    : <Lock size={14} />
-                  }
+                  {loading ? <Loader2 size={14} className="animate-spin" /> : <Lock size={14} />}
                   <span className="font-thunder uppercase tracking-wide checkout-pay-text">
                     {loading ? 'REDIRECTING…' : `PAY ${fmtNGN(totalNGN)} WITH PAYSTACK`}
                   </span>
@@ -167,36 +157,38 @@ export default function CheckoutPage() {
               </button>
 
               {payError && (
-                <p className="font-mono text-red-400/80 text-[0.55rem] mt-2 text-center tracking-wide">
+                <p className="font-mono text-red-400 text-[0.55rem] mt-2 text-center tracking-wide">
                   {payError}
                 </p>
               )}
               {!form.email && !payError && (
-                <p className="font-mono text-ink-ash/40 text-[0.53rem] mt-2 text-center tracking-wide">
+                <p className="font-mono text-white/40 text-[0.53rem] mt-2 text-center tracking-wide">
                   Enter your email address to enable payment
                 </p>
               )}
             </section>
           </div>
 
-          {/* ── RIGHT: Order Summary ─────────────────────────────────────── */}
+          {/* ── RIGHT: Order Summary ───────────────────────────────────────── */}
           <aside>
             <div className="checkout-section sticky top-[72px]">
               <div className="flex items-center gap-3 mb-5">
                 <div className="w-[2px] h-5 bg-ink-green rounded-full shrink-0" />
-                <Label variant="tag" className="text-ink-ash/70">ORDER SUMMARY</Label>
+                <Label variant="tag" className="text-white/80">ORDER SUMMARY</Label>
               </div>
 
               {items.length === 0 ? (
                 <div className="py-8 text-center">
-                  <Body size="sm" className="text-ink-ash/40">Your cart is empty.</Body>
-                  <Link href="/marketplace" className="font-mono text-ink-green text-[0.58rem] tracking-[0.12em] uppercase hover:text-ink-ember transition-colors duration-150 mt-2 inline-block">
+                  <Body size="sm" className="text-white/50">Your cart is empty.</Body>
+                  <Link
+                    href="/marketplace"
+                    className="font-mono text-ink-green text-[0.58rem] tracking-[0.12em] uppercase hover:text-white transition-colors duration-150 mt-2 inline-block"
+                  >
                     Browse Marketplace →
                   </Link>
                 </div>
               ) : (
                 <>
-                  {/* Item list */}
                   <div className="flex flex-col gap-3 mb-5">
                     {items.map(item => (
                       <div key={item.id} className="flex items-center gap-3">
@@ -204,48 +196,46 @@ export default function CheckoutPage() {
                           <Image src={item.image_url} alt={item.name} fill className="object-cover" sizes="48px" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="font-thunder text-ink-paper leading-tight text-sm truncate checkout-item-title">
+                          <p className="font-thunder text-white leading-tight text-sm truncate">
                             {item.name}
                           </p>
-                          <p className="font-mono text-ink-ash/40 text-[0.52rem] mt-0.5">
+                          <p className="font-mono text-white/50 text-[0.52rem] mt-0.5">
                             Qty {item.qty}
                           </p>
                         </div>
-                        <p className="font-mono text-ink-paper text-[0.65rem] shrink-0">
+                        <p className="font-mono text-white text-[0.65rem] shrink-0">
                           {fmtNGN(item.price_ngn * item.qty)}
                         </p>
                       </div>
                     ))}
                   </div>
 
-                  {/* Divider */}
-                  <div className="h-px bg-ink-ash/10 mb-4" />
+                  <div className="h-px bg-white/10 mb-4" />
 
-                  {/* Totals */}
                   <div className="flex flex-col gap-2">
                     <div className="flex justify-between items-center">
-                      <span className="font-mono text-ink-ash/50 text-[0.58rem] tracking-[0.12em] uppercase">Subtotal</span>
-                      <span className="font-mono text-ink-paper text-[0.65rem]">{fmtNGN(totalNGN)}</span>
+                      <span className="font-mono text-white/60 text-[0.58rem] tracking-[0.12em] uppercase">Subtotal</span>
+                      <span className="font-mono text-white text-[0.65rem]">{fmtNGN(totalNGN)}</span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="font-mono text-ink-ash/50 text-[0.58rem] tracking-[0.12em] uppercase">USD equiv.</span>
-                      <span className="font-mono text-ink-ash/40 text-[0.58rem]">{fmtUSD(totalUSD)}</span>
+                      <span className="font-mono text-white/60 text-[0.58rem] tracking-[0.12em] uppercase">USD equiv.</span>
+                      <span className="font-mono text-white/60 text-[0.58rem]">{fmtUSD(totalUSD)}</span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="font-mono text-ink-ash/50 text-[0.58rem] tracking-[0.12em] uppercase">Delivery</span>
+                      <span className="font-mono text-white/60 text-[0.58rem] tracking-[0.12em] uppercase">Delivery</span>
                       <span className="font-mono text-ink-green text-[0.58rem]">FREE (Digital)</span>
                     </div>
                   </div>
 
-                  <div className="h-px bg-ink-ash/15 my-4" />
+                  <div className="h-px bg-white/10 my-4" />
 
                   <div className="flex justify-between items-end">
-                    <Label variant="tag" className="text-ink-ash/60">TOTAL</Label>
+                    <Label variant="tag" className="text-white/70">TOTAL</Label>
                     <div className="text-right">
-                      <p className="font-thunder text-ink-paper leading-none checkout-total-size">
+                      <p className="font-thunder text-white leading-none checkout-total-size">
                         {fmtNGN(totalNGN)}
                       </p>
-                      <p className="font-mono text-ink-ash/35 text-[0.55rem] mt-0.5">
+                      <p className="font-mono text-white/50 text-[0.55rem] mt-0.5">
                         ≈ {fmtUSD(totalUSD)}
                       </p>
                     </div>
