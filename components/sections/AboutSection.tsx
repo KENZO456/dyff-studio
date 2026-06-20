@@ -131,13 +131,13 @@ export default function AboutSection() {
                 className="font-thunder uppercase text-white leading-[0.86]"
                 style={{ fontSize: 'clamp(4rem, 10.5vw, 13rem)', fontWeight: 400 }}
               >
-                TWO
-              </h2>
+                ENTER
+                          </h2>
               <h2
                 className="font-thunder uppercase text-white leading-[0.86]"
                 style={{ fontSize: 'clamp(4rem, 10.5vw, 13rem)', fontWeight: 400 }}
               >
-                BROTHERS.
+                THE
               </h2>
             </div>
 
@@ -147,7 +147,7 @@ export default function AboutSection() {
                 className="font-thunder uppercase text-ink-green leading-[0.86]"
                 style={{ fontSize: 'clamp(4rem, 10.5vw, 13rem)', fontWeight: 400 }}
               >
-                ONE STUDIO.
+                STUDIO.
               </h2>
             </div>
 
