@@ -18,7 +18,7 @@ export default function HeroSection() {
       <div className="relative z-10 px-6 md:px-16 pb-24 text-center">
         <div ref={revealRef} className="ink-reveal-text">
           <span className="hero-headline font-thunder uppercase text-ink-white tracking-tight block">
-            IDEAS ARE TICKING TIME BOMBS.
+            DYFF STUDIO.
           </span>
         </div>
       </div>
