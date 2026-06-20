@@ -69,7 +69,7 @@ export default function CtaSection() {
 
       <div className="ink-grain absolute inset-0 pointer-events-none opacity-20" aria-hidden="true" />
 
-      <div className="relative z-10 max-w-[1400px] mx-auto w-full">
+      <div className="relative z-10 w-full flex flex-col items-end text-right">
 
         <p
           ref={labelRef}
@@ -96,10 +96,10 @@ export default function CtaSection() {
           </h2>
         </div>
 
-        <div className="mt-10 max-w-xl flex flex-col md:flex-row items-start md:items-end gap-10">
+        <div className="mt-10 max-w-xl flex flex-col md:flex-row items-end gap-10">
           <p
             ref={bodyRef}
-            className="font-thunder uppercase text-white/50 leading-snug opacity-0"
+            className="font-thunder uppercase text-white/50 leading-snug opacity-0 text-right"
             style={{ fontSize: 'clamp(0.9rem, 1.8vw, 1.2rem)' }}
           >
             Follow DYFF Studio for updates on new releases,
@@ -123,11 +123,11 @@ export default function CtaSection() {
         </div>
 
         {/* Bottom rule */}
-        <div className="mt-20 flex items-center gap-4">
-          <div className="w-8 h-px bg-ink-green/40" />
+        <div className="mt-20 flex items-center justify-end gap-4">
           <span className="font-mono text-white/20 text-[0.55rem] tracking-[0.22em] uppercase">
             DYFF Studios &nbsp;·&nbsp; Lagos, Nigeria &nbsp;·&nbsp; Est. 2024
           </span>
+          <div className="w-8 h-px bg-ink-green/40" />
         </div>
 
       </div>
