@@ -21,6 +21,8 @@ interface AudioContextValue {
   seek:            (time: number) => void
   setVolume:       (vol: number) => void
   setPlaybackRate: (rate: number) => void
+  /** Stop audio and dismiss the player */
+  close:           () => void
 }
 
 // ─── Context ──────────────────────────────────────────────────────────────
@@ -144,12 +146,25 @@ export default function AudioProvider({ children }: { children: React.ReactNode 
     if (audioRef.current) audioRef.current.playbackRate = rate
   }, [])
 
+  const close = useCallback(() => {
+    const a = audioRef.current
+    if (!a) return
+    a.pause()
+    a.src = ''
+    setCurrentEpisode(null)
+    setCurrentSeries(null)
+    setIsPlaying(false)
+    currentEpisodeRef.current = null
+    currentSeriesRef.current  = null
+    episodesRef.current       = []
+  }, [])
+
   return (
     <AudioContext.Provider value={{
       audioRef,
       currentSeries, currentEpisode,
       isPlaying, volume, playbackRate,
-      play, togglePlay, skip, seek, setVolume, setPlaybackRate,
+      play, togglePlay, skip, seek, setVolume, setPlaybackRate, close,
     }}>
       {/* Hidden audio element — lives at root so it persists across all route changes */}
       <audio ref={audioRef} preload="metadata" style={{ display: 'none' }} />

@@ -151,7 +151,7 @@ function FeaturedPlayer({ entry, playerRef, showIframe, onOverlayClick }: Featur
       <div className="absolute inset-0 bg-ink-void/55 z-[1]" />
       {showIframe && youtubeId && (
         <iframe
-          src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1&rel=0&modestbranding=1`}
+          src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1&mute=1&loop=1&playlist=${youtubeId}&rel=0&modestbranding=1`}
           title={entry.title}
           allow="autoplay; encrypted-media; fullscreen"
           allowFullScreen
@@ -162,6 +162,9 @@ function FeaturedPlayer({ entry, playerRef, showIframe, onOverlayClick }: Featur
         <video
           src={entry.video_url}
           autoPlay
+          loop
+          muted
+          playsInline
           controls
           className="absolute inset-0 w-full h-full z-[4] object-cover"
         />
@@ -185,7 +188,7 @@ export default function AnimationsClient({ animations }: { animations: Animation
   const firstEntry = animations[0]
 
   const [activeEntry,    setActiveEntry]    = useState<Animation | null>(firstEntry ?? null)
-  const [showIframe,     setShowIframe]     = useState(false)
+  const [showIframe,     setShowIframe]     = useState(true)   // autoplay on load
   const [activeCategory, setActiveCategory] = useState<FilterValue>('ALL')
 
   const heroRef          = useRef<HTMLElement>(null)
