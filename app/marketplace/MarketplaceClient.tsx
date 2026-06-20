@@ -67,7 +67,7 @@ interface CardProps {
 }
 
 function ProductCard({ product, onPreview }: CardProps) {
-  const { addItem, cartIconRef } = useCart()
+  const { addItem, openCart, cartIconRef } = useCart()
   const wrapRef         = useRef<HTMLDivElement>(null)
   const cardRef         = useRef<HTMLDivElement>(null)
   const imgContainerRef = useRef<HTMLDivElement>(null)
@@ -87,6 +87,7 @@ function ProductCard({ product, onPreview }: CardProps) {
 
   const handleAddToCart = useCallback(() => {
     addItem(product)
+    openCart()
     const cartIcon    = cartIconRef.current
     const imgContainer = imgContainerRef.current
     if (!imgContainer || !cartIcon) return
@@ -106,7 +107,7 @@ function ProductCard({ product, onPreview }: CardProps) {
     const destX = (cartRect.left + cartRect.width  / 2) - (imgRect.left + imgRect.width  / 2 - 20) - 20
     const destY = (cartRect.top  + cartRect.height / 2) - (imgRect.top  + imgRect.height / 2 - 20) - 20
     gsap.to(clone, { x: destX, y: destY, scale: 0.15, opacity: 0, duration: 0.62, ease: 'power2.in', onComplete: () => document.body.removeChild(clone) })
-  }, [product, addItem, cartIconRef])
+  }, [product, addItem, openCart, cartIconRef])
 
   return (
     <div ref={wrapRef} className={`market-card-wrap ${catClass(product.category)}`} onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave}>
