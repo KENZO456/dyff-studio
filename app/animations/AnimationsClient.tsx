@@ -91,7 +91,9 @@ interface VideoCardProps {
 }
 
 function VideoCard({ entry, isActive, onPlay }: VideoCardProps) {
-  const cardRef = useRef<HTMLDivElement>(null)
+  const cardRef   = useRef<HTMLDivElement>(null)
+  const youtubeId = extractYouTubeId(entry.video_url)
+
   return (
     <div className="anim-card-wrapper" data-entry-id={entry.id}>
       <div
@@ -103,23 +105,48 @@ function VideoCard({ entry, isActive, onPlay }: VideoCardProps) {
         onKeyDown={e => { if ((e.key === 'Enter' || e.key === ' ') && cardRef.current) onPlay(entry, cardRef.current) }}
         aria-label={`Play ${entry.title}`}
       >
-        <div className="anim-card-thumb relative">
+        <div className="anim-card-thumb relative overflow-hidden">
+          {/* Static thumbnail — visible while video preview loads */}
           <Image
             src={entry.thumbnail_url}
             alt={`${entry.title} thumbnail`}
             fill
-            className="object-cover"
+            className="object-cover z-0"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />
-          <div className="absolute top-2.5 right-2.5 z-[2] flex items-center gap-1.5">
+
+          {/* Looping muted preview — sits on top of thumbnail */}
+          {youtubeId ? (
+            <iframe
+              src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1&mute=1&loop=1&playlist=${youtubeId}&controls=0&rel=0&modestbranding=1&playsinline=1`}
+              allow="autoplay; encrypted-media"
+              loading="lazy"
+              title={entry.title}
+              className="absolute inset-0 w-full h-full z-[1]"
+              style={{ pointerEvents: 'none', border: 'none' }}
+            />
+          ) : (
+            <video
+              src={entry.video_url}
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="absolute inset-0 w-full h-full object-cover z-[1]"
+              style={{ pointerEvents: 'none' }}
+            />
+          )}
+
+          <div className="absolute top-2.5 right-2.5 z-[3] flex items-center gap-1.5">
             <span className="anim-runtime-pill">{entry.runtime}</span>
           </div>
-          <div className="anim-card-play z-[3]" aria-hidden="true">
+          <div className="anim-card-play z-[4]" aria-hidden="true">
             <div className="w-11 h-11 rounded-full bg-ink-green/80 flex items-center justify-center">
               <Play size={18} fill="white" className="text-white ml-0.5" />
             </div>
           </div>
         </div>
+
         <div className="px-4 py-3.5 flex flex-col gap-1.5">
           <div className="flex items-center gap-2">
             <span className={typeTagClass(entry.type)}>{entry.type.toUpperCase()}</span>
