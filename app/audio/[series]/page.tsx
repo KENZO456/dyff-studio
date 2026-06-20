@@ -2,7 +2,8 @@ import { getAudioSeries, getSeriesWithEpisodes } from '@/lib/supabase'
 import { notFound } from 'next/navigation'
 import SeriesClient from './SeriesClient'
 
-export const dynamicParams = false
+export const dynamicParams = true
+export const revalidate = 60
 
 export async function generateStaticParams() {
   const all = await getAudioSeries()

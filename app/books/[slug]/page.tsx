@@ -2,7 +2,8 @@ import { notFound } from 'next/navigation'
 import { getBookSlugs, getBookWithChapters } from '@/lib/supabase'
 import BookReader from './BookReader'
 
-export const dynamicParams = false
+export const dynamicParams = true
+export const revalidate = 60
 
 export async function generateStaticParams() {
   const slugs = await getBookSlugs()
