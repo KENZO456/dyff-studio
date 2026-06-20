@@ -1,26 +1,9 @@
-// TODO: Initialize Paystack with your public key from https://dashboard.paystack.com
-// TODO: For digital delivery, consider Lemon Squeezy: https://lemonsqueezy.com
-// TODO: For Nigerian users, Paystack handles NGN natively — recommended
-// Install: npm install @paystack/inline-js
-//
-// Basic Paystack flow:
-//   import PaystackPop from '@paystack/inline-js'
-//   const paystack = new PaystackPop()
-//   paystack.newTransaction({
-//     key: process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY,
-//     email: formData.email,
-//     amount: totalNGN * 100,  // Paystack uses kobo (1/100 of NGN)
-//     currency: 'NGN',
-//     onSuccess: (transaction) => { /* handle delivery */ },
-//     onCancel: () => { /* reset */ },
-//   })
-
 'use client'
 
 import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowLeft, Lock, Shield, Truck } from 'lucide-react'
+import { ArrowLeft, Lock, Shield, Truck, Loader2 } from 'lucide-react'
 import { Thunder, Body, Label } from '@/components/ui/Typography'
 import { useCart } from '@/contexts/CartContext'
 
@@ -47,25 +30,32 @@ export default function CheckoutPage() {
     email:     '',
     phone:     '',
   })
+  const [loading, setLoading] = useState(false)
+  const [payError, setPayError] = useState('')
 
   const handleField = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm(prev => ({ ...prev, [e.target.name]: e.target.value }))
+    setPayError('')
   }
 
-  const handlePaystack = () => {
-    // TODO: Uncomment after: npm install @paystack/inline-js
-    // import PaystackPop from '@paystack/inline-js'
-    // const paystack = new PaystackPop()
-    // paystack.newTransaction({
-    //   key:      process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY!,
-    //   email:    form.email,
-    //   amount:   totalNGN * 100,   // kobo
-    //   currency: 'NGN',
-    //   metadata: { items: JSON.stringify(items.map(i => ({ id: i.id, qty: i.qty }))) },
-    //   onSuccess: (tx) => { console.log('Payment successful:', tx.reference) },
-    //   onCancel:  ()   => { console.log('Payment cancelled') },
-    // })
-    alert('Paystack integration pending — add your public key to .env.local')
+  const handlePaystack = async () => {
+    if (!form.email || itemCount === 0 || loading) return
+    setLoading(true)
+    setPayError('')
+    try {
+      const res  = await fetch('/api/marketplace/orders', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ form, items, totalNGN, totalUSD }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error ?? 'Failed to create order')
+      // Redirect to Paystack — they redirect back to /marketplace/checkout/success
+      window.location.href = data.authorization_url
+    } catch (err: unknown) {
+      setPayError(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
+      setLoading(false)
+    }
   }
 
   return (
@@ -161,19 +151,27 @@ export default function CheckoutPage() {
               <button
                 type="button"
                 onClick={handlePaystack}
-                disabled={!form.email || itemCount === 0}
+                disabled={!form.email || itemCount === 0 || loading}
                 className="checkout-pay-btn ink-flood-up w-full disabled:opacity-40 disabled:cursor-not-allowed"
                 aria-label={`Pay ${fmtNGN(totalNGN)} with Paystack`}
               >
                 <div className="flex items-center justify-center gap-3 py-4">
-                  <Lock size={14} />
+                  {loading
+                    ? <Loader2 size={14} className="animate-spin" />
+                    : <Lock size={14} />
+                  }
                   <span className="font-thunder uppercase tracking-wide checkout-pay-text">
-                    PAY {fmtNGN(totalNGN)} WITH PAYSTACK
+                    {loading ? 'REDIRECTING…' : `PAY ${fmtNGN(totalNGN)} WITH PAYSTACK`}
                   </span>
                 </div>
               </button>
 
-              {!form.email && (
+              {payError && (
+                <p className="font-mono text-red-400/80 text-[0.55rem] mt-2 text-center tracking-wide">
+                  {payError}
+                </p>
+              )}
+              {!form.email && !payError && (
                 <p className="font-mono text-ink-ash/40 text-[0.53rem] mt-2 text-center tracking-wide">
                   Enter your email address to enable payment
                 </p>

@@ -91,6 +91,31 @@ export type Product = {
   updated_at: string
 }
 
+export type OrderItem = {
+  id:           string
+  name:         string
+  qty:          number
+  price_ngn:    number
+  price_usd:    number
+  download_url: string
+}
+
+export type Order = {
+  id:            string
+  reference:     string
+  email:         string
+  first_name:    string
+  last_name:     string
+  phone:         string | null
+  items:         OrderItem[]
+  total_ngn:     number
+  total_usd:     number
+  status:        'pending' | 'paid' | 'failed' | 'refunded'
+  paystack_data: Record<string, unknown> | null
+  created_at:    string
+  updated_at:    string
+}
+
 // ── Supabase client ──────────────────────────────────────────
 
 const supabaseUrl  = process.env.NEXT_PUBLIC_SUPABASE_URL!
