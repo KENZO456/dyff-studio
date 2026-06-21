@@ -811,26 +811,43 @@ img, video { display: block; max-width: 100%; }
 /* Checkout preview price */
 .checkout-total-size { font-size: 1.6rem; font-weight: 400; }
 
-/* ─── What We Do section ─────────────────────────────────────────────────────
+/* ─── What We Do — Horizontal Scroll ────────────────────────────────────────
+   Desktop: GSAP-pinned horizontal track, 4 cards slide left on scroll.
+   Green radial gradient hotspot moves via --wwd-trail-x as progress goes 0→1.
+   Mobile: cards stack vertically, no pin. */
 
-   Design: 4 horizontal blade rows.
-   Default: category name at low opacity (dormant).
-   Hover:   name wakes to full white, description fades in, green bar scales up. */
-
-.wwd-section {
+.wwd-outer {
+  position:   relative;
   width:      100%;
-  padding:    7rem clamp(1.5rem, 6vw, 6rem) 8rem;
+  height:     100vh;
+  overflow:   hidden;
   background: var(--ink-void);
 }
 
-.wwd-header {
-  display:         flex;
-  align-items:     baseline;
-  justify-content: space-between;
-  gap:             2rem;
-  margin-bottom:   1rem;
-  padding-bottom:  1.5rem;
-  border-bottom:   1px solid rgba(242,234,216,0.08);
+/* Gradient trail — hotspot moves left→right as --wwd-trail-x goes 0%→100% */
+.wwd-trail {
+  position:       absolute;
+  inset:          0;
+  z-index:        1;
+  pointer-events: none;
+  background:     radial-gradient(
+    ellipse 55vw 80% at var(--wwd-trail-x, 0%) 55%,
+    rgba(120, 190, 0, 0.14) 0%,
+    rgba(120, 190, 0, 0.05) 45%,
+    transparent 70%
+  );
+}
+
+/* Section label — fixed top-left inside the pinned container */
+.wwd-h-header {
+  position:       absolute;
+  top:            clamp(3.5rem, 8vh, 5rem);
+  left:           clamp(2rem, 6vw, 6rem);
+  z-index:        10;
+  display:        flex;
+  flex-direction: column;
+  gap:            0.55rem;
+  pointer-events: none;
 }
 
 .wwd-eyebrow {
@@ -840,115 +857,142 @@ img, video { display: block; max-width: 100%; }
   color:          var(--ink-green);
 }
 
-.wwd-sub {
-  font-size:   0.58rem;
-  color:       rgba(242,234,216,0.32);
-  line-height: 1.65;
-  text-align:  right;
+.wwd-h-sub {
+  font-size:      0.54rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color:          rgba(242,234,216,0.28);
+  line-height:    1.7;
 }
 
-/* ── Pillar row ──────────────────────────────────────────────────────────── */
+/* Horizontal track — GSAP translates this element */
+.wwd-track {
+  position:    relative;
+  z-index:     2;
+  display:     flex;
+  align-items: center;
+  height:      100vh;
+  width:       max-content;
+  will-change: transform;
+}
 
-.wwd-pillar {
+.wwd-track-pad {
+  flex-shrink: 0;
+  width:       clamp(2rem, 8vw, 8rem);
+}
+
+/* ── Card ─────────────────────────────────────────────────────────────────── */
+
+.wwd-card {
   position:        relative;
+  flex-shrink:     0;
+  width:           clamp(280px, 34vw, 500px);
+  height:          clamp(340px, 58vh, 520px);
+  margin:          0 clamp(0.75rem, 1.5vw, 1.5rem);
+  padding:         clamp(1.8rem, 3.5vh, 3rem) clamp(1.5rem, 2.5vw, 2.5rem);
+  border:          1px solid rgba(242,234,216,0.07);
   display:         flex;
-  align-items:     center;
-  justify-content: space-between;
-  gap:             2rem;
-  padding:         1.8rem 0;
-  border-bottom:   1px solid rgba(242,234,216,0.06);
+  flex-direction:  column;
+  gap:             1rem;
   text-decoration: none;
+  background:      rgba(8,8,8,0.5);
+  transition:      border-color 0.32s ease, background 0.32s ease;
   overflow:        hidden;
 }
-
-/* Green left bar */
-.wwd-bar {
+.wwd-card::before {
+  content:          '';
   position:         absolute;
-  left:             0;
-  top:              0;
-  bottom:           0;
-  width:            2.5px;
+  left:             0; top: 0; bottom: 0;
+  width:            2px;
   background:       var(--ink-green);
   transform:        scaleY(0);
   transform-origin: bottom center;
-  transition:       transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  transition:       transform 0.38s cubic-bezier(0.4, 0, 0.2, 1);
 }
-.wwd-pillar:hover .wwd-bar,
-.wwd-pillar:focus-visible .wwd-bar { transform: scaleY(1); }
+.wwd-card:hover,
+.wwd-card:focus-visible {
+  border-color: rgba(120, 190, 0, 0.28);
+  background:   rgba(120, 190, 0, 0.04);
+}
+.wwd-card:hover::before,
+.wwd-card:focus-visible::before { transform: scaleY(1); }
 
-.wwd-pillar-left {
-  display:        flex;
-  flex-direction: column;
-  gap:            0.6rem;
+.wwd-card-num {
+  font-size:      0.44rem;
+  letter-spacing: 0.30em;
+  color:          var(--ink-green);
+  text-transform: uppercase;
 }
 
-/* Dormant name — wakes on hover */
-.wwd-pillar-name {
-  font-size:      clamp(3.2rem, 8vw, 7.5rem);
+.wwd-card-name {
+  font-size:      clamp(3.8rem, 8vw, 7.5rem);
   font-weight:    400;
-  line-height:    0.88;
+  line-height:    0.86;
   text-transform: uppercase;
-  color:          var(--ink-paper);
-  opacity:        0.28;
-  transition:     opacity 0.32s ease;
+  color:          rgba(242,234,216,0.18);
+  transition:     color 0.32s ease;
+  margin-top:     0.25rem;
 }
-.wwd-pillar:hover .wwd-pillar-name,
-.wwd-pillar:focus-visible .wwd-pillar-name { opacity: 1; }
+.wwd-card:hover .wwd-card-name,
+.wwd-card:focus-visible .wwd-card-name { color: rgba(242,234,216,1); }
 
-/* Description — invisible until hover */
-.wwd-pillar-desc {
-  font-size:      clamp(0.72rem, 1.3vw, 0.9rem);
-  line-height:    1.55;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color:          rgba(242,234,216,0);
-  max-width:      52ch;
-  transition:     color 0.28s ease 0.06s;
-}
-.wwd-pillar:hover .wwd-pillar-desc,
-.wwd-pillar:focus-visible .wwd-pillar-desc { color: rgba(242,234,216,0.55); }
-
-/* Right meta — slides in on hover */
-.wwd-pillar-right {
+.wwd-card-bottom {
   display:        flex;
   flex-direction: column;
-  align-items:    flex-end;
   gap:            0.6rem;
-  flex-shrink:    0;
-  opacity:        0;
-  transform:      translateX(10px);
-  transition:     opacity 0.22s ease, transform 0.22s ease;
-}
-.wwd-pillar:hover .wwd-pillar-right,
-.wwd-pillar:focus-visible .wwd-pillar-right {
-  opacity:   1;
-  transform: translateX(0);
+  margin-top:     auto;
 }
 
-.wwd-pillar-tag {
-  font-size:      0.48rem;
+.wwd-card-tag {
+  font-size:      0.44rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color:          var(--ink-green);
-  white-space:    nowrap;
+  opacity:        0;
+  transform:      translateY(6px);
+  transition:     opacity 0.22s ease, transform 0.22s ease;
 }
+.wwd-card:hover .wwd-card-tag,
+.wwd-card:focus-visible .wwd-card-tag { opacity: 1; transform: translateY(0); }
 
-.wwd-pillar-arrow {
-  font-size: 1.1rem;
-  color:     var(--ink-green);
+.wwd-card-desc {
+  font-size:      clamp(0.68rem, 1.15vw, 0.86rem);
+  line-height:    1.6;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color:          rgba(242,234,216,0);
+  transition:     color 0.28s ease 0.06s;
+}
+.wwd-card:hover .wwd-card-desc,
+.wwd-card:focus-visible .wwd-card-desc { color: rgba(242,234,216,0.48); }
+
+.wwd-card-arrow {
+  font-size:  1.1rem;
+  color:      var(--ink-green);
+  opacity:    0;
+  transform:  translateX(-8px);
+  transition: opacity 0.22s ease 0.08s, transform 0.22s ease 0.08s;
   line-height: 1;
 }
+.wwd-card:hover .wwd-card-arrow,
+.wwd-card:focus-visible .wwd-card-arrow { opacity: 1; transform: translateX(0); }
 
-/* ── Mobile — no hover, show content statically ─────────────────────────── */
-@media (max-width: 640px) {
-  .wwd-sub          { display: none; }
-  .wwd-pillar-right { display: none; }
-  .wwd-pillar-name  { opacity: 0.65; }
-  .wwd-pillar-desc  { color: rgba(242,234,216,0.42); }
+/* ── Mobile — vertical stack, no pin ──────────────────────────────────────── */
+@media (max-width: 767px) {
+  .wwd-outer  { height: auto; overflow: visible; }
+  .wwd-trail  { display: none; }
+  .wwd-h-header { position: static; padding: 4rem clamp(1.5rem, 6vw, 3rem) 2rem; }
+  .wwd-track  { flex-direction: column; width: 100%; height: auto; align-items: stretch; }
+  .wwd-track-pad { width: 100%; height: clamp(1rem, 3vw, 2rem); }
+  .wwd-card   { width: 100%; height: auto; min-height: 280px; margin: 0 0 1px; }
+  .wwd-card-tag,
+  .wwd-card-desc { opacity: 1; transform: none; color: rgba(242,234,216,0.38); }
+  .wwd-card-name { color: rgba(242,234,216,0.55); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .wwd-bar, .wwd-pillar-name, .wwd-pillar-desc, .wwd-pillar-right {
+  .wwd-card, .wwd-card::before,
+  .wwd-card-name, .wwd-card-tag, .wwd-card-desc, .wwd-card-arrow {
     transition: none;
   }
 }
