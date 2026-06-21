@@ -14,6 +14,11 @@ import type { Animation } from '@/lib/supabase'
 
 gsap.registerPlugin(ScrollTrigger)
 
+function isValidUrl(url: string | null | undefined): url is string {
+  if (!url) return false
+  return url.startsWith('http://') || url.startsWith('https://') || url.startsWith('/')
+}
+
 type FilterValue = 'ALL' | Animation['type']
 
 const FILTERS: { value: FilterValue; label: string }[] = [
@@ -107,13 +112,15 @@ function VideoCard({ entry, isActive, onPlay }: VideoCardProps) {
       >
         <div className="anim-card-thumb relative overflow-hidden">
           {/* Static thumbnail — visible while video preview loads */}
-          <Image
-            src={entry.thumbnail_url}
-            alt={`${entry.title} thumbnail`}
-            fill
-            className="object-cover z-0"
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          />
+          {isValidUrl(entry.thumbnail_url) && (
+            <Image
+              src={entry.thumbnail_url}
+              alt={`${entry.title} thumbnail`}
+              fill
+              className="object-cover z-0"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            />
+          )}
 
           {/* Looping muted preview — sits on top of thumbnail */}
           {youtubeId ? (
@@ -174,7 +181,9 @@ function FeaturedPlayer({ entry, playerRef, showIframe, onOverlayClick }: Featur
   const youtubeId = extractYouTubeId(entry.video_url)
   return (
     <div ref={playerRef} className="anim-player anim-player-vignette relative w-full aspect-video bg-ink-void overflow-hidden">
-      <Image src={entry.thumbnail_url} alt={entry.title} fill className="object-cover" draggable="false" priority />
+      {isValidUrl(entry.thumbnail_url) && (
+        <Image src={entry.thumbnail_url} alt={entry.title} fill className="object-cover" draggable="false" priority />
+      )}
       <div className="absolute inset-0 bg-ink-void/55 z-[1]" />
       {showIframe && youtubeId && (
         <iframe
