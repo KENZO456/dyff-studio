@@ -62,14 +62,16 @@ export default function Navbar() {
       <nav ref={navRef} className="navbar" aria-label="Main navigation">
         {/* ── Logo ────────────────────────── */}
         <Link href="/" className="navbar-logo" aria-label="DYFF Studios home">
-          <Image
-            src="/Images/LOGO.png"
-            alt="DYFF Studios"
-            width={130}
-            height={52}
-            className="h-10 w-auto object-contain"
-            priority
-          />
+          <div className="navbar-logo-clip">
+            <Image
+              src="/Images/LOGO.png"
+              alt="DYFF Studios"
+              width={130}
+              height={52}
+              className="h-10 w-auto max-w-none"
+              priority
+            />
+          </div>
         </Link>
 
         {/* ── Desktop links ───────────────── */}
@@ -92,7 +94,7 @@ export default function Navbar() {
           className="navbar-hamburger"
           onClick={() => setOpen(v => !v)}
           aria-label={open ? 'Close menu' : 'Open menu'}
-          aria-expanded={open}
+          aria-expanded={open ? 'true' : 'false'}
         >
           {open ? <X size={22} /> : <Menu size={22} />}
         </button>

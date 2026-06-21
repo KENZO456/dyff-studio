@@ -84,10 +84,10 @@ export default function EseShowcase() {
       scrollTrigger: {
         trigger:             section,
         start:               'top top',
-        end:                 '+=350%',
+        end:                 '+=500%',
         pin:                 true,
         pinType:             'transform',
-        scrub:               0.6,
+        scrub:               1,
         invalidateOnRefresh: true,
         onRefresh:           resize,
       },

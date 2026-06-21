@@ -16,11 +16,14 @@ export default function HeroSection() {
     <section className="relative min-h-screen flex flex-col justify-end overflow-hidden select-none">
 
       <div className="relative z-10 px-6 md:px-16 pb-24 text-center">
-        <div ref={revealRef} className="ink-reveal-text">
-          <span className="hero-headline font-thunder uppercase text-ink-white tracking-tight block">
+        <h1 className="font-thunder uppercase leading-[0.88] select-none">
+          <span
+            ref={revealRef}
+            className="hero-headline ink-reveal-text block"
+          >
             DYFF STUDIO.
           </span>
-        </div>
+        </h1>
       </div>
 
       {/* Scroll indicator */}

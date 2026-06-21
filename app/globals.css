@@ -766,6 +766,10 @@ img, video { display: block; max-width: 100%; }
   padding:      1.5rem;
 }
 
+.download-filename {
+  font-size: clamp(0.78rem, 1.5vw, 0.95rem);
+}
+
 /* Form label */
 .checkout-label {
   display:       block;
@@ -959,8 +963,10 @@ img, video { display: block; max-width: 100%; }
 
 /* Homepage hero headline — one line on desktop */
 .hero-headline {
-  font-size:   clamp(1.2rem, 3.5vw, 4.5rem);
-  line-height: 1;
+  font-size:            clamp(3rem, 11vw, 13rem);
+  line-height:          0.88;
+  color:                transparent;
+  -webkit-text-stroke:  1.5px rgba(242, 234, 216, 0.9);
 }
 @media (min-width: 768px) {
   .hero-headline { white-space: nowrap; }
@@ -1533,6 +1539,14 @@ img, video { display: block; max-width: 100%; }
   align-items:     center;
   text-decoration: none;
   margin-right:    auto;
+}
+
+/* Clips the logo image to show only the icon, hiding the "dyff" wordmark */
+.navbar-logo-clip {
+  width:      48px;
+  height:     40px;
+  overflow:   hidden;
+  flex-shrink: 0;
 }
 .navbar-logo-dyff {
   font-family:     'Thunder', sans-serif;

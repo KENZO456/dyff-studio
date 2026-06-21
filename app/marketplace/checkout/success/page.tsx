@@ -91,16 +91,16 @@ function SuccessInner() {
                       download
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center justify-between gap-4 p-4 bg-ink-dark/50
-                        border border-ink-ash/10 hover:border-ink-green/40
+                      className="flex items-center justify-between gap-4 p-4
+                        border border-ink-green/40 hover:border-ink-green hover:bg-ink-green/5
                         transition-colors duration-200 rounded-sm group"
                     >
-                      <span className="font-thunder text-ink-paper text-sm leading-tight truncate">
+                      <span className="download-filename font-thunder uppercase text-ink-paper leading-tight truncate">
                         {name}
                       </span>
                       <Download
                         size={15}
-                        className="text-ink-ash/40 group-hover:text-ink-green shrink-0 transition-colors duration-200"
+                        className="text-ink-green shrink-0 group-hover:scale-110 transition-transform duration-200"
                       />
                     </a>
                   ))}
