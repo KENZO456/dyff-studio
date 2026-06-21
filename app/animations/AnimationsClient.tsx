@@ -10,6 +10,7 @@ import { gsap }          from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Play }          from 'lucide-react'
 import { Thunder, Body, Label } from '@/components/ui/Typography'
+import ScrollExpandMedia from '@/components/blocks/ScrollExpandMedia'
 import type { Animation } from '@/lib/supabase'
 
 gsap.registerPlugin(ScrollTrigger)
@@ -317,6 +318,18 @@ export default function AnimationsClient({ animations }: { animations: Animation
   return (
     <main className="min-h-screen bg-ink-void">
 
+      {/* ── Scroll-expand hero — sits above the existing hero ───────────────── */}
+      <ScrollExpandMedia
+        mediaType="image"
+        mediaSrc="/Images/bg (5).jpg"
+        bgImageSrc="/Images/bg (4).jpg"
+        title="THE INK MOVES"
+        date="DYFF ANIMATIONS"
+        scrollToExpand="SCROLL TO EXPAND"
+        textBlend
+      />
+
+      {/* ── Existing hero (now below the scroll-expand section) ─────────────── */}
       <section ref={heroRef} className="film-grain relative min-h-[75vh] flex flex-col items-center justify-center overflow-hidden">
         <div className="anim-hero-bg absolute inset-0 z-0" />
         <Image src="/Images/bg (4).jpg" alt="" fill className="object-cover opacity-15 z-0" aria-hidden="true" />
