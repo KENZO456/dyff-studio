@@ -75,7 +75,7 @@ export default function WhatWeDoSection() {
 
             <div className="wwd-pillar-left">
               <h3 className="wwd-pillar-name font-thunder">{name}</h3>
-              <p className="wwd-pillar-desc font-mono">{desc}</p>
+              <p className="wwd-pillar-desc font-thunder">{desc}</p>
             </div>
 
             <div className="wwd-pillar-right" aria-hidden="true">

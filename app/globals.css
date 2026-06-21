@@ -814,8 +814,9 @@ img, video { display: block; max-width: 100%; }
    Hover:   name wakes to full white, description fades in, green bar scales up. */
 
 .wwd-section {
-  width:   100%;
-  padding: 7rem clamp(1.5rem, 6vw, 6rem) 8rem;
+  width:      100%;
+  padding:    7rem clamp(1.5rem, 6vw, 6rem) 8rem;
+  background: var(--ink-void);
 }
 
 .wwd-header {
@@ -892,11 +893,13 @@ img, video { display: block; max-width: 100%; }
 
 /* Description — invisible until hover */
 .wwd-pillar-desc {
-  font-size:   0.6rem;
-  line-height: 1.75;
-  color:       rgba(242,234,216,0);
-  max-width:   52ch;
-  transition:  color 0.28s ease 0.06s;
+  font-size:      clamp(0.72rem, 1.3vw, 0.9rem);
+  line-height:    1.55;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color:          rgba(242,234,216,0);
+  max-width:      52ch;
+  transition:     color 0.28s ease 0.06s;
 }
 .wwd-pillar:hover .wwd-pillar-desc,
 .wwd-pillar:focus-visible .wwd-pillar-desc { color: rgba(242,234,216,0.55); }
