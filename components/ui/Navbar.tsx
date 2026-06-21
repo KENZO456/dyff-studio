@@ -62,16 +62,14 @@ export default function Navbar() {
       <nav ref={navRef} className="navbar" aria-label="Main navigation">
         {/* ── Logo ────────────────────────── */}
         <Link href="/" className="navbar-logo" aria-label="DYFF Studios home">
-          <div className="navbar-logo-clip">
-            <Image
-              src="/Images/LOGO.png"
-              alt="DYFF Studios"
-              width={130}
-              height={52}
-              className="h-10 w-auto max-w-none"
-              priority
-            />
-          </div>
+          <Image
+            src="/Images/LOGO.png"
+            alt="DYFF Studios"
+            width={120}
+            height={40}
+            className="h-8 w-auto"
+            priority
+          />
         </Link>
 
         {/* ── Desktop links ───────────────── */}

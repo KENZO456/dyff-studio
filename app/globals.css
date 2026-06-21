@@ -1541,13 +1541,6 @@ img, video { display: block; max-width: 100%; }
   margin-right:    auto;
 }
 
-/* Clips the logo image to show only the icon, hiding the "dyff" wordmark */
-.navbar-logo-clip {
-  width:      48px;
-  height:     40px;
-  overflow:   hidden;
-  flex-shrink: 0;
-}
 .navbar-logo-dyff {
   font-family:     'Thunder', sans-serif;
   font-size:       clamp(1.9rem, 3vw, 2.5rem);
