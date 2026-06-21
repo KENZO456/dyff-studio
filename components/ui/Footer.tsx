@@ -4,12 +4,12 @@ import PortfolioLink from '@/components/ui/PortfolioLink'
 const SOCIAL_LINKS: { label: string; href: string; path: string }[] = [
   {
     label: 'YouTube',
-    href:  '#',
+    href:  'https://www.youtube.com/@DYFFSTUDIO/videos',
     path:  'M23 7s-.3-1.8-1-2.6c-1-.9-2-.9-2.5-1C17 3.3 12 3.3 12 3.3s-5 0-7.5.1C4 3.5 3 3.5 2 4.4 1.3 5.2 1 7 1 7S.7 9.1.7 11.2v2c0 2.1.3 4.2.3 4.2s.3 1.8 1 2.6c1 .9 2.2.8 2.8.9C6.7 21 12 21 12 21s5 0 7.5-.2c.5 0 1.5-.1 2.5-1 .7-.7 1-2.5 1-2.5s.3-2.1.3-4.2v-2C23.3 9.1 23 7 23 7zm-13.5 8.5v-7.3l6.7 3.7-6.7 3.6z',
   },
   {
     label: 'Instagram',
-    href:  '#',
+    href:  'https://www.instagram.com/dyff_studio/',
     path:  'M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37zM17.5 6.5a1 1 0 1 0 1 1 1 1 0 0 0-1-1zM7.8 2h8.4A5.8 5.8 0 0 1 22 7.8v8.4A5.8 5.8 0 0 1 16.2 22H7.8A5.8 5.8 0 0 1 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2z',
   },
   {
@@ -19,7 +19,7 @@ const SOCIAL_LINKS: { label: string; href: string; path: string }[] = [
   },
   {
     label: 'Webnovel',
-    href:  '#',
+    href:  'https://www.webnovel.com/profile/4505117878',
     path:  'M4 19.5A2.5 2.5 0 0 1 6.5 17H20M4 19.5A2.5 2.5 0 0 0 6.5 22H20V2H6.5A2.5 2.5 0 0 0 4 4.5v15z',
   },
 ]
