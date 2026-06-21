@@ -832,8 +832,8 @@ img, video { display: block; max-width: 100%; }
   pointer-events: none;
   background:     radial-gradient(
     ellipse 55vw 80% at var(--wwd-trail-x, 0%) 55%,
-    rgba(120, 190, 0, 0.14) 0%,
-    rgba(120, 190, 0, 0.05) 45%,
+    rgba(120, 190, 0, 0.22) 0%,
+    rgba(120, 190, 0, 0.08) 45%,
     transparent 70%
   );
 }
@@ -895,7 +895,8 @@ img, video { display: block; max-width: 100%; }
   flex-direction:  column;
   gap:             1rem;
   text-decoration: none;
-  background:      rgba(8,8,8,0.5);
+  background:      rgba(8,8,8,0.18);
+  backdrop-filter: blur(2px);
   transition:      border-color 0.32s ease, background 0.32s ease;
   overflow:        hidden;
 }
@@ -929,7 +930,7 @@ img, video { display: block; max-width: 100%; }
   font-weight:    400;
   line-height:    0.86;
   text-transform: uppercase;
-  color:          rgba(242,234,216,0.18);
+  color:          rgba(242,234,216,0.75);
   transition:     color 0.32s ease;
   margin-top:     0.25rem;
 }
@@ -948,34 +949,32 @@ img, video { display: block; max-width: 100%; }
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color:          var(--ink-green);
-  opacity:        0;
-  transform:      translateY(6px);
-  transition:     opacity 0.22s ease, transform 0.22s ease;
+  opacity:        0.7;
+  transition:     opacity 0.22s ease;
 }
 .wwd-card:hover .wwd-card-tag,
-.wwd-card:focus-visible .wwd-card-tag { opacity: 1; transform: translateY(0); }
+.wwd-card:focus-visible .wwd-card-tag { opacity: 1; }
 
 .wwd-card-desc {
   font-size:      clamp(0.68rem, 1.15vw, 0.86rem);
   line-height:    1.6;
   letter-spacing: 0.03em;
   text-transform: uppercase;
-  color:          rgba(242,234,216,0);
-  transition:     color 0.28s ease 0.06s;
+  color:          rgba(242,234,216,0.42);
+  transition:     color 0.28s ease;
 }
 .wwd-card:hover .wwd-card-desc,
-.wwd-card:focus-visible .wwd-card-desc { color: rgba(242,234,216,0.48); }
+.wwd-card:focus-visible .wwd-card-desc { color: rgba(242,234,216,0.72); }
 
 .wwd-card-arrow {
   font-size:  1.1rem;
   color:      var(--ink-green);
-  opacity:    0;
-  transform:  translateX(-8px);
-  transition: opacity 0.22s ease 0.08s, transform 0.22s ease 0.08s;
+  opacity:    0.6;
+  transition: opacity 0.22s ease, transform 0.22s ease;
   line-height: 1;
 }
 .wwd-card:hover .wwd-card-arrow,
-.wwd-card:focus-visible .wwd-card-arrow { opacity: 1; transform: translateX(0); }
+.wwd-card:focus-visible .wwd-card-arrow { opacity: 1; }
 
 /* ── Mobile — vertical stack, no pin ──────────────────────────────────────── */
 @media (max-width: 767px) {
