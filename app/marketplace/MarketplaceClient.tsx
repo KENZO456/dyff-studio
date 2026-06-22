@@ -6,7 +6,7 @@ import {
 import Image from 'next/image'
 import { gsap }          from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { Eye }           from 'lucide-react'
+import { Eye, Play, Pause } from 'lucide-react'
 import { Thunder, Body, Label } from '@/components/ui/Typography'
 import { useCart }       from '@/contexts/CartContext'
 import type { Product, ProductCategory, ProductSort } from '@/lib/supabase'
@@ -31,6 +31,9 @@ const CAT_LABEL: Record<ProductCategory, string> = {
 function catClass(cat: ProductCategory) { return CAT_CLASS[cat] }
 function fmtNGN(n: number) { return '₦' + n.toLocaleString('en-NG') }
 function fmtUSD(n: number) { return '$' + n.toFixed(2) }
+function fmtTime(s: number) {
+  return `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`
+}
 
 function sortProducts(products: Product[], sort: ProductSort): Product[] {
   if (sort === 'price_asc')  return [...products].sort((a, b) => a.price_ngn - b.price_ngn)
@@ -63,9 +66,11 @@ const HERO_PILLS: { cat: ProductCategory; dot: string }[] = [
 interface CardProps {
   product:   Product
   onPreview: (p: Product) => void
+  onPlay:    (p: Product) => void
+  isPlaying: boolean
 }
 
-function ProductCard({ product, onPreview }: CardProps) {
+function ProductCard({ product, onPreview, onPlay, isPlaying }: CardProps) {
   const { addItem, openCart, cartIconRef } = useCart()
   const wrapRef         = useRef<HTMLDivElement>(null)
   const cardRef         = useRef<HTMLDivElement>(null)
@@ -87,7 +92,7 @@ function ProductCard({ product, onPreview }: CardProps) {
   const handleAddToCart = useCallback(() => {
     addItem(product)
     openCart()
-    const cartIcon    = cartIconRef.current
+    const cartIcon     = cartIconRef.current
     const imgContainer = imgContainerRef.current
     if (!imgContainer || !cartIcon) return
     const imgRect  = imgContainer.getBoundingClientRect()
@@ -108,8 +113,15 @@ function ProductCard({ product, onPreview }: CardProps) {
     gsap.to(clone, { x: destX, y: destY, scale: 0.15, opacity: 0, duration: 0.62, ease: 'power2.in', onComplete: () => document.body.removeChild(clone) })
   }, [product, addItem, openCart, cartIconRef])
 
+  const hasBeatPreview = product.category === 'beats' && !!product.preview_url
+
   return (
-    <div ref={wrapRef} className={`market-card-wrap ${catClass(product.category)}`} onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave}>
+    <div
+      ref={wrapRef}
+      className={`market-card-wrap ${catClass(product.category)}${isPlaying ? ' is-beat-playing' : ''}`}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+    >
       <div ref={cardRef} className="market-card">
         <div ref={imgContainerRef} className="market-card-img relative">
           <Image
@@ -129,7 +141,22 @@ function ProductCard({ product, onPreview }: CardProps) {
               <Eye size={16} className="text-ink-paper" />
             </div>
           </div>
+
+          {/* Beat preview play button */}
+          {hasBeatPreview && (
+            <button
+              className={`market-beat-play z-[4]${isPlaying ? ' is-playing' : ''}`}
+              onClick={(e) => { e.stopPropagation(); e.preventDefault(); onPlay(product) }}
+              aria-label={isPlaying ? `Pause ${product.name} preview` : `Play ${product.name} preview`}
+            >
+              {isPlaying
+                ? <Pause size={14} fill="currentColor" strokeWidth={0} />
+                : <Play  size={14} fill="currentColor" strokeWidth={0} />
+              }
+            </button>
+          )}
         </div>
+
         <div className="px-4 pt-3 pb-4 flex flex-col gap-2">
           <div className="flex items-center gap-2">
             <span className="market-cat-pill">{CAT_LABEL[product.category]}</span>
@@ -211,6 +238,12 @@ export default function MarketplaceClient({ initialProducts }: { initialProducts
   const [sortBy,         setSortBy]     = useState<ProductSort>('newest')
   const [previewProduct, setPreview]    = useState<Product | null>(null)
 
+  // Beat audio state
+  const [playingId,    setPlayingId]    = useState<string | null>(null)
+  const [beatProgress, setBeatProgress] = useState(0)
+  const [beatDuration, setBeatDuration] = useState(0)
+  const audioRef = useRef<HTMLAudioElement | null>(null)
+
   const heroRef       = useRef<HTMLElement>(null)
   const pillsRef      = useRef<HTMLDivElement>(null)
   const gridRef       = useRef<HTMLDivElement>(null)
@@ -220,6 +253,46 @@ export default function MarketplaceClient({ initialProducts }: { initialProducts
     const base = activeCat === 'ALL' ? initialProducts : initialProducts.filter(p => p.category === activeCat)
     return sortProducts(base, sortBy)
   }, [activeCat, sortBy, initialProducts])
+
+  const stopAudio = useCallback(() => {
+    if (audioRef.current) {
+      audioRef.current.pause()
+      audioRef.current.src = ''
+      audioRef.current = null
+    }
+    setPlayingId(null)
+    setBeatProgress(0)
+    setBeatDuration(0)
+  }, [])
+
+  const handlePlay = useCallback((product: Product) => {
+    if (!product.preview_url) return
+    if (playingId === product.id) { stopAudio(); return }
+
+    stopAudio()
+
+    const audio = new Audio(product.preview_url)
+    audioRef.current = audio
+    audio.addEventListener('loadedmetadata', () => setBeatDuration(audio.duration))
+    audio.addEventListener('timeupdate', () => setBeatProgress(audio.currentTime))
+    audio.addEventListener('ended', () => { setPlayingId(null); setBeatProgress(0) })
+    audio.play().catch(() => setPlayingId(null))
+    setPlayingId(product.id)
+  }, [playingId, stopAudio])
+
+  const handleSeek = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    if (!audioRef.current || !beatDuration) return
+    const rect = e.currentTarget.getBoundingClientRect()
+    audioRef.current.currentTime = ((e.clientX - rect.left) / rect.width) * beatDuration
+  }, [beatDuration])
+
+  const closePreview = useCallback(() => {
+    stopAudio()
+    setPreview(null)
+  }, [stopAudio])
+
+  // Stop audio on unmount
+  useEffect(() => () => { stopAudio() }, [stopAudio])
 
   useEffect(() => {
     if (!pillsRef.current) return
@@ -299,7 +372,13 @@ export default function MarketplaceClient({ initialProducts }: { initialProducts
 
         <div ref={gridRef} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 md:gap-6">
           {visible.map(product => (
-            <ProductCard key={product.id} product={product} onPreview={setPreview} />
+            <ProductCard
+              key={product.id}
+              product={product}
+              onPreview={setPreview}
+              onPlay={handlePlay}
+              isPlaying={playingId === product.id}
+            />
           ))}
         </div>
 
@@ -310,10 +389,14 @@ export default function MarketplaceClient({ initialProducts }: { initialProducts
         )}
       </section>
 
+      {/* Preview modal */}
       {previewProduct && (
-        <div className="fixed inset-0 z-[80] flex items-center justify-center p-6" onClick={() => setPreview(null)}>
+        <div className="fixed inset-0 z-[80] flex items-center justify-center p-6" onClick={closePreview}>
           <div className="absolute inset-0 bg-ink-void/85" aria-hidden="true" />
-          <div className="relative z-[1] bg-ink-dark border border-ink-ash/20 rounded-sm max-w-md w-full overflow-hidden" onClick={e => e.stopPropagation()}>
+          <div
+            className="relative z-[1] bg-ink-dark border border-ink-ash/20 rounded-sm max-w-md w-full overflow-hidden"
+            onClick={e => e.stopPropagation()}
+          >
             <div className="relative w-full aspect-video">
               <Image src={previewProduct.image_url} alt={previewProduct.name} fill className="object-cover" />
             </div>
@@ -323,12 +406,41 @@ export default function MarketplaceClient({ initialProducts }: { initialProducts
               </div>
               <Thunder as="h2" size="card" weight={400} className="text-ink-paper leading-tight mb-2">{previewProduct.name}</Thunder>
               <Body size="sm" className="text-ink-ash/70 leading-relaxed mb-4">{previewProduct.description}</Body>
-              <div className="flex items-center justify-between">
+
+              {/* Beat audio preview player */}
+              {previewProduct.category === 'beats' && previewProduct.preview_url && (
+                <div className="beat-modal-player">
+                  <div className="beat-modal-player-row">
+                    <button
+                      className="beat-modal-play-btn"
+                      onClick={() => handlePlay(previewProduct)}
+                      aria-label={playingId === previewProduct.id ? 'Pause preview' : 'Play preview'}
+                    >
+                      {playingId === previewProduct.id
+                        ? <Pause size={16} fill="currentColor" strokeWidth={0} />
+                        : <Play  size={16} fill="currentColor" strokeWidth={0} />
+                      }
+                    </button>
+                    <div className="beat-modal-track" onClick={handleSeek} role="slider" aria-label="Seek">
+                      <div
+                        className="beat-modal-fill"
+                        style={{ width: beatDuration ? `${(beatProgress / beatDuration) * 100}%` : '0%' }}
+                      />
+                    </div>
+                    <span className="beat-modal-time font-mono">
+                      {fmtTime(beatProgress)}
+                    </span>
+                  </div>
+                  <span className="beat-modal-label font-mono">PREVIEW CLIP</span>
+                </div>
+              )}
+
+              <div className="flex items-center justify-between mt-4">
                 <span className="font-thunder text-ink-paper" style={{ fontSize: '1.5rem', fontWeight: 400 }}>
                   {fmtNGN(previewProduct.price_ngn)}
                 </span>
                 <button
-                  onClick={() => setPreview(null)}
+                  onClick={closePreview}
                   className="font-mono text-ink-ash/50 text-[0.55rem] tracking-[0.15em] uppercase hover:text-ink-paper transition-colors duration-150 cursor-pointer"
                 >
                   CLOSE

@@ -85,6 +85,7 @@ export type Product = {
   description: string
   image_url: string
   download_url: string
+  preview_url?: string | null
   tags: string[]
   status: 'active' | 'draft' | 'out_of_stock' | 'coming_soon'
   created_at: string
