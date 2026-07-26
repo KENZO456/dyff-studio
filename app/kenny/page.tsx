@@ -76,7 +76,7 @@ const SECTION_BG = 'rgba(8, 8, 8, 0.78)'
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <p className="font-thunder text-ink-green text-[0.9rem] tracking-[0.3em] uppercase mb-8">
+    <p className="font-thunder text-ink-green text-[1rem] tracking-[0.3em] uppercase mb-8">
       {children}
     </p>
   )
@@ -157,7 +157,7 @@ export default function KennyPage() {
       <section className="relative min-h-screen flex flex-col justify-between px-6 md:px-12 lg:px-20 pt-28 pb-12 overflow-hidden">
 
         <div className="flex-1 flex flex-col items-center justify-center text-center gap-6">
-          <p className="font-thunder text-ink-green text-[0.9rem] tracking-[0.35em] uppercase">
+          <p className="font-thunder text-ink-green text-[1rem] tracking-[0.35em] uppercase">
             Creative Full Stack Developer
           </p>
 
@@ -178,22 +178,22 @@ export default function KennyPage() {
         </div>
 
         <div className="flex items-end justify-between gap-4">
-          <p className="font-thunder text-white/60 text-[0.85rem] tracking-[0.2em] uppercase">
+          <p className="font-thunder text-white text-[1rem] tracking-[0.2em] uppercase">
             Lagos, Nigeria&nbsp;&nbsp;·&nbsp;&nbsp;Available for projects
           </p>
           <div className="flex items-center gap-6">
             <a href="https://github.com" target="_blank" rel="noopener noreferrer"
-              className="flex items-center gap-2 font-thunder text-white/60 text-[0.8rem] tracking-wide uppercase hover:text-ink-green transition-colors duration-200">
+              className="flex items-center gap-2 font-thunder text-white text-[0.9rem] tracking-wide uppercase hover:text-ink-green transition-colors duration-200">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.37.6.11.82-.26.82-.58v-2.03c-3.34.72-4.04-1.6-4.04-1.6-.54-1.38-1.33-1.75-1.33-1.75-1.08-.74.08-.73.08-.73 1.2.09 1.83 1.23 1.83 1.23 1.07 1.83 2.8 1.3 3.49 1 .1-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.14-.3-.54-1.52.1-3.18 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 3-.4c1.02 0 2.04.13 3 .4 2.28-1.55 3.29-1.23 3.29-1.23.64 1.66.24 2.88.12 3.18.77.84 1.23 1.91 1.23 3.22 0 4.61-2.8 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.82.58C20.56 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg>
               GitHub
             </a>
             <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer"
-              className="flex items-center gap-2 font-thunder text-white/60 text-[0.8rem] tracking-wide uppercase hover:text-ink-green transition-colors duration-200">
+              className="flex items-center gap-2 font-thunder text-white text-[0.9rem] tracking-wide uppercase hover:text-ink-green transition-colors duration-200">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.44-2.14 2.94v5.67H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14zM7.12 20.45H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.22.79 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"/></svg>
               LinkedIn
             </a>
             <a href="#selected-work"
-              className="flex items-center gap-2 font-thunder text-white/60 text-[0.8rem] tracking-wide uppercase hover:text-ink-green transition-colors duration-200">
+              className="flex items-center gap-2 font-thunder text-white text-[0.9rem] tracking-wide uppercase hover:text-ink-green transition-colors duration-200">
               <ArrowUpRight size={13} /> Portfolio
             </a>
           </div>
@@ -260,7 +260,7 @@ export default function KennyPage() {
 
           {/* LEFT — static */}
           <div className="hidden md:flex w-[40%] h-full flex-col justify-center px-12 lg:px-20 border-r border-white/5 relative">
-            <p className="font-thunder text-ink-green text-[0.9rem] tracking-[0.3em] uppercase mb-8">
+            <p className="font-thunder text-ink-green text-[1rem] tracking-[0.3em] uppercase mb-8">
               Selected Work
             </p>
             <h2
@@ -291,7 +291,7 @@ export default function KennyPage() {
                   />
 
                   {/* Counter */}
-                  <span className="absolute top-8 right-8 font-thunder text-white/20 text-[0.75rem] tracking-[0.25em] uppercase">
+                  <span className="absolute top-8 right-8 font-thunder text-white text-[0.85rem] tracking-[0.25em] uppercase">
                     0{i + 1}&nbsp;/&nbsp;0{PROJECTS.length}
                   </span>
 
@@ -300,7 +300,7 @@ export default function KennyPage() {
 
                   {/* Label */}
                   <p
-                    className="font-thunder text-[0.85rem] tracking-[0.3em] uppercase mb-4"
+                    className="font-thunder text-[1rem] tracking-[0.3em] uppercase mb-4"
                     style={{ color: proj.accent }}
                   >
                     {proj.num} — Project
@@ -316,8 +316,8 @@ export default function KennyPage() {
 
                   {/* Description */}
                   <p
-                    className="font-thunder uppercase text-white/75 mb-6 max-w-[38ch]"
-                    style={{ fontSize: 'clamp(0.85rem, 1.4vw, 1.05rem)' }}
+                    className="font-thunder uppercase text-white mb-6 max-w-[38ch]"
+                    style={{ fontSize: 'clamp(1.063rem, 1.4vw, 1.25rem)' }}
                   >
                     {proj.desc}
                   </p>
@@ -327,7 +327,7 @@ export default function KennyPage() {
                     {proj.stack.map(t => (
                       <span
                         key={t}
-                        className="font-thunder uppercase text-[0.72rem] tracking-wide text-white/50 border border-white/10 px-3 py-1"
+                        className="font-thunder uppercase text-[0.85rem] tracking-wide text-white border border-white/10 px-3 py-1"
                       >
                         {t}
                       </span>
@@ -339,7 +339,7 @@ export default function KennyPage() {
                     href={proj.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 font-thunder text-[0.9rem] tracking-[0.2em] uppercase
+                    className="inline-flex items-center gap-2 font-thunder text-[1rem] tracking-[0.2em] uppercase
                       hover:gap-4 transition-all duration-200 w-fit"
                     style={{ color: proj.accent }}
                   >
@@ -379,7 +379,7 @@ export default function KennyPage() {
             style={{ animation: 'k-marquee 38s linear infinite' }}
           >
             {[...TECH_ROW_A, ...TECH_ROW_A].map((item, i) => (
-              <span key={i} className="inline-flex items-center gap-4 font-thunder uppercase text-white/60 px-6"
+              <span key={i} className="inline-flex items-center gap-4 font-thunder uppercase text-white px-6"
                 style={{ fontSize: 'clamp(1.4rem, 2.5vw, 2.2rem)' }}>
                 {item}
                 <span className="text-ink-green text-[0.6em] select-none">✦</span>
@@ -395,7 +395,7 @@ export default function KennyPage() {
             style={{ animation: 'k-marquee-rev 44s linear infinite' }}
           >
             {[...TECH_ROW_B, ...TECH_ROW_B].map((item, i) => (
-              <span key={i} className="inline-flex items-center gap-4 font-thunder uppercase text-white/40 px-6"
+              <span key={i} className="inline-flex items-center gap-4 font-thunder uppercase text-white px-6"
                 style={{ fontSize: 'clamp(1.1rem, 2vw, 1.7rem)' }}>
                 {item}
                 <span className="text-ink-green/40 text-[0.6em] select-none">·</span>
@@ -445,7 +445,7 @@ export default function KennyPage() {
                   className="group w-full flex items-center gap-6 py-7 md:py-9 text-left"
                 >
                   {/* Index */}
-                  <span className="font-thunder text-white/20 text-[0.75rem] tracking-[0.25em] shrink-0 w-6">
+                  <span className="font-thunder text-white text-[0.85rem] tracking-[0.25em] shrink-0 w-6">
                     0{i + 1}
                   </span>
 
@@ -494,11 +494,11 @@ export default function KennyPage() {
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-3 font-thunder uppercase text-ink-green tracking-[0.2em] hover:gap-5 transition-all duration-200"
-                        style={{ fontSize: 'clamp(0.85rem, 1.5vw, 1.1rem)' }}
+                        style={{ fontSize: 'clamp(1rem, 1.5vw, 1.25rem)' }}
                       >
                         Open on Canva <ArrowUpRight size={14} />
                       </a>
-                      <span className="font-thunder text-white/20 text-[0.65rem] tracking-[0.2em] uppercase">
+                      <span className="font-thunder text-white text-[0.8rem] tracking-[0.2em] uppercase">
                         Visual Design · Canva
                       </span>
                     </div>
@@ -531,7 +531,7 @@ export default function KennyPage() {
 
         <div className="relative z-[1] flex flex-col lg:flex-row items-start justify-between gap-16">
           <div>
-            <p className="font-thunder text-ink-green text-[0.9rem] tracking-[0.35em] uppercase mb-6">
+            <p className="font-thunder text-ink-green text-[1rem] tracking-[0.35em] uppercase mb-6">
               Let&apos;s Build Something
             </p>
             <h2
@@ -546,23 +546,23 @@ export default function KennyPage() {
           <div className="flex flex-col gap-6 lg:justify-center lg:pt-12">
             <a
               href="mailto:kennyprince25.kp@gmail.com"
-              className="group font-thunder uppercase text-white/80 hover:text-ink-green transition-colors duration-200 break-all"
-              style={{ fontSize: 'clamp(0.85rem, 1.8vw, 1.15rem)' }}
+              className="group font-thunder uppercase text-white hover:text-ink-green transition-colors duration-200 break-all"
+              style={{ fontSize: 'clamp(1rem, 1.8vw, 1.25rem)' }}
             >
               kennyprince25.kp@gmail.com
               <ArrowUpRight size={14} className="inline ml-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
             </a>
             <div className="flex flex-col sm:flex-row gap-3">
               <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer"
-                className="ink-flood-up border border-white/20 px-6 py-3 font-thunder text-[0.8rem] tracking-[0.2em] uppercase text-white">
+                className="ink-flood-up border border-white/20 px-6 py-3 font-thunder text-[0.9rem] tracking-[0.2em] uppercase text-white">
                 <span>LinkedIn</span>
               </a>
               <a href="https://github.com" target="_blank" rel="noopener noreferrer"
-                className="ink-flood-up border border-white/20 px-6 py-3 font-thunder text-[0.8rem] tracking-[0.2em] uppercase text-white">
+                className="ink-flood-up border border-white/20 px-6 py-3 font-thunder text-[0.9rem] tracking-[0.2em] uppercase text-white">
                 <span>GitHub</span>
               </a>
             </div>
-            <p className="font-thunder text-white/40 text-[0.7rem] tracking-[0.18em] uppercase mt-2">
+            <p className="font-thunder text-white text-[0.85rem] tracking-[0.18em] uppercase mt-2">
               Available for freelance · Remote-friendly · Based in Lagos, Nigeria
             </p>
           </div>
@@ -617,7 +617,7 @@ function TimelineItem({ icon, title, tags, index, isLast }: TimelineItemProps) {
 
       {/* Meta row — index + icon + hairline */}
       <div className="flex items-center gap-3 mb-5">
-        <span className="font-thunder text-white/20 text-[0.65rem] tracking-[0.3em]">
+        <span className="font-thunder text-white text-[0.8rem] tracking-[0.3em]">
           0{index + 1}
         </span>
         <span className="font-thunder text-ink-green text-[1.15rem] leading-none select-none" aria-hidden="true">
@@ -639,7 +639,7 @@ function TimelineItem({ icon, title, tags, index, isLast }: TimelineItemProps) {
         {tags.map(tag => (
           <span
             key={tag}
-            className="font-thunder uppercase text-white/38 text-[0.7rem] tracking-[0.15em]"
+            className="font-thunder uppercase text-white text-[0.85rem] tracking-[0.15em]"
           >
             {tag}
           </span>

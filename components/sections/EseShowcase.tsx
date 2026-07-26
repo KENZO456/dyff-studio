@@ -168,7 +168,7 @@ export default function EseShowcase() {
 
         <p
           ref={labelRef}
-          className="font-mono text-ink-green text-[0.58rem] tracking-[0.32em] uppercase mb-5"
+          className="font-mono text-ink-green text-[0.8rem] tracking-[0.32em] uppercase mb-5"
           style={{ opacity: 0 }}
         >
           05 — Ese Showcase
@@ -188,8 +188,8 @@ export default function EseShowcase() {
 
         <p
           ref={bodyRef}
-          className="font-thunder uppercase text-white/65 max-w-lg leading-snug mb-10"
-          style={{ fontSize: 'clamp(0.82rem, 1.55vw, 1.05rem)', opacity: 0 }}
+          className="font-thunder uppercase text-white max-w-lg leading-snug mb-10"
+          style={{ fontSize: 'clamp(1.063rem, 1.55vw, 1.25rem)', opacity: 0 }}
         >
           DYFF Studio&apos;s flagship drama — written by Daniel Ochonogor, produced and
           scored by Nobu Savage. A full original soundtrack. Cinematic sound design.
@@ -203,7 +203,7 @@ export default function EseShowcase() {
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-3 font-thunder uppercase text-ink-green
-            border border-ink-green/40 px-7 py-4 text-[0.8rem] tracking-[0.25em]
+            border border-ink-green/40 px-7 py-4 text-[1rem] tracking-[0.25em]
             hover:gap-5 hover:bg-ink-green hover:text-ink-void hover:border-ink-green
             transition-all duration-300"
           style={{ opacity: 0 }}

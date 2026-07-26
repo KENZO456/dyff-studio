@@ -101,6 +101,7 @@ html {
   scroll-behavior: auto;
   -webkit-text-size-adjust: 100%;
   color-scheme: dark;
+  font-size: 1rem; /* 16px base — all rem units scale from here */
 }
 
 html, body {
@@ -119,6 +120,14 @@ body {
 
 a { color: inherit; text-decoration: none; }
 img, video { display: block; max-width: 100%; }
+
+/* =============================================
+   GLOBAL PARAGRAPH TYPOGRAPHY — rem-based, larger
+   ============================================= */
+p {
+  font-size: clamp(1.125rem, 1.5vw, 1.25rem);
+  line-height: 1.75;
+}
 
 /* =============================================
    KEYFRAMES

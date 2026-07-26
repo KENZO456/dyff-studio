@@ -59,8 +59,8 @@ export default function Footer() {
 
         {/* CENTER — Quick links */}
         <div>
-          <p className="font-thunder uppercase text-white/40 tracking-[0.25em] mb-5"
-            style={{ fontSize: '0.6rem', fontWeight: 400 }}>
+          <p className="font-thunder uppercase text-white tracking-[0.25em] mb-5"
+            style={{ fontSize: '0.8rem', fontWeight: 400 }}>
             Navigation
           </p>
           <nav aria-label="Footer navigation" className="flex flex-col gap-2">
@@ -80,8 +80,8 @@ export default function Footer() {
 
         {/* RIGHT — Social */}
         <div>
-          <p className="font-thunder uppercase text-white/40 tracking-[0.25em] mb-5"
-            style={{ fontSize: '0.6rem', fontWeight: 400 }}>
+          <p className="font-thunder uppercase text-white tracking-[0.25em] mb-5"
+            style={{ fontSize: '0.8rem', fontWeight: 400 }}>
             Find Us
           </p>
           <div className="flex flex-wrap gap-3">
@@ -89,9 +89,9 @@ export default function Footer() {
               <a
                 key={label}
                 href={href}
-                className="flex items-center gap-2 font-thunder uppercase text-white/70
+                className="flex items-center gap-2 font-thunder uppercase text-white
                   hover:text-white transition-colors duration-200"
-                style={{ fontSize: 'clamp(0.75rem, 1.3vw, 0.9rem)', fontWeight: 400 }}
+                style={{ fontSize: 'clamp(0.85rem, 1.3vw, 1rem)', fontWeight: 400 }}
                 aria-label={label}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -114,22 +114,22 @@ export default function Footer() {
 
       {/* ── Bottom strip ──────────────────────────────────────────────── */}
       <div className="footer-new-bottom">
-        <p className="font-thunder uppercase text-white/40"
-          style={{ fontSize: '0.6rem', fontWeight: 400, letterSpacing: '0.18em' }}>
+        <p className="font-thunder uppercase text-white"
+          style={{ fontSize: '0.8rem', fontWeight: 400, letterSpacing: '0.18em' }}>
           &copy; {new Date().getFullYear()} DYFF Studios Productions. All rights reserved.
         </p>
         <div className="flex items-center gap-3">
           <PortfolioLink
             href="/kenny"
-            className="font-thunder uppercase text-[0.6rem] tracking-[0.18em] font-normal
+            className="font-thunder uppercase text-[0.8rem] tracking-[0.18em] font-normal
               text-white hover:text-ink-green transition-colors duration-200"
           >
             Site by Kenny Ochonogor
           </PortfolioLink>
-          <span className="font-thunder text-white/20 text-[0.6rem]">·</span>
+          <span className="font-thunder text-white text-[0.8rem]">·</span>
           <PortfolioLink
             href="/daniel"
-            className="font-thunder uppercase text-[0.6rem] tracking-[0.18em] font-normal
+            className="font-thunder uppercase text-[0.8rem] tracking-[0.18em] font-normal
               text-white hover:text-ink-green transition-colors duration-200"
           >
             Art by Nobu Savage

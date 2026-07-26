@@ -73,7 +73,7 @@ export default function CtaSection() {
 
         <p
           ref={labelRef}
-          className="font-mono text-ink-green text-[0.6rem] tracking-[0.32em] uppercase mb-10 opacity-0"
+          className="font-mono text-white text-[0.8rem] tracking-[0.32em] uppercase mb-10 opacity-0"
         >
           06 — Connect
         </p>
@@ -99,8 +99,8 @@ export default function CtaSection() {
         <div className="mt-10 max-w-xl flex flex-col md:flex-row items-end gap-10">
           <p
             ref={bodyRef}
-            className="font-thunder uppercase text-white/50 leading-snug opacity-0 text-right"
-            style={{ fontSize: 'clamp(0.9rem, 1.8vw, 1.2rem)' }}
+            className="font-thunder uppercase text-white leading-snug opacity-0 text-right"
+            style={{ fontSize: 'clamp(1.125rem, 1.8vw, 1.375rem)' }}
           >
             Follow DYFF Studio for updates on new releases,
             upcoming series, and creative collaborations.
@@ -113,7 +113,7 @@ export default function CtaSection() {
             target="_blank"
             rel="noopener noreferrer"
             className="shrink-0 inline-flex items-center gap-3 font-thunder uppercase text-ink-green
-              border border-ink-green/50 px-8 py-4 text-[0.82rem] tracking-[0.28em]
+              border border-ink-green/50 px-8 py-4 text-[1rem] tracking-[0.28em]
               hover:bg-ink-green hover:text-ink-void hover:border-ink-green hover:gap-5
               transition-all duration-300 opacity-0"
           >
@@ -124,7 +124,7 @@ export default function CtaSection() {
 
         {/* Bottom rule */}
         <div className="mt-20 flex items-center justify-end gap-4">
-          <span className="font-mono text-white/20 text-[0.55rem] tracking-[0.22em] uppercase">
+          <span className="font-mono text-white text-[0.75rem] tracking-[0.22em] uppercase">
             DYFF Studios &nbsp;·&nbsp; Lagos, Nigeria &nbsp;·&nbsp; Est. 2024
           </span>
           <div className="w-8 h-px bg-ink-green/40" />

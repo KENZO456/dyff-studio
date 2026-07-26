@@ -250,7 +250,7 @@ export default function ScrollExpandMedia({
               <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2 text-center pointer-events-none">
                 {date && (
                   <p
-                    className="font-thunder uppercase text-ink-green text-[0.68rem] tracking-[0.32em]"
+                    className="font-thunder uppercase text-ink-green text-[0.85rem] tracking-[0.32em]"
                     style={{ transform: `translateX(-${textTX}vw)` }}
                   >
                     {date}
@@ -258,7 +258,7 @@ export default function ScrollExpandMedia({
                 )}
                 {scrollToExpand && (
                   <p
-                    className="font-mono text-ink-ash/45 text-[0.5rem] tracking-[0.28em] uppercase"
+                    className="font-mono text-white text-[0.75rem] tracking-[0.28em] uppercase"
                     style={{ transform: `translateX(${textTX}vw)` }}
                   >
                     {scrollToExpand}

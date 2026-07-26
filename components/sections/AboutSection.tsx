@@ -115,7 +115,7 @@ export default function AboutSection() {
         {/* Section label */}
         <p
           ref={labelRef}
-          className="font-mono text-ink-ash/50 text-[0.6rem] tracking-[0.3em] uppercase mb-20 opacity-0"
+          className="font-mono text-white/50 text-[0.8rem] tracking-[0.3em] uppercase mb-20 opacity-0"
         >
           04 — About
         </p>
@@ -154,8 +154,8 @@ export default function AboutSection() {
             {/* Sub-line */}
             <div ref={h3Ref} className="opacity-0 mt-6 md:mt-8">
               <p
-                className="font-thunder uppercase text-white/30 leading-tight tracking-wide"
-                style={{ fontSize: 'clamp(1rem, 2.2vw, 2rem)' }}
+                className="font-thunder uppercase text-white leading-tight tracking-wide"
+                style={{ fontSize: 'clamp(1.125rem, 2.2vw, 2rem)' }}
               >
                 A catalog being written.
               </p>
@@ -164,7 +164,7 @@ export default function AboutSection() {
             {/* Origin strip */}
             <div ref={originRef} className="flex items-center gap-4 mt-10 opacity-0">
               <div className="w-8 h-px bg-ink-green shrink-0" />
-              <p className="font-mono text-ink-ash/50 text-[0.58rem] tracking-[0.22em] uppercase">
+              <p className="font-mono text-white/50 text-[0.8rem] tracking-[0.22em] uppercase">
                 Lagos, Nigeria&nbsp;&nbsp;·&nbsp;&nbsp;Est. 2024
               </p>
             </div>
@@ -187,14 +187,14 @@ export default function AboutSection() {
           <div ref={bodyRef} className="lg:flex-1 opacity-0 lg:pt-2">
 
             {/* One-liner */}
-            <p className="font-mono text-ink-ash/45 text-[0.58rem] tracking-[0.25em] uppercase mb-8 leading-relaxed">
+            <p className="font-mono text-white text-[0.85rem] tracking-[0.25em] uppercase mb-8 leading-relaxed">
               An independent entertainment studio<br className="hidden md:block" /> from Lagos, Nigeria.
             </p>
 
             {/* 40-word who-we-are */}
             <p
-              className="font-thunder uppercase text-white/80 leading-snug mb-10"
-              style={{ fontSize: 'clamp(0.95rem, 1.9vw, 1.3rem)' }}
+              className="font-thunder uppercase text-white leading-snug mb-10"
+              style={{ fontSize: 'clamp(1.125rem, 1.9vw, 1.5rem)' }}
             >
               Founded by brothers Kenny and Daniel Ochonogor, DYFF Studio creates original
               books, audio series, animations, and digital art — rooted in authentic African
@@ -204,14 +204,14 @@ export default function AboutSection() {
             {/* Mission quote */}
             <div className="border-l-[2px] border-ink-green pl-5 mb-12">
               <p
-                className="font-thunder uppercase text-white/50 leading-snug"
-                style={{ fontSize: 'clamp(0.95rem, 1.7vw, 1.15rem)' }}
+                className="font-thunder uppercase text-white leading-snug"
+                style={{ fontSize: 'clamp(1.125rem, 1.7vw, 1.35rem)' }}
               >
                 Africa has always had stories.
               </p>
               <p
                 className="font-thunder uppercase text-ink-green leading-snug mt-1"
-                style={{ fontSize: 'clamp(0.95rem, 1.7vw, 1.15rem)' }}
+                style={{ fontSize: 'clamp(1.125rem, 1.7vw, 1.35rem)' }}
               >
                 DYFF is the studio finally telling them properly.
               </p>
@@ -221,7 +221,7 @@ export default function AboutSection() {
             <Link
               href="/audio"
               className="inline-flex items-center gap-3 font-thunder uppercase text-ink-green
-                text-[0.85rem] tracking-[0.22em] hover:gap-5 transition-all duration-200 group"
+                text-[1rem] tracking-[0.22em] hover:gap-5 transition-all duration-200 group"
             >
               Explore the Catalog
               <ArrowUpRight

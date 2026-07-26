@@ -69,10 +69,10 @@ interface BodyProps extends HTMLAttributes<HTMLElement> {
 }
 
 const bodySizeMap: Record<BodySize, string> = {
-  sm:   'text-sm   leading-relaxed',
-  base: 'text-base leading-[1.75]',
-  lg:   'text-lg   leading-[1.75]',
-  xl:   'text-xl   leading-[1.75]',
+  sm:   'text-[1rem]     leading-relaxed',
+  base: 'text-[1.125rem] leading-[1.75]',
+  lg:   'text-[1.25rem]  leading-[1.75]',
+  xl:   'text-[1.5rem]   leading-[1.75]',
 }
 
 export function Body({
@@ -130,7 +130,7 @@ export function Label({
     <Component
       className={cn(
         'font-mono uppercase',
-        size === 'xs' ? 'text-[0.65rem] tracking-[0.18em]' : 'text-sm tracking-[0.12em]',
+        size === 'xs' ? 'text-[0.8rem] tracking-[0.18em]' : 'text-[0.938rem] tracking-[0.12em]',
         labelVariantMap[variant],
         className
       )}
