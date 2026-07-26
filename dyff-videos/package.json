@@ -1,0 +1,24 @@
+{
+  "name": "dyff-videos",
+  "version": "1.0.0",
+  "description": "DYFF Studio Remotion video project",
+  "scripts": {
+    "preview": "remotion studio src/index.tsx",
+    "render:intro": "remotion render src/index.tsx DYFFIntro out/dyff-intro.mp4",
+    "render:trailer": "remotion render src/index.tsx ESETrailer out/ese-trailer.mp4",
+    "render:social": "remotion render src/index.tsx SocialClip out/dyff-social.mp4",
+    "render:outro": "remotion render src/index.tsx OutroCard out/dyff-outro.mp4",
+    "render:all": "npm run render:intro && npm run render:trailer && npm run render:social && npm run render:outro"
+  },
+  "dependencies": {
+    "@remotion/cli": "^4.0.0",
+    "remotion": "^4.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "typescript": "^5.0.0"
+  }
+}
