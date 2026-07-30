@@ -340,13 +340,7 @@ export default function MarketplaceClient({ initialProducts }: { initialProducts
         ref={heroRef}
         className="relative flex flex-col items-center justify-center text-center min-h-[55vh] pt-16 pb-12 px-6 overflow-hidden"
       >
-        <div className="absolute inset-0 z-0 opacity-15 overflow-hidden flex">
-          <div className="flex w-[200%] h-full" style={{ animation: 'carousel-slide 30s linear infinite' }}>
-            {[...Array(6)].map((_, i) => (
-              <img key={i} src="https://media.giphy.com/media/l41lFw057lAJQMwg0/giphy.gif" alt="" className="w-1/3 h-full object-cover shrink-0 mix-blend-screen" />
-            ))}
-          </div>
-        </div>
+
         <div className="anim-hero-glow absolute inset-0 z-[1] pointer-events-none" aria-hidden="true" />
         <div className="ink-grain absolute inset-0 z-[2] pointer-events-none opacity-20" />
         <div className="absolute inset-0 z-[3] flex items-center justify-center select-none pointer-events-none overflow-hidden" aria-hidden="true">
@@ -380,6 +374,17 @@ export default function MarketplaceClient({ initialProducts }: { initialProducts
           </div>
         </div>
       </section>
+
+      {/* Carousel Banner moved below hero */}
+      <div className="w-full h-24 sm:h-32 md:h-40 relative overflow-hidden border-y border-ink-ash/20 bg-ink-void/10 backdrop-blur-sm">
+        <div className="absolute inset-0 z-0 opacity-30 flex">
+          <div className="flex w-[200%] h-full" style={{ animation: 'carousel-slide 30s linear infinite' }}>
+            {[...Array(6)].map((_, i) => (
+              <img key={i} src="https://media.giphy.com/media/l41lFw057lAJQMwg0/giphy.gif" alt="" className="w-1/3 h-full object-cover shrink-0 mix-blend-screen" />
+            ))}
+          </div>
+        </div>
+      </div>
 
       <FilterBar activeCat={activeCat} sortBy={sortBy} onCat={setActiveCat} onSort={setSortBy} />
 

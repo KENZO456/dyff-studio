@@ -1299,7 +1299,7 @@ p {
   position:        relative;
   border-radius:   4px;
   overflow:        hidden;
-  background:      var(--ink-dark);
+  background:      transparent;
   transform-style: preserve-3d;
   cursor:          pointer;
   will-change:     transform;

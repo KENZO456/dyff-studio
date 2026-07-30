@@ -26,3 +26,4 @@ DYFF Studio is a Next.js (App Router) based web application. It features a marke
   - Added pagination (12 items/page) to the marketplace grid.
   - Initialized Supabase CLI in the project for local data management.
   - Integrated `animated-gradient.tsx` WebGL component and replaced the `InkUniverse` ThreeJS background in `app/layout.tsx`. Configured Aurora preset to use DYFF green (`#99ca45`).
+  - Moved the marketplace carousel banner below the hero section and made product cards transparent so the WebGL background shows through them.
