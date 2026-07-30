@@ -18,7 +18,7 @@ const spaceMono = Space_Mono({
 })
 
 // Heavy / browser-only — lazy loaded so they don't block first paint
-const InkUniverse   = dynamic(() => import('@/components/three/InkUniverse'),   { ssr: false, loading: () => null })
+const AnimatedGradient = dynamic(() => import('@/components/ui/animated-gradient'), { ssr: false, loading: () => null })
 const LoadingScreen = dynamic(() => import('@/components/ui/LoadingScreen'),    { ssr: false })
 const AudioPlayer   = dynamic(() => import('@/components/audio/AudioPlayer'),   { ssr: false })
 
@@ -56,8 +56,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* Custom cursor — hidden on touch devices via CSS */}
         <CustomCursor />
 
-        {/* Persistent 3D ink background — behind all content */}
-        <InkUniverse />
+        {/* Persistent Animated Gradient background — behind all content */}
+        <AnimatedGradient config={{ preset: "Aurora" }} className="!fixed inset-0 z-[-1]" />
 
         {/* Skip to main content — visually hidden, revealed on keyboard focus */}
         <a

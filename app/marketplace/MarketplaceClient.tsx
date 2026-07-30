@@ -238,6 +238,10 @@ export default function MarketplaceClient({ initialProducts }: { initialProducts
   const [sortBy,         setSortBy]     = useState<ProductSort>('newest')
   const [previewProduct, setPreview]    = useState<Product | null>(null)
 
+  // Pagination State
+  const [currentPage, setCurrentPage]   = useState(1)
+  const itemsPerPage = 12
+
   // Beat audio state
   const [playingId,    setPlayingId]    = useState<string | null>(null)
   const [beatProgress, setBeatProgress] = useState(0)
@@ -253,6 +257,17 @@ export default function MarketplaceClient({ initialProducts }: { initialProducts
     const base = activeCat === 'ALL' ? initialProducts : initialProducts.filter(p => p.category === activeCat)
     return sortProducts(base, sortBy)
   }, [activeCat, sortBy, initialProducts])
+
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [activeCat, sortBy])
+
+  const paginatedVisible = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage
+    return visible.slice(startIndex, startIndex + itemsPerPage)
+  }, [visible, currentPage, itemsPerPage])
+
+  const totalPages = Math.ceil(visible.length / itemsPerPage)
 
   const stopAudio = useCallback(() => {
     if (audioRef.current) {
@@ -325,7 +340,13 @@ export default function MarketplaceClient({ initialProducts }: { initialProducts
         ref={heroRef}
         className="relative flex flex-col items-center justify-center text-center min-h-[55vh] pt-16 pb-12 px-6 overflow-hidden"
       >
-        <Image src="/Images/bg (2).jpg" alt="" fill className="object-cover opacity-10 z-0" aria-hidden="true" />
+        <div className="absolute inset-0 z-0 opacity-15 overflow-hidden flex">
+          <div className="flex w-[200%] h-full" style={{ animation: 'carousel-slide 30s linear infinite' }}>
+            {[...Array(6)].map((_, i) => (
+              <img key={i} src="https://media.giphy.com/media/l41lFw057lAJQMwg0/giphy.gif" alt="" className="w-1/3 h-full object-cover shrink-0 mix-blend-screen" />
+            ))}
+          </div>
+        </div>
         <div className="anim-hero-glow absolute inset-0 z-[1] pointer-events-none" aria-hidden="true" />
         <div className="ink-grain absolute inset-0 z-[2] pointer-events-none opacity-20" />
         <div className="absolute inset-0 z-[3] flex items-center justify-center select-none pointer-events-none overflow-hidden" aria-hidden="true">
@@ -371,7 +392,7 @@ export default function MarketplaceClient({ initialProducts }: { initialProducts
         </div>
 
         <div ref={gridRef} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 md:gap-6">
-          {visible.map(product => (
+          {paginatedVisible.map(product => (
             <ProductCard
               key={product.id}
               product={product}
@@ -385,6 +406,28 @@ export default function MarketplaceClient({ initialProducts }: { initialProducts
         {visible.length === 0 && (
           <div className="py-24 flex flex-col items-center gap-4">
             <Thunder as="p" size="card" weight={400} className="text-ink-paper/15 leading-none">NOTHING HERE YET</Thunder>
+          </div>
+        )}
+
+        {totalPages > 1 && (
+          <div className="flex justify-center items-center gap-4 mt-12">
+            <button
+              onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+              className="market-filter-tab disabled:opacity-30 disabled:cursor-not-allowed"
+            >
+              PREV
+            </button>
+            <span className="font-mono text-ink-ash/60 text-[0.7rem]">
+              PAGE {currentPage} OF {totalPages}
+            </span>
+            <button
+              onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+              disabled={currentPage === totalPages}
+              className="market-filter-tab disabled:opacity-30 disabled:cursor-not-allowed"
+            >
+              NEXT
+            </button>
           </div>
         )}
       </section>
