@@ -365,7 +365,6 @@ export function AnimatedGradient({
                 style={{
                     borderRadius: radius,
                     ...style,
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 } as any}
             >
                 <canvas
