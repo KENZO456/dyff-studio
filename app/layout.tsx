@@ -57,7 +57,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <CustomCursor />
 
         {/* Persistent Animated Gradient background — behind all content */}
-        <AnimatedGradient config={{ preset: "Aurora" }} className="!fixed inset-0 z-[-1]" />
+        <AnimatedGradient config={{ preset: "Aurora" }} className="ink-universe-wrap" />
 
         {/* Skip to main content — visually hidden, revealed on keyboard focus */}
         <a
