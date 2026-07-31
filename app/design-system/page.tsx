@@ -109,7 +109,7 @@ export default function DesignSystemPage() {
             <div className="border-b border-ink-ash/20 py-4">
               <Label variant="meta" className="mb-2 block">section — 6vw / Thunder 600</Label>
               <Thunder as="h2" size="section" weight={600} className="text-ink-paper">
-                Books · Audio · Animations
+                Books · Audio Series · Animations
               </Thunder>
             </div>
 
@@ -136,7 +136,7 @@ export default function DesignSystemPage() {
                 <Label variant="badge">crimson badge</Label>
                 <Label variant="badge-green">new release</Label>
                 <Label variant="tag">thriller</Label>
-                <Label variant="tag">action</Label>
+                <Label variant="tag">audio series</Label>
                 <Label variant="tag">audio series</Label>
               </div>
             </div>

@@ -11,7 +11,7 @@ import { Menu, X } from 'lucide-react'
 const NAV_LINKS = [
   { label: 'HOME',        href: '/'           },
   { label: 'BOOKS',       href: '/books'       },
-  { label: 'AUDIO',       href: '/audio'       },
+  { label: 'AUDIO SERIES',  href: '/audio'       },
   { label: 'ANIMATIONS',  href: '/animations'  },
   { label: 'MARKETPLACE', href: '/marketplace' },
 ]

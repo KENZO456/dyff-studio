@@ -2116,3 +2116,19 @@ p {
   0% { transform: translateX(0); }
   100% { transform: translateX(-50%); }
 }
+
+/* ─── Fluid CSS Aurora Banner (Marketplace) ────────────────────────────── */
+.fluid-aurora-banner {
+  background: 
+    radial-gradient(ellipse at top left, rgba(153, 202, 69, 0.4), transparent 60%),
+    radial-gradient(ellipse at bottom right, rgba(153, 202, 69, 0.3), transparent 60%),
+    radial-gradient(ellipse at 50% 80%, rgba(153, 202, 69, 0.2), transparent 50%);
+  background-color: #080808;
+  background-size: 200% 200%;
+  animation: fluid-aurora 10s ease-in-out infinite alternate;
+}
+@keyframes fluid-aurora {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 100%; }
+  100% { background-position: 50% 0%; }
+}

@@ -108,7 +108,7 @@ export default function AudioPageClient({ series }: { series: AudioSeries[] }) {
         <div className="absolute inset-0 z-[1] bg-ink-void/60 pointer-events-none" />
         <div className="ink-grain absolute inset-0 z-[2] pointer-events-none opacity-30" />
         <div className="absolute inset-0 z-[3] flex items-center justify-center select-none pointer-events-none" aria-hidden="true">
-          <span className="audio-hero-ghost font-thunder uppercase text-ink-paper/[0.03] leading-none">AUDIO</span>
+          <span className="audio-hero-ghost font-thunder uppercase text-ink-paper/[0.03] leading-none">AUDIO SERIES</span>
         </div>
         <div className="relative z-[4] flex flex-col items-center text-center gap-8 max-w-2xl">
           <Label variant="tag" className="text-ink-green">DYFF AUDIO SERIES</Label>
