@@ -273,8 +273,8 @@ p {
 .thunder-outline {
   font-family: 'Thunder', sans-serif;
   color: transparent;
-  -webkit-text-stroke: 1px var(--ink-paper);
-  text-stroke: 1px var(--ink-paper);
+  -webkit-text-stroke: 2px var(--ink-paper);
+  text-stroke: 2px var(--ink-paper);
 }
 
 /* ─── StickyNarrative section ────────────────────────────────────

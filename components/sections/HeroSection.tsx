@@ -21,7 +21,7 @@ export default function HeroSection() {
             ref={revealRef}
             className="hero-headline thunder-outline ink-reveal-text block"
           >
-            DIFF<br />STUDIO.
+            DYFF<br />STUDIO.
           </span>
         </h1>
       </div>
