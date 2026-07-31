@@ -28,5 +28,7 @@ DYFF Studio is a Next.js (App Router) based web application. It features a marke
   - Integrated `animated-gradient.tsx` WebGL component and replaced the `InkUniverse` ThreeJS background in `app/layout.tsx`. Configured Aurora preset to use DYFF green (`#99ca45`).
   - Moved the marketplace carousel banner below the hero section and made product cards transparent so the WebGL background shows through them.
   - Replaced GIF marketplace banner with a high-performance pure CSS fluid aurora gradient.
-  - Updated all UI text references from "Audio" to "Audio Series" (Navbar, pages).
+  - Updated all UI text references from "Audio" to "Audio Series" (Navbar, pages, WhatWeDo section).
   - Wrote and executed `scripts/migrate_audio.js` to upload Haunted Heart and Legend of Leviticus audio episodes directly to Supabase storage and database.
+  - Updated Homepage hero text to be solid white and bold instead of hollow.
+  - Made the Marketplace page background 60% transparent so the WebGL background remains visible underneath the content.

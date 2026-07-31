@@ -334,7 +334,7 @@ export default function MarketplaceClient({ initialProducts }: { initialProducts
   }, [activeCat, sortBy])
 
   return (
-    <main className="min-h-screen bg-ink-void">
+    <main className="min-h-screen bg-ink-void/60">
 
       <section
         ref={heroRef}

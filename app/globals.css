@@ -1017,8 +1017,8 @@ p {
 .hero-headline {
   font-size:            clamp(3rem, 11vw, 13rem);
   line-height:          0.88;
-  color:                transparent;
-  -webkit-text-stroke:  1.5px rgba(242, 234, 216, 0.9);
+  color:                #ffffff;
+  font-weight:          700;
 }
 @media (min-width: 768px) {
   .hero-headline { white-space: nowrap; }

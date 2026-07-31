@@ -17,7 +17,7 @@ const PILLARS = [
   },
   {
     num:  '02',
-    name: 'Audio',
+    name: 'Audio Series',
     tag:  'Series · Drama',
     desc: 'Cinema you listen to. Original voice casts, original scores, no narration. Stories designed for headphones in the dark.',
     href: '/audio',
