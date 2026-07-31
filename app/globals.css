@@ -1013,15 +1013,11 @@ p {
   background-color: #0c0c0c;
 }
 
-/* Homepage hero headline — one line on desktop */
+/* Homepage hero headline */
 .hero-headline {
-  font-size:            clamp(3rem, 11vw, 13rem);
-  line-height:          0.88;
-  color:                #ffffff;
+  font-size:            clamp(5.5rem, 18vw, 22rem);
+  line-height:          0.85;
   font-weight:          700;
-}
-@media (min-width: 768px) {
-  .hero-headline { white-space: nowrap; }
 }
 
 /* TextGlitch component */
