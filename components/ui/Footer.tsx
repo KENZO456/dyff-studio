@@ -29,7 +29,7 @@ const QUICK_LINKS = [
   { label: 'Books',       href: '/books'       },
   { label: 'Audio',       href: '/audio'       },
   { label: 'Animations',  href: '/animations'  },
-  { label: 'Marketplace', href: '/marketplace' },
+  { label: 'Store',       href: '/marketplace' },
 ]
 
 export default function Footer() {
