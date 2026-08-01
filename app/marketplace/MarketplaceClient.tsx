@@ -219,7 +219,7 @@ function BannerSlider() {
       ))}
       <div className="absolute inset-0 z-20 bg-gradient-to-t from-ink-void via-ink-void/20 to-transparent pointer-events-none" />
       <div className="absolute inset-0 z-20 flex flex-col items-center justify-center pointer-events-none">
-        <Thunder as="h2" size="display" weight={400} className="text-ink-paper leading-none drop-shadow-2xl">
+        <Thunder as="h2" size="hero" weight={400} outline className="text-transparent leading-none drop-shadow-2xl">
           NEW ARRIVALS
         </Thunder>
         <p className="font-mono text-ink-green text-[0.6rem] tracking-[0.3em] uppercase mt-2 drop-shadow-md">
@@ -477,7 +477,7 @@ export default function MarketplaceClient({ initialProducts }: { initialProducts
         <div className="max-w-[1400px] mx-auto px-5 md:px-10 mb-8 flex items-end justify-between">
           <div>
             <Label variant="tag" className="text-ink-green mb-2 block">TRENDING NOW</Label>
-            <Thunder as="h2" size="section" weight={400} className="text-ink-paper">
+            <Thunder as="h2" size="hero" weight={400} outline className="text-transparent leading-none">
               HOTTEST PICKS
             </Thunder>
           </div>
@@ -506,7 +506,7 @@ export default function MarketplaceClient({ initialProducts }: { initialProducts
         <div className="max-w-[1400px] mx-auto px-5 md:px-10">
           <div className="text-center mb-12">
             <Label variant="tag" className="text-ink-gold mb-2 block">FRESH OUT</Label>
-            <Thunder as="h2" size="display" weight={400} className="text-ink-paper">
+            <Thunder as="h2" size="hero" weight={400} outline className="text-transparent leading-none">
               NEW DROPS
             </Thunder>
           </div>
@@ -571,7 +571,7 @@ export default function MarketplaceClient({ initialProducts }: { initialProducts
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
               <div>
                 <Label variant="tag" className="text-ink-green mb-2 block">FOR CREATORS</Label>
-                <Thunder as="h2" size="display" weight={400} className="text-ink-paper">
+                <Thunder as="h2" size="hero" weight={400} outline className="text-transparent leading-none">
                   FEATURED ASSETS
                 </Thunder>
                 <Body size="sm" className="text-ink-ash/80 max-w-[45ch] mt-2">

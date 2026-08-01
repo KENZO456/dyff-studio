@@ -13,7 +13,7 @@ const NAV_LINKS = [
   { label: 'BOOKS',       href: '/books'       },
   { label: 'AUDIO SERIES',  href: '/audio'       },
   { label: 'ANIMATIONS',  href: '/animations'  },
-  { label: 'MARKETPLACE', href: '/marketplace' },
+  { label: 'STORE',       href: '/marketplace' },
 ]
 
 const overlayVariants = {
