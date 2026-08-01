@@ -309,6 +309,7 @@ function FilterBar({ activeCat, sortBy, onCat, onSort }: FilterBarProps) {
 }
 
 export default function MarketplaceClient({ initialProducts }: { initialProducts: Product[] }) {
+  const { addItem, openCart } = useCart()
   const [activeCat,      setActiveCat]  = useState<FilterCat>('ALL')
   const [sortBy,         setSortBy]     = useState<ProductSort>('newest')
   const [previewProduct, setPreview]    = useState<Product | null>(null)
@@ -694,7 +695,7 @@ export default function MarketplaceClient({ initialProducts }: { initialProducts
                         : <Play  size={16} fill="currentColor" strokeWidth={0} />
                       }
                     </button>
-                    <div className="beat-modal-track group" onClick={handleSeek} role="slider" aria-label="Seek">
+                    <div className="beat-modal-track group" onClick={handleSeek} role="slider" aria-label="Seek" aria-valuenow={beatProgress} aria-valuemin={0} aria-valuemax={beatDuration || 0}>
                       <div className="absolute inset-0 bg-ink-ash/10 rounded-full group-hover:bg-ink-ash/20 transition-colors" />
                       <div
                         className="beat-modal-fill rounded-full relative"
@@ -723,7 +724,7 @@ export default function MarketplaceClient({ initialProducts }: { initialProducts
                     CLOSE
                   </button>
                   <button 
-                    onClick={(e) => { handleAddToCart(e); closePreview(); }}
+                    onClick={(e) => { e.stopPropagation(); addItem(previewProduct); openCart(); closePreview(); }}
                     className="market-add-btn !w-auto px-6 py-2"
                   >
                     ADD TO CART
