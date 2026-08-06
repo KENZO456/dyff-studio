@@ -220,7 +220,7 @@ function BannerSlider() {
       <div className="absolute inset-0 z-20 bg-gradient-to-t from-ink-void via-ink-void/20 to-transparent pointer-events-none" />
       <div className="absolute inset-0 z-20 flex flex-col items-center justify-center pointer-events-none">
         <h2 className="font-thunder uppercase leading-[0.88] select-none text-center">
-          <span className="hero-headline thunder-outline block">NEW ARRIVALS</span>
+          <span className="store-headline thunder-outline block">NEW ARRIVALS</span>
         </h2>
         <p className="font-mono text-ink-green text-[0.6rem] tracking-[0.3em] uppercase mt-2 drop-shadow-md">
           Explore the latest additions
@@ -316,7 +316,7 @@ export default function MarketplaceClient({ initialProducts }: { initialProducts
 
   // Pagination State
   const [currentPage, setCurrentPage]   = useState(1)
-  const itemsPerPage = 12
+  const itemsPerPage = 4
 
   // Beat audio state
   const [playingId,    setPlayingId]    = useState<string | null>(null)
@@ -336,8 +336,8 @@ export default function MarketplaceClient({ initialProducts }: { initialProducts
   }, [initialProducts])
 
   const newDropProducts = useMemo(() => {
-    const newDrops = initialProducts.filter(p => p.tags.includes('new'))
-    return newDrops.length > 0 ? newDrops.slice(0, 3) : initialProducts.slice(-3).reverse()
+    // Always fetch the most recent items uploaded
+    return [...initialProducts].reverse().slice(0, 3)
   }, [initialProducts])
 
   const featuredAssets = useMemo(() => {
@@ -478,7 +478,7 @@ export default function MarketplaceClient({ initialProducts }: { initialProducts
           <div>
             <Label variant="tag" className="text-ink-green mb-2 block">TRENDING NOW</Label>
             <h2 className="font-thunder uppercase leading-[0.88] select-none">
-              <span className="hero-headline thunder-outline block">HOTTEST PICKS</span>
+              <span className="store-headline thunder-outline block">HOTTEST PICKS</span>
             </h2>
           </div>
           <div className="hidden md:flex items-center gap-2 text-ink-ash/60 font-mono text-[0.6rem] tracking-widest uppercase">
@@ -507,7 +507,7 @@ export default function MarketplaceClient({ initialProducts }: { initialProducts
           <div className="text-center mb-12">
             <Label variant="tag" className="text-ink-gold mb-2 block">FRESH OUT</Label>
             <h2 className="font-thunder uppercase leading-[0.88] select-none text-center">
-              <span className="hero-headline thunder-outline block">NEW DROPS</span>
+              <span className="store-headline thunder-outline block">NEW DROPS</span>
             </h2>
           </div>
 
@@ -572,7 +572,7 @@ export default function MarketplaceClient({ initialProducts }: { initialProducts
               <div>
                 <Label variant="tag" className="text-ink-green mb-2 block">FOR CREATORS</Label>
                 <h2 className="font-thunder uppercase leading-[0.88] select-none">
-                  <span className="hero-headline thunder-outline block">FEATURED ASSETS</span>
+                  <span className="store-headline thunder-outline block">FEATURED ASSETS</span>
                 </h2>
                 <Body size="sm" className="text-ink-ash/80 max-w-[45ch] mt-2">
                   High-quality 3D models, textures, and creative resources used directly in DYFF productions.

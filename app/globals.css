@@ -1020,6 +1020,14 @@ p {
   font-weight:          700;
 }
 
+/* Store page responsive headline */
+.store-headline {
+  font-size:            clamp(5.5rem, 12vw, 10rem);
+  line-height:          0.85;
+  font-weight:          700;
+}
+
+
 /* TextGlitch component */
 .text-glitch-heading {
   background-image:        linear-gradient(to right, #f2ead8, #ffffff);
