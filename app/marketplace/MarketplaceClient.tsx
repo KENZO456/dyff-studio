@@ -63,12 +63,7 @@ const HERO_PILLS: { cat: ProductCategory; dot: string }[] = [
   { cat: 'assets',      dot: ''  },
 ]
 
-// Available banner videos from public/Videos
-const BANNER_VIDEOS = [
-  '/Videos/Hreo background.mp4',
-  '/Videos/videobg (1).mp4',
-  '/Videos/videobg (2).mp4',
-]
+// Removed banner videos to use solid dark background
 
 interface CardProps {
   product:   Product
@@ -193,31 +188,8 @@ function ProductCard({ product, onPreview, onPlay, isPlaying }: CardProps) {
 }
 
 function BannerSlider() {
-  const [activeIdx, setActiveIdx] = useState(0)
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setActiveIdx((prev) => (prev + 1) % BANNER_VIDEOS.length)
-    }, 6000)
-    return () => clearInterval(timer)
-  }, [])
-
   return (
     <div className="w-full h-[35vh] md:h-[45vh] lg:h-[55vh] relative overflow-hidden bg-ink-void group">
-      {BANNER_VIDEOS.map((src, i) => (
-        <video
-          key={src}
-          src={src}
-          autoPlay
-          loop
-          muted
-          playsInline
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${
-            i === activeIdx ? 'opacity-80 z-10' : 'opacity-0 z-0'
-          }`}
-        />
-      ))}
-      <div className="absolute inset-0 z-20 bg-gradient-to-t from-ink-void via-ink-void/20 to-transparent pointer-events-none" />
       <div className="absolute inset-0 z-20 flex flex-col items-center justify-center pointer-events-none">
         <h2 className="font-thunder uppercase leading-[0.88] select-none text-center">
           <span className="store-headline thunder-outline block">NEW ARRIVALS</span>
@@ -225,33 +197,6 @@ function BannerSlider() {
         <p className="font-mono text-ink-green text-[0.6rem] tracking-[0.3em] uppercase mt-2 drop-shadow-md">
           Explore the latest additions
         </p>
-      </div>
-
-      {/* Manual Controls */}
-      <button 
-        className="absolute left-4 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-ink-void/40 border border-ink-paper/20 flex items-center justify-center text-ink-paper opacity-0 group-hover:opacity-100 transition-opacity hover:bg-ink-green hover:text-ink-void"
-        onClick={() => setActiveIdx((prev) => (prev - 1 + BANNER_VIDEOS.length) % BANNER_VIDEOS.length)}
-      >
-        <ChevronLeft size={20} />
-      </button>
-      <button 
-        className="absolute right-4 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-ink-void/40 border border-ink-paper/20 flex items-center justify-center text-ink-paper opacity-0 group-hover:opacity-100 transition-opacity hover:bg-ink-green hover:text-ink-void"
-        onClick={() => setActiveIdx((prev) => (prev + 1) % BANNER_VIDEOS.length)}
-      >
-        <ChevronRight size={20} />
-      </button>
-      
-      {/* Dots */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-30 flex items-center gap-2">
-        {BANNER_VIDEOS.map((_, i) => (
-          <button
-            key={i}
-            onClick={() => setActiveIdx(i)}
-            className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
-              i === activeIdx ? 'bg-ink-green w-4' : 'bg-ink-paper/30 hover:bg-ink-paper/70'
-            }`}
-          />
-        ))}
       </div>
     </div>
   )
@@ -425,7 +370,7 @@ export default function MarketplaceClient({ initialProducts }: { initialProducts
   }, [activeCat, sortBy, currentPage])
 
   return (
-    <main className="min-h-screen bg-ink-void/60">
+    <main className="min-h-screen bg-ink-void">
 
       <section
         ref={heroRef}
